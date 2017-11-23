@@ -4,6 +4,7 @@ site_url: https://github.com/20c/grainy-perms
 theme: readthedocs
 
 pages:
+  - Home: index.md
   - Settings: settings.md
 
 markdown_extensions:
