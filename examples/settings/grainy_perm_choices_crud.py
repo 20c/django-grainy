@@ -1,4 +1,4 @@
-import grainy.consT
+import grainy.const
 
 GRAINY_PERM_CHOICES = [
     #(bitmask flag, verbose name, string flag)
