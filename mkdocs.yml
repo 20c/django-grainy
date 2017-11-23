@@ -1,0 +1,10 @@
+site_name: grainy-perms
+site_url: https://github.com/20c/grainy-perms
+
+theme: readthedocs
+
+pages:
+  - Settings: settings.md
+
+markdown_extensions:
+  - markdown_include.include
