@@ -4,8 +4,8 @@ from django_grainy.models import UserPermission, GroupPermission, GrainyHandler
 from django_grainy.decorators import grainy_model
 
 from django_grainy_test.models import (
-    TestModelA,
-    TestModelB
+    ModelA,
+    ModelB
 )
 
 from grainy.const import (
@@ -23,8 +23,8 @@ class TestGrainyHandler(UserTestCase):
         UserTestCase.setUpTestData()
 
     def test_grainy_model_decorator(self):
-        a = TestModelA.objects.create(name="A1")
-        self.assertEqual(a.Grainy.namespace(a), "django_grainy_test.testmodela.{}".format(a.id))
-        b = TestModelB.objects.create(name="B1")
+        a = ModelA.objects.create(name="A1")
+        self.assertEqual(a.Grainy.namespace(a), "django_grainy_test.modela.{}".format(a.id))
+        b = ModelB.objects.create(name="B1")
         self.assertEqual(b.Grainy.namespace(b), "something.arbitrary.{}".format(b.id))
 
