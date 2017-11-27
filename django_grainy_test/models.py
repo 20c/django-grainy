@@ -13,14 +13,16 @@ unit tests. There is no need to ever install the "django_grainy_test"
 app in your project, unless you wish to run those unit tests
 """
 
-class TestModelBase(models.Model):
+class ModelBase(models.Model):
     class Meta(object):
         abstract = True
 
 @grainy_model()
-class TestModelA(TestModelBase):
+class ModelA(ModelBase):
     name = models.CharField(max_length=255)
+    #class Meta(object):
+    #    app_label = "django_grainy_test"
 
 @grainy_model(namespace="something.arbitrary")
-class TestModelB(TestModelA):
+class ModelB(ModelA):
     pass
