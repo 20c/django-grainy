@@ -65,7 +65,7 @@ class PermissionManager(models.Manager):
             _pset[namespace] = permission
 
         for namespace, permission in _pset.permissions.items():
-            self.add(self.model(namespace=namespace, permission=permission.value), bulk=False)
+            self.create(namespace=namespace, permission=permission.value)
 
     def permission_set(self):
         """
