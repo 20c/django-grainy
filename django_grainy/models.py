@@ -42,14 +42,29 @@ class PermissionManager(models.Manager):
     def get_queryset(self):
         return PermissionQuerySet(self.model, using=self._db)
 
-    def add_permission_set(self, pset):
+    def add_permission_set(self, pset, clear=False):
         """
         Add all permissions specified in a PermissionSet
 
         Arguments:
             - pset <grainy.PermissionSet>
+
+        Keyword Arguments:
+            - clear <bool>: if true, clear all existing permissions before
+                adding the new set.
         """
+
+        if clear:
+            _pset = PermissionSet()
+        else:
+            _pset = self.permission_set()
+
+        self.get_queryset().all().delete()
+
         for namespace, permission in pset.permissions.items():
+            _pset[namespace] = permission
+
+        for namespace, permission in _pset.permissions.items():
             self.add(self.model(namespace=namespace, permission=permission.value), bulk=False)
 
     def permission_set(self):
