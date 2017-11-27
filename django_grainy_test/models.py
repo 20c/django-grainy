@@ -10,7 +10,7 @@ from django_grainy.decorators import grainy_model
 """
 These are the models used during the django_grainy
 unit tests. There is no need to ever install the "django_grainy_test"
-app in your project, unless you wish to run those unit tests
+app in your project
 """
 
 class ModelBase(models.Model):
@@ -20,8 +20,6 @@ class ModelBase(models.Model):
 @grainy_model()
 class ModelA(ModelBase):
     name = models.CharField(max_length=255)
-    #class Meta(object):
-    #    app_label = "django_grainy_test"
 
 @grainy_model(namespace="something.arbitrary")
 class ModelB(ModelA):
