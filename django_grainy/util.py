@@ -7,9 +7,52 @@ from grainy.core import (
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 
-from django_grainy.models import GrainyHandler
+from .models import GrainyHandler
+from .conf import PERM_CHOICES
+
+def convert_flags(flags):
+    """
+    Converts string permission flags into integer permission flags
+    
+    Arguments:
+        - flags <str>: one or more flags as they are defined in GRAINY_PERM_CHOICES
+            
+            For example: "crud" or "ru" or "r"
+    
+    Returns:
+        - int
+    """
+
+    r = 0
+    if not flags:
+        return r
+
+    if isinstance(flags, six.integer_types):
+        return flags
+
+    if not isinstance(flags, six.string_types):
+        raise TypeError("`flags` needs to be a string or integer type")
+
+    for f in flags:
+        for f_i, name, f_s in PERM_CHOICES:
+            if f_s == f:
+                r = r | f_i
+    return r
+
 
 def namespace(target):
+
+    """
+    Convert `target` to permissioning namespace
+
+    Arguments:
+        - target <object|class|string>: if an object or class is passed here it 
+            will be required to contain a `Grainy` meta class, otherwise a 
+            TypeError will be raised.
+
+    Returns:
+        - string
+    """
 
     if not target:
         return ""
@@ -71,7 +114,18 @@ class Permissions(object):
                     )
 
     def check(self, target, permissions, explicit=False):
-        return self.pset.check(namespace(target), permissions, explicit=explicit)
+        """
+        Check permissions for the specified target
+
+        Arguments:
+            - target <object|class|string>: check permissions to this object / namespace
+            - permissions <int|string>: permission flags to check
+
+        Keyword Arguments:
+            - explicit <bool>: require explicit permissions to the complete target
+                namespsace
+        """
+        return self.pset.check(namespace(target), convert_flags(permissions), explicit=explicit)
 
     def apply(self, data):
         return self.pset.apply(data)
