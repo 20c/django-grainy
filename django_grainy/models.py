@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import six
+import inspect
 
 from django.db import models
 from django.conf import settings
@@ -12,6 +14,38 @@ from grainy.core import PermissionSet
 
 from .fields import PermissionField
 from .conf import PERM_CHOICES
+
+def namespace(target):
+
+    """
+    Convert `target` to permissioning namespace
+
+    Arguments:
+        - target <object|class|string>: if an object or class is passed here it 
+            will be required to contain a `Grainy` meta class, otherwise a 
+            TypeError will be raised.
+
+    Returns:
+        - string
+    """
+
+    if not target:
+        return ""
+
+    handler_class = getattr(target, "Grainy", None)
+
+    if inspect.isclass(handler_class) and issubclass(handler_class, GrainyHandler):
+        if inspect.isclass(target):
+            return target.Grainy.namespace()
+        return target.Grainy.namespace(instance=target)
+
+
+    if isinstance(target, six.string_types):
+        return target
+
+    raise TypeError("`target` {} could not be convered to a permissioning namespace".format(target))
+
+
 
 class PermissionQuerySet(models.QuerySet):
     """
@@ -41,30 +75,39 @@ class PermissionManager(models.Manager):
     def get_queryset(self):
         return PermissionQuerySet(self.model, using=self._db)
 
-    def add_permission_set(self, pset, clear=False):
+    def add_permission_set(self, pset):
         """
         Add all permissions specified in a PermissionSet
 
         Arguments:
             - pset <grainy.PermissionSet>
-
-        Keyword Arguments:
-            - clear <bool>: if true, clear all existing permissions before
-                adding the new set.
         """
 
-        if clear:
-            _pset = PermissionSet()
-        else:
-            _pset = self.permission_set()
-
-        self.get_queryset().all().delete()
+        _pset = self.permission_set()
 
         for namespace, permission in pset.permissions.items():
             _pset[namespace] = permission
 
         for namespace, permission in _pset.permissions.items():
-            self.create(namespace=namespace, permission=permission.value)
+            perm = self.update_or_create(
+                namespace = namespace,
+                defaults = { "permission" : permission.value }
+            )
+
+    def add_permission(self, target, permission):
+        """
+        Add permission for the specified target
+
+        Arguments:
+            - target <object|class|str>
+            - permission <str|int>: permission flags
+        """
+        from .util import namespace, int_flags
+
+        self.update_or_create(
+            namespace = namespace(target),
+            defaults = { "permission" : int_flags(permission) }
+        )
 
     def permission_set(self):
         """
