@@ -65,18 +65,3 @@ class TestPermissionManager(UserTestCase):
         pset = self.users["user_a"].grainy_permissions.permission_set()
         self.assertEqual(self.EXPECTED_PERMISSIONS_A2.permissions, pset.permissions)
 
-        self.users["user_a"].grainy_permissions.add_permission_set(
-            PermissionSet({"c" : PERM_READ}),
-            clear=True
-        )
-        pset = self.users["user_a"].grainy_permissions.permission_set()
-        self.assertEqual(PermissionSet({"c": PERM_READ}).permissions, pset.permissions)
-
-
-
-
-
-
-
-
-

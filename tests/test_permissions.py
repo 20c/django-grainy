@@ -15,7 +15,8 @@ from django_grainy_test.models import (
 
 from django_grainy.util import (
     namespace,
-    convert_flags,
+    int_flags,
+    str_flags,
     Permissions
 )
 
@@ -62,25 +63,35 @@ class TestPermissions(UserTestCase):
         with self.assertRaises(TypeError):
             namespace(object())
 
-    def test_convert_flags(self):
+    def test_int_flags(self):
         """
-        test django_grainy.util.convert_flags
+        test django_grainy.util.int_flags
         """
 
-        self.assertEqual(convert_flags("c"), PERM_CREATE)
-        self.assertEqual(convert_flags("cr"), PERM_CREATE | PERM_READ)
-        self.assertEqual(convert_flags("cru"), PERM_CREATE | PERM_READ | PERM_UPDATE)
-        self.assertEqual(convert_flags("crud"), PERM_CREATE | PERM_READ | PERM_UPDATE | PERM_DELETE)
-        self.assertEqual(convert_flags("xyz"), 0)
-        self.assertEqual(convert_flags(None), 0)
+        self.assertEqual(int_flags("c"), PERM_CREATE)
+        self.assertEqual(int_flags("cr"), PERM_CREATE | PERM_READ)
+        self.assertEqual(int_flags("cru"), PERM_CREATE | PERM_READ | PERM_UPDATE)
+        self.assertEqual(int_flags("crud"), PERM_CREATE | PERM_READ | PERM_UPDATE | PERM_DELETE)
+        self.assertEqual(int_flags("xyz"), 0)
+        self.assertEqual(int_flags(None), 0)
 
-        self.assertEqual(convert_flags(convert_flags("c")), PERM_CREATE)
-        self.assertEqual(convert_flags(convert_flags("cr")), PERM_CREATE | PERM_READ)
-        self.assertEqual(convert_flags(convert_flags("cru")), PERM_CREATE | PERM_READ | PERM_UPDATE)
-        self.assertEqual(convert_flags(convert_flags("crud")), PERM_CREATE | PERM_READ | PERM_UPDATE | PERM_DELETE)
+        self.assertEqual(int_flags(int_flags("c")), PERM_CREATE)
+        self.assertEqual(int_flags(int_flags("cr")), PERM_CREATE | PERM_READ)
+        self.assertEqual(int_flags(int_flags("cru")), PERM_CREATE | PERM_READ | PERM_UPDATE)
+        self.assertEqual(int_flags(int_flags("crud")), PERM_CREATE | PERM_READ | PERM_UPDATE | PERM_DELETE)
 
         with self.assertRaises(TypeError):
-            convert_flags(object())
+            int_flags(object())
+
+    def test_str_flags(self):
+        """
+        test django.grainy.util.str_flags
+        """
+
+        self.assertEqual(str_flags(PERM_READ), "r")
+        self.assertEqual(str_flags(PERM_READ | PERM_UPDATE), "ru")
+        self.assertEqual(str_flags(PERM_READ | PERM_CREATE), "cr")
+        self.assertEqual(str_flags(PERM_READ | PERM_DELETE), "rd")
 
 
     def test_permissions_init(self):
