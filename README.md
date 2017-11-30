@@ -6,5 +6,8 @@
 [![Codecov](https://img.shields.io/codecov/c/github/20c/django-grainy/master.svg?maxAge=60)](https://codecov.io/github/20c/django-grainy)
 [![Requires.io](https://img.shields.io/requires/github/20c/django-grainy.svg?maxAge=60)](https://requires.io/github/20c/django-grainy/requirements)
 
-
 Granular permissions for django
+
+## Documentation
+
+http://django-grainy.readthedocs.io/en/latest/
