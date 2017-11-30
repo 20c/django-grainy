@@ -38,7 +38,6 @@ class PermissionManager(models.Manager):
     UserPermission and GroupPermission objects
     """
 
-    use_for_related_fields = True
     def get_queryset(self):
         return PermissionQuerySet(self.model, using=self._db)
 
@@ -102,6 +101,7 @@ class UserPermission(Permission):
     class Meta(object):
         verbose_name = _("User Permission")
         verbose_name_plural = _("User Permissions")
+        base_manager_name = "objects"
 
     user = models.ForeignKey(get_user_model(), related_name="grainy_permissions", on_delete=models.CASCADE)
     objects = PermissionManager()
@@ -113,6 +113,7 @@ class GroupPermission(Permission):
     class Meta(object):
         verbose_name = _("Group Permission")
         verbose_name_plural = _("Group Permissions")
+        base_manager_name = "objects"
 
     group = models.ForeignKey(Group, related_name="grainy_permissions", on_delete=models.CASCADE)
     objects = PermissionManager()
