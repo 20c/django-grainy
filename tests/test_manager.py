@@ -39,6 +39,11 @@ class TestPermissionManager(UserTestCase):
         "d" : PERM_CREATE
     })
 
+    EXPECTED_PERMISSIONS_C = PermissionSet({
+        ModelA.Grainy.namespace() : PERM_READ | PERM_UPDATE | PERM_CREATE | PERM_DELETE,
+        ModelB.Grainy.namespace() : PERM_READ
+    })
+
     @classmethod
     def setUpTestData(cls):
         UserTestCase.setUpTestData()
@@ -64,4 +69,15 @@ class TestPermissionManager(UserTestCase):
         )
         pset = self.users["user_a"].grainy_permissions.permission_set()
         self.assertEqual(self.EXPECTED_PERMISSIONS_A2.permissions, pset.permissions)
+
+    def test_add_permission(self):
+        self.users["user_c"].grainy_permissions.add_permission(
+            ModelA, "crud"
+        )
+        self.users["user_c"].grainy_permissions.add_permission(
+            ModelB, PERM_READ
+        )
+        pset = self.users["user_c"].grainy_permissions.permission_set()
+        self.assertEqual(self.EXPECTED_PERMISSIONS_C.permissions, pset.permissions)
+
 
