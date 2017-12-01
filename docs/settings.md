@@ -1,3 +1,8 @@
+## GRAINY_ADMIN_REMOVE_DEFAULT_FORMS
+**default**: True
+
+If true the forms for vanilla django permissions will be removed from the admin UI
+
 ## GRAINY_PERM_CHOICES
 
 A list describing the possible permission flags
@@ -11,8 +16,3 @@ django-grainy comes with two predefined permission setups that you can use. It w
 ```py
 {!examples/settings/grainy_perm_choices_predefined.py!}
 ```
-
-## GRAINY_ADMIN_REMOVE_DEFAULT_FORMS
-**default**: True
-
-If true the forms for vanilla django permissions will be removed from the admin UI
