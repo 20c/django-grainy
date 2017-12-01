@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 
 from .conf import ADMIN_REMOVE_DEFAULT_FORMS
 from .models import (
@@ -11,7 +12,8 @@ from .models import (
     GroupPermission
 )
 from .forms import (
-    UserPermissionForm
+    UserPermissionForm,
+    GroupPermissionForm
 )
 
 # Register your models here.
@@ -21,10 +23,17 @@ class UserPermissionInlineAdmin(admin.TabularInline):
     form = UserPermissionForm
     extra = 1
 
+class GroupPermissionInlineAdmin(admin.TabularInline):
+    model = GroupPermission
+    form = GroupPermissionForm
+    extra = 1
+
 ## INIT
 
 def init_grainy_admin():
     admin.site.unregister(get_user_model())
+    admin.site.unregister(Group)
+
     _fieldsets = UserAdmin.fieldsets
     for name, info in _fieldsets:
         if ADMIN_REMOVE_DEFAULT_FORMS and "user_permissions" in info.get("fields",[]):
@@ -36,5 +45,15 @@ def init_grainy_admin():
     class GrainyUserAdmin(UserAdmin):
         fieldsets = _fieldsets
         inlines = UserAdmin.inlines + [UserPermissionInlineAdmin]
+
+    _exclude = []
+    if ADMIN_REMOVE_DEFAULT_FORMS:
+        _exclude.append("permissions")
+
+    @admin.register(Group)
+    class GrainyGroupAdmin(GroupAdmin):
+        inlines = GroupAdmin.inlines + [GroupPermissionInlineAdmin]
+        exclude = _exclude
+
 
 init_grainy_admin()

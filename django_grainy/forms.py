@@ -18,7 +18,10 @@ class UserPermissionForm(forms.ModelForm):
     class Meta:
         model = UserPermission
         fields = ["namespace", "permission"]
-        widgets = {
-            "permission" : BitmaskSelect(choices=PERM_CHOICES_FOR_FIELD)
-        }
     permission = PermissionFormField(widget=BitmaskSelect(choices=PERM_CHOICES_FOR_FIELD))
+
+class GroupPermissionForm(UserPermissionForm):
+    class Meta:
+        model = GroupPermission
+        fields = ["namespace", "permission"]
+
