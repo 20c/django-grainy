@@ -30,30 +30,26 @@ class GroupPermissionInlineAdmin(admin.TabularInline):
 
 ## INIT
 
-def init_grainy_admin():
-    admin.site.unregister(get_user_model())
-    admin.site.unregister(Group)
+admin.site.unregister(get_user_model())
+admin.site.unregister(Group)
 
-    _fieldsets = UserAdmin.fieldsets
-    for name, info in _fieldsets:
-        if ADMIN_REMOVE_DEFAULT_FORMS and "user_permissions" in info.get("fields",[]):
-            lst = list(info.get("fields"))
-            lst.remove("user_permissions")
-            info["fields"] = lst
+_fieldsets = UserAdmin.fieldsets
+for name, info in _fieldsets:
+    if ADMIN_REMOVE_DEFAULT_FORMS and "user_permissions" in info.get("fields",[]):
+        lst = list(info.get("fields"))
+        lst.remove("user_permissions")
+        info["fields"] = lst
 
-    @admin.register(get_user_model())
-    class GrainyUserAdmin(UserAdmin):
-        fieldsets = _fieldsets
-        inlines = UserAdmin.inlines + [UserPermissionInlineAdmin]
+@admin.register(get_user_model())
+class GrainyUserAdmin(UserAdmin):
+    fieldsets = _fieldsets
+    inlines = UserAdmin.inlines + [UserPermissionInlineAdmin]
 
-    _exclude = []
-    if ADMIN_REMOVE_DEFAULT_FORMS:
-        _exclude.append("permissions")
+_exclude = []
+if ADMIN_REMOVE_DEFAULT_FORMS:
+    _exclude.append("permissions")
 
-    @admin.register(Group)
-    class GrainyGroupAdmin(GroupAdmin):
-        inlines = GroupAdmin.inlines + [GroupPermissionInlineAdmin]
-        exclude = _exclude
-
-
-init_grainy_admin()
+@admin.register(Group)
+class GrainyGroupAdmin(GroupAdmin):
+    inlines = GroupAdmin.inlines + [GroupPermissionInlineAdmin]
+    exclude = _exclude
