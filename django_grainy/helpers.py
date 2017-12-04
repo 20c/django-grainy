@@ -1,5 +1,22 @@
 import six
-from .conf import PERM_CHOICES
+from .conf import (
+    PERM_CHOICES,
+    DJANGO_OP_TO_FLAG
+)
+
+def django_op_to_flag(op):
+    """
+    Converts a django admin operation string to the matching
+    grainy permission flag
+
+    Arguments:
+        - op <str>
+
+    Returns:
+        - int
+    """
+    return DJANGO_OP_TO_FLAG.get(op, 0)
+
 
 def int_flags(flags):
     """
