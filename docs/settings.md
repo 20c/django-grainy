@@ -17,13 +17,14 @@ If true the forms for vanilla django permissions will be removed from the admin 
 
 A list describing the possible permission flags
 
+**default**
 ```py
 {!examples/settings/grainy_perm_choices_crud.py!}
 ```
 
 django-grainy comes with two predefined permission setups that you can use.
 
-**default**
+**predefined shortcuts**
 ```py
 {!examples/settings/grainy_perm_choices_predefined.py!}
 ```
