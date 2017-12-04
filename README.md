@@ -8,6 +8,10 @@
 
 Granular permissions for django
 
+## Supported Django Versions
+
+- Django 1.11
+
 ## Documentation
 
 http://django-grainy.readthedocs.io/en/latest/
