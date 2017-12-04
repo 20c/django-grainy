@@ -5,6 +5,7 @@ theme: readthedocs
 
 pages:
   - Home: index.md
+  - Install: install.md
   - Settings: settings.md
 
 markdown_extensions:
