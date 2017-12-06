@@ -3,6 +3,7 @@ from django.conf import settings
 def pytest_configure():
     settings.configure(
         SECRET_KEY="sekret",
+        ROOT_URLCONF="django_grainy_test.urls",
         INSTALLED_APPS=[
             'django.contrib.auth',
             'django.contrib.contenttypes',

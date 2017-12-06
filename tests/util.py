@@ -13,7 +13,7 @@ class UserTestCase(TestCase):
     def setUpTestData(cls):
         # create users
         cls.users = dict([
-            (k, get_user_model().objects.create_user(k, "{}@example.com".format(k), k))
+            (k, get_user_model().objects.create_user(k, "{}@example.com".format(k), password=k))
             for k in cls.setup_users
         ])
 
