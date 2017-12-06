@@ -95,13 +95,26 @@ class grainy_rest_viewset(grainy_decorator):
         extra = self.extra
 
         class GrainyViewset(viewset):
+
+            def retrieve(self, request, pk):
+                response = super(GrainyViewset, self).retrieve(request, pk)
+                return self.apply_perms(request, response)
+
             def list(self, request):
                 response = super(GrainyViewset, self).list(request)
+                return self.apply_perms(request, response)
+
+            def apply_perms(self, request, response):
                 perms = Permissions(request.user)
-                print(request.user)
                 namespace = Namespace(self.Grainy.namespace())
+
+                if isinstance(response.data, list):
+                    prefix = "{}.*".format(namespace)
+                else:
+                    prefix = namespace
                 for ns,p in extra.get("handlers", {}).items():
-                    perms.applicator.handler(ns, **p)
+                    perms.applicator.handler("{}.{}".format(prefix, ns), **p)
+
                 data, tail = namespace.container(response.data)
                 data = perms.apply(data)
                 try:

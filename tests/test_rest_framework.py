@@ -27,6 +27,7 @@ class TestGrainyViewSet(UserTestCase):
         cls.users["user_a"].grainy_permissions.add_permission_set(
             PermissionSet({
                 "api" : PERM_READ,
+                "api.a.nested_dict.secret": PERM_READ,
                 "api.a.*.nested_dict.secret": PERM_READ
             })
         )
@@ -41,7 +42,7 @@ class TestGrainyViewSet(UserTestCase):
 
 
 
-    def test_grainy_viewset(self):
+    def test_grainy_viewset_list(self):
         client = APIClient()
         client.force_authenticate(user=self.users["user_a"])
         response = client.get("/a/?format=json", follow=True)
@@ -72,4 +73,36 @@ class TestGrainyViewSet(UserTestCase):
                 }
             }
         ])
+
+    def test_grainy_viewset_retrieve(self):
+        client = APIClient()
+        client.force_authenticate(user=self.users["user_a"])
+        response = client.get("/a/1/?format=json", follow=True)
+
+        self.assertEqual(response.data, 
+            {
+                "name": "Test1",
+                "id":1,
+                "nested_dict": {
+                    "secret" : {
+                        "hidden" : "data"
+                    },
+                    "something": "public"
+                }
+            }
+        )
+
+        client = APIClient()
+        client.force_authenticate(user=self.users["user_b"])
+        response = client.get("/a/1/?format=json", follow=True)
+
+        self.assertEqual(response.data,
+            {
+                "name": "Test1",
+                "id":1,
+                "nested_dict": {
+                    "something": "public"
+                }
+            }
+        )
 

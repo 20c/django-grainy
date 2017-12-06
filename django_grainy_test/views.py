@@ -13,7 +13,7 @@ from .serializers import ModelASerializer
 @grainy_rest_viewset(
     namespace = "api.a",
     handlers = {
-        "api.a.*.nested_dict.secret" : { "explicit" : True }
+        "nested_dict.secret" : { "explicit" : True }
     }
 )
 class ModelAViewSet(viewsets.ModelViewSet):
