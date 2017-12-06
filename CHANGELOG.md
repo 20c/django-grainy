@@ -8,6 +8,7 @@
 - str_flags function
 - PermissioManager.add_permission
 - decorators.grainy_rest_viewset
+- helpers.dict_get_namespace
 - util.Permissions.grant_all property
 ### Fixed
 - util.Permissions now accepts AnonynmousUser as object
