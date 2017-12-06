@@ -1,9 +1,10 @@
 from grainy.core import (
     PermissionSet,
+    Applicator
 )
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, AnonymousUser
 
 from .models import (
     namespace,
@@ -25,16 +26,20 @@ class Permissions(object):
         Arguments:
             - obj <User|Group>
         """
-        if not isinstance(obj, get_user_model()) and not isinstance(obj, Group):
+        if not isinstance(obj, get_user_model()) and not isinstance(obj, Group) and not isinstance(obj, AnonymousUser):
             raise ValueError(
-                "`obj` needs to be either of type `{}` or `Group`".format(
-                    get_user_model().__class__.__name__
+                "`obj` needs to be either of type `{}` or `Group`, but is `{}`".format(
+                    get_user_model(),
+                    obj
                 )
             )
         self.obj = obj
         self.pset = PermissionSet()
+        self.applicator = Applicator(self.pset)
         self.loaded = False
         self.load()
+
+        self.grant_all = (isinstance(obj, get_user_model()) and obj.is_superuser)
 
     def load(self, refresh=False):
         """
@@ -45,6 +50,9 @@ class Permissions(object):
             - refresh <bool>: if True, permission set will be reloaded if it
                 has been loaded before
         """
+        if not hasattr(self.obj, "grainy_permissions"):
+            return
+
         if not self.loaded or refresh:
             self.pset = self.obj.grainy_permissions.permission_set()
             if isinstance(self.obj, get_user_model()):
@@ -68,6 +76,8 @@ class Permissions(object):
             - explicit <bool>: require explicit permissions to the complete target
                 namespsace
         """
+        if self.grant_all:
+            return True
         return self.pset.check(namespace(target), int_flags(permissions), explicit=explicit)
 
     def get(self, target, as_string=False):
@@ -90,4 +100,7 @@ class Permissions(object):
         return self.pset.get_permission(namespace(target))
 
     def apply(self, data):
-        return self.pset.apply(data)
+        if self.grant_all:
+            return data
+        self.applicator.pset = self.pset
+        return self.pset.apply(data, applicator=self.applicator)
