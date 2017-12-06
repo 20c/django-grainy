@@ -3,9 +3,14 @@
 
 ## [Unreleased]
 ### Added
-- added str_flags function
-- added PermissioManager.add_permission
+- grainy authentication backend
+- django admin integration
+- str_flags function
+- PermissioManager.add_permission
+- decorators.grainy_rest_viewset
+- util.Permissions.grant_all property
 ### Fixed
+- util.Permissions now accepts AnonynmousUser as object
 ### Changed
 - renamed `convert_flags` to `int_flags`
 - moved `str_flags` and `int_flags` functions from util.py to helpers.py
