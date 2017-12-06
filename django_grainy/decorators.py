@@ -8,6 +8,16 @@ from .exceptions import (
 
 class grainy_decorator(object):
 
+    """
+    base decorator that all the other grainy_* decorators
+    extend from
+
+    Keyword Arguments:
+        - namespace <str>: the permissioning namespace for this decorator
+        - handlers <dict>: grainy applicator handlers
+    """
+
+    # if true, this decorator cannot have a None namespace
     require_namespace = False
 
     def __init__(self, namespace=None, **kwargs):
@@ -37,12 +47,20 @@ class grainy_decorator(object):
 
 class grainy_model(grainy_decorator):
 
+    """
+    Initialize grainy permissions for the targeted model
+    """
+
     def __call__(self, model):
         model.Grainy = self.make_grainy_handler(model)
         return model
 
 
 class grainy_view(grainy_decorator):
+
+    """
+    Initialize grainy permissions for the targeted view
+    """
 
     require_namespace = True
 
@@ -55,6 +73,16 @@ class grainy_rest_view(grainy_view):
 
 
 class grainy_rest_viewset(grainy_decorator):
+
+    """
+    Initialize grainy permissions for the targeted rest 
+    framework viewset.
+
+    This will apply the permissions to the data returned 
+    in the viewset response. Any fields that the requesting
+    user does not have READ permissions to will get dropped
+    from the data
+    """
 
     require_namespace = True
 
