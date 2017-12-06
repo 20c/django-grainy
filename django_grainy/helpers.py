@@ -4,6 +4,19 @@ from .conf import (
     DJANGO_OP_TO_FLAG
 )
 
+def dict_get_namespace(data, namespace):
+    d = data
+    path = []
+    for k in namespace:
+        if k not in d:
+            raise KeyError("`{}` does not exist at `{}`".format(
+                k,
+                ".".join(path)
+            ))
+        path.append(k)
+        d = d[k]
+    return d
+
 def django_op_to_flag(op):
     """
     Converts a django admin operation string to the matching
