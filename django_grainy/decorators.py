@@ -4,6 +4,9 @@ from .util import Permissions
 from .exceptions import (
     DecoratorRequiresNamespace,
 )
+from .helpers import (
+    dict_get_namespace,
+)
 
 
 class grainy_decorator(object):
@@ -95,11 +98,17 @@ class grainy_rest_viewset(grainy_decorator):
             def list(self, request):
                 response = super(GrainyViewset, self).list(request)
                 perms = Permissions(request.user)
+                print(request.user)
                 namespace = Namespace(self.Grainy.namespace())
                 for ns,p in extra.get("handlers", {}).items():
                     perms.applicator.handler(ns, **p)
                 data, tail = namespace.container(response.data)
-                response.data = perms.apply(data)
+                data = perms.apply(data)
+                try:
+                    response.data = dict_get_namespace(data, namespace)
+                except KeyError as inst:
+                    response.data = {}
+
                 return response
         GrainyViewset.__name__ = viewset.__name__
         return GrainyViewset
