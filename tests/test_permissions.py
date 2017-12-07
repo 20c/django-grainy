@@ -1,4 +1,5 @@
 from .util import UserTestCase
+from django.test import RequestFactory
 from django.db import models
 from django_grainy.models import (
     UserPermission,
@@ -11,6 +12,11 @@ from django_grainy.decorators import grainy_model
 from django_grainy_test.models import (
     ModelA,
     ModelB
+)
+
+from django_grainy_test.views import (
+    View,
+    view
 )
 
 from django_grainy.util import (
@@ -31,7 +37,9 @@ class TestPermissions(UserTestCase):
 
     EXPECTED_PERMISSIONS_A = PermissionSet({
         ModelA.Grainy.namespace() : PERM_READ,
-        ModelB.Grainy.namespace() : PERM_READ | PERM_UPDATE
+        ModelB.Grainy.namespace() : PERM_READ | PERM_UPDATE,
+        view.Grainy.namespace() : PERM_READ,
+        View.Grainy.namespace() : PERM_READ | PERM_CREATE | PERM_UPDATE | PERM_DELETE
     })
 
     GROUP_PERMISSIONS_A = PermissionSet({
@@ -92,6 +100,40 @@ class TestPermissions(UserTestCase):
         self.assertTrue(perms.check(ModelB(), PERM_UPDATE))
         self.assertTrue(perms.check("secret.group", PERM_READ))
         self.assertFalse(perms.check("secret", PERM_READ))
+
+
+    def test_grainy_view(self):
+        """
+        test grainy_view decorator
+        """
+
+        factory = RequestFactory()
+        ## test function view
+
+        request = factory.get("/view/")
+        request.user = self.users["user_a"]
+        response = view(request)
+        self.assertEqual(response.status_code, 200)
+
+        request = factory.get("/view/")
+        request.user = self.users["user_b"]
+        response = view(request)
+        self.assertEqual(response.status_code, 403)
+
+        ## test class view
+
+        for method in ["POST", "GET", "PUT", "PATCH", "DELETE"]:
+            request = getattr(factory, method.lower())("/view_class/")
+            request.user = self.users["user_a"]
+            response = View().dispatch(request)
+            self.assertEqual(response.status_code, 200)
+
+            request = getattr(factory, method.lower())("/view_class/")
+            request.user = self.users["user_b"]
+            response = View().dispatch(request)
+            self.assertEqual(response.status_code, 403)
+
+
 
 
 
