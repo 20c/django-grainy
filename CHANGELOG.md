@@ -7,9 +7,13 @@
 - django admin integration
 - str_flags function
 - PermissioManager.add_permission
+- decorators.grainy_view
 - decorators.grainy_rest_viewset
 - helpers.dict_get_namespace
+- helpers.request_method_to_flag
+- helpers.request_to_flag
 - util.Permissions.grant_all property
+- conf.REQUEST_METHOD_TO_FLAG
 ### Fixed
 - util.Permissions now accepts AnonynmousUser as object
 ### Changed
