@@ -7,6 +7,7 @@
 - django admin integration
 - str_flags function
 - PermissioManager.add_permission
+- Default permissions for AnonymousUser
 - decorators.grainy_view
 - decorators.grainy_rest_viewset
 - helpers.dict_get_namespace
