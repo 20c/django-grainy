@@ -74,7 +74,6 @@ class grainy_view(grainy_decorator):
     require_namespace = True
 
     def __call__(self, view):
-        view.Grainy = self.make_grainy_handler(view)
         if inspect.isclass(view):
             class GrainyView(view):
                 def dispatch(self, request, *args, **kwargs):
@@ -89,8 +88,10 @@ class grainy_view(grainy_decorator):
                     )
 
             GrainyView.__name__ = view.__name__
+            GrainyView.Grainy = self.make_grainy_handler(view)
             return GrainyView
         else:
+            view.Grainy = self.make_grainy_handler(view)
             def grainy_view(request, *args, **kwargs):
                 perms = Permissions(request.user)
                 if not perms.check(
@@ -99,6 +100,7 @@ class grainy_view(grainy_decorator):
                 ):
                     return HttpResponse(status=403)
                 return view(request, *args, **kwargs)
+            grainy_view.Grainy = view.Grainy
             return grainy_view
 
 
