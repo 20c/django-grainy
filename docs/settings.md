@@ -28,3 +28,20 @@ django-grainy comes with two predefined permission setups that you can use.
 ```py
 {!examples/settings/grainy_perm_choices_predefined.py!}
 ```
+
+## GRAINY_REQUEST_METHOD_TO_FLAG
+
+```dict``` used to convert a request method to a grainy permission flag
+
+**default**:
+```py
+GRAINY_REQUEST_METHOD_TO_FLAG = getattr(settings, "GRAINY_REQUEST_METHOD_TO_FLAG", {
+    "HEAD" : grainy.const.PERM_READ,
+    "OPTIONS" : grainy.const.PERM_READ,
+    "GET" : grainy.const.PERM_READ,
+    "PUT" : grainy.const.PERM_UPDATE,
+    "PATCH" : grainy.const.PERM_UPDATE,
+    "POST" : grainy.const.PERM_CREATE,
+    "DELETE" : grainy.const.PERM_DELETE,
+})
+```
