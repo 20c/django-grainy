@@ -1,3 +1,8 @@
+import inspect
+
+from django.http import HttpResponse
+from django.utils.translation import ugettext_lazy as _
+
 from grainy.core import Namespace
 from .models import GrainyHandler as _GrainyHandler
 from .util import Permissions
@@ -6,6 +11,7 @@ from .exceptions import (
 )
 from .helpers import (
     dict_get_namespace,
+    request_to_flag
 )
 
 
@@ -69,6 +75,31 @@ class grainy_view(grainy_decorator):
 
     def __call__(self, view):
         view.Grainy = self.make_grainy_handler(view)
+        if inspect.isclass(view):
+            class GrainyView(view):
+                def dispatch(self, request, *args, **kwargs):
+                    perms = Permissions(request.user)
+                    if not perms.check(
+                        self.Grainy.namespace(),
+                        request_to_flag(request)
+                    ):
+                        return HttpResponse(status=403)
+                    return super(GrainyView, self).dispatch(
+                        request, *args, **kwargs
+                    )
+
+            GrainyView.__name__ = view.__name__
+            return GrainyView
+        else:
+            def grainy_view(request, *args, **kwargs):
+                perms = Permissions(request.user)
+                if not perms.check(
+                    view.Grainy.namespace(),
+                    request_to_flag(request)
+                ):
+                    return HttpResponse(status=403)
+                return view(request, *args, **kwargs)
+            return grainy_view
 
 
 class grainy_rest_view(grainy_view):
