@@ -106,7 +106,11 @@ class grainy_rest_viewset(grainy_decorator):
 
             def apply_perms(self, request, response):
                 perms = Permissions(request.user)
-                namespace = Namespace(self.Grainy.namespace())
+                try:
+                    obj = self.get_object()
+                except AssertionError as inst:
+                    obj = None
+                namespace = Namespace(self.Grainy.namespace(obj))
 
                 if isinstance(response.data, list):
                     prefix = "{}.*".format(namespace)

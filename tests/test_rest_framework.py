@@ -27,7 +27,6 @@ class TestGrainyViewSet(UserTestCase):
         cls.users["user_a"].grainy_permissions.add_permission_set(
             PermissionSet({
                 "api" : PERM_READ,
-                "api.a.nested_dict.secret": PERM_READ,
                 "api.a.*.nested_dict.secret": PERM_READ
             })
         )
