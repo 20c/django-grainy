@@ -1,6 +1,10 @@
 from .util import UserTestCase
 from django.test import RequestFactory
+from django.test.utils import override_settings
 from django.db import models
+from django.contrib.auth.models import AnonymousUser
+
+
 from django_grainy.models import (
     UserPermission,
     GroupPermission,
@@ -32,6 +36,7 @@ from grainy.const import (
     PERM_CREATE,
     PERM_DELETE,
 )
+
 
 class TestPermissions(UserTestCase):
 
@@ -100,6 +105,14 @@ class TestPermissions(UserTestCase):
         self.assertTrue(perms.check(ModelB(), PERM_UPDATE))
         self.assertTrue(perms.check("secret.group", PERM_READ))
         self.assertFalse(perms.check("secret", PERM_READ))
+
+
+    def test_anonymous_permissions(self):
+        user = AnonymousUser()
+        perms = Permissions(user)
+        self.assertTrue(perms.check("a.b.c", PERM_READ))
+        self.assertTrue(perms.check("a.b.c.d", PERM_UPDATE | PERM_READ))
+        self.assertFalse(perms.check("x.y.z", PERM_READ))
 
 
     def test_grainy_view(self):
