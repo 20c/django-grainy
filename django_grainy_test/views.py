@@ -2,8 +2,14 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render
+from django.http import HttpResponse, JsonResponse
+from django.views import View as BaseView
+
 from rest_framework import viewsets
-from django_grainy.decorators import grainy_rest_viewset
+from django_grainy.decorators import (
+    grainy_rest_viewset,
+    grainy_view
+)
 
 from .models import ModelA
 from .serializers import ModelASerializer
@@ -19,3 +25,25 @@ from .serializers import ModelASerializer
 class ModelAViewSet(viewsets.ModelViewSet):
     queryset = ModelA.objects.all()
     serializer_class = ModelASerializer
+
+@grainy_view(namespace="site.view")
+def view(request):
+    return HttpResponse()
+
+@grainy_view(namespace="site.view")
+class View(BaseView):
+    def get(self, request):
+        return HttpResponse(content="GET Response")
+
+    def post(self, request):
+        return HttpResponse(content="POST Response")
+
+    def put(self, request):
+        return HttpResponse(content="PUT Response")
+
+    def delete(self, request):
+        return HttpResponse(content="DELETE Response")
+
+    def patch(self, request):
+        return HttpResponse(content="PATCH Response")
+
