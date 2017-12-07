@@ -3,7 +3,7 @@ import grainy.core
 
 # set from PermissionSet instance
 user.grainy_permissions.add_permission_set(
-    grainy.const.PermissionSet({
+    grainy.core.PermissionSet({
         "a.b.c" : grainy.const.PERM_READ
     })
 )
