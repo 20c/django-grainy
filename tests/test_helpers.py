@@ -1,4 +1,5 @@
 from unittest import TestCase
+from django.test import RequestFactory
 from grainy.core import (
     Namespace,
 )
@@ -12,9 +13,26 @@ from django_grainy.helpers import (
     int_flags,
     str_flags,
     dict_get_namespace,
+    request_to_flag,
 )
 
 class TestHelpers(TestCase):
+
+
+    def test_request_to_flag(self):
+        """
+        test django_grainy.helpers.request_to_flag
+        test django_grainy.helpers.request_method_to_flag
+        """
+        factory = RequestFactory()
+
+        self.assertEqual(request_to_flag(factory.get("/view_class")), PERM_READ)
+        self.assertEqual(request_to_flag(factory.put("/view_class")), PERM_UPDATE)
+        self.assertEqual(request_to_flag(factory.post("/view_class")), PERM_CREATE)
+        self.assertEqual(request_to_flag(factory.patch("/view_class")), PERM_UPDATE)
+        self.assertEqual(request_to_flag(factory.delete("/view_class")), PERM_DELETE)
+
+
     def test_dict_get_namespace(self):
         namespace = Namespace("a.b.c")
         self.assertEqual(
