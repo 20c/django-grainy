@@ -13,6 +13,9 @@ from .helpers import (
     int_flags,
     str_flags
 )
+from .conf import (
+    ANONYMOUS_PERMS
+)
 
 class Permissions(object):
 
@@ -24,7 +27,7 @@ class Permissions(object):
     def __init__(self, obj):
         """
         Arguments:
-            - obj <User|Group>
+            - obj <User|AnonymousUser|Group>
         """
         if not isinstance(obj, get_user_model()) and not isinstance(obj, Group) and not isinstance(obj, AnonymousUser):
             raise ValueError(
@@ -46,11 +49,20 @@ class Permissions(object):
         Loads the permission set for the user or group specified in
         `self.obj` 
 
+        In case `self.obj` holds an `AnonymousUser` instance, perms are loaded
+        from settings.GRAINY_ANONYMOUS_PERMS
+
         Keyword Arguments:
             - refresh <bool>: if True, permission set will be reloaded if it
                 has been loaded before
         """
         if not hasattr(self.obj, "grainy_permissions"):
+            if isinstance(self.obj, AnonymousUser):
+                #Permission for AnonymousUser instance are loaded from
+                #settigns
+                if not self.loaded or refresh:
+                    self.pset = PermissionSet(ANONYMOUS_PERMS)
+                    self.loaded = True
             return
 
         if not self.loaded or refresh:
@@ -63,6 +75,7 @@ class Permissions(object):
                     self.pset.update(
                         group.grainy_permissions.permission_set().permissions
                     )
+            self.loaded = True
 
     def check(self, target, permissions, explicit=False):
         """
