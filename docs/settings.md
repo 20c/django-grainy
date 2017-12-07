@@ -4,6 +4,21 @@ If true the forms for vanilla django permissions will be removed from the admin 
 
 **default**: True
 
+## GRAINY_ANONYMOUS_PERMS
+
+Allows you to specify a set of permissions for AnonymousUser instances.
+
+```py
+GRAINY_ANONYMOUS_PERMS = {
+  "a.b.c" : grainy.const.PERM_READ
+}
+```
+
+**default**
+```py
+GRAINY_ANONYMOUS_PERMS = {}
+```
+
 ## GRAINY_DJANGO_OP_TO_FLAG
 
 ```dict``` used to convert a django admin operation to a grainy permission flag
