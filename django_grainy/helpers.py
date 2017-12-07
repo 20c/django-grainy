@@ -1,6 +1,7 @@
 import six
 from .conf import (
     PERM_CHOICES,
+    REQUEST_METHOD_TO_FLAG,
     DJANGO_OP_TO_FLAG
 )
 
@@ -16,6 +17,33 @@ def dict_get_namespace(data, namespace):
         path.append(k)
         d = d[k]
     return d
+
+
+def request_to_flag(request):
+    """
+    Returns the appropriate grainy permission flag for the request
+    depending on the request's method.
+
+    Arguments:
+        - request <Request>: django request object
+
+    Returns:
+        - int
+    """
+    return request_method_to_flag(request.method)
+
+def request_method_to_flag(method):
+    """
+    Converts a request method to the matching grainy permission
+    flag
+
+    Arguments:
+        - method <str>: request method 'GET', 'POST' etc.
+
+    Returns:
+        - int
+    """
+    return REQUEST_METHOD_TO_FLAG.get(method.upper(), 0)
 
 def django_op_to_flag(op):
     """
