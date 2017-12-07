@@ -6,10 +6,8 @@ from grainy.core import (
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, AnonymousUser
 
-from .models import (
-    namespace,
-)
 from .helpers import (
+    namespace,
     int_flags,
     str_flags
 )

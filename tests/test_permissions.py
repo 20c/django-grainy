@@ -60,6 +60,12 @@ class TestPermissions(UserTestCase):
             cls.EXPECTED_PERMISSIONS_A
         )
 
+        cls.users["user_b"].grainy_permissions.add_permission_set(
+            {
+                "x.y.z" : "r"
+            }
+        )
+
         cls.groups["group_a"].grainy_permissions.add_permission_set(
             cls.GROUP_PERMISSIONS_A
         )
@@ -105,6 +111,10 @@ class TestPermissions(UserTestCase):
         self.assertTrue(perms.check(ModelB(), PERM_UPDATE))
         self.assertTrue(perms.check("secret.group", PERM_READ))
         self.assertFalse(perms.check("secret", PERM_READ))
+
+        perms = Permissions(self.users["user_b"])
+        self.assertTrue(perms.check("x.y.z", PERM_READ))
+        self.assertFalse(perms.check("x.y.z", PERM_UPDATE))
 
 
     def test_anonymous_permissions(self):

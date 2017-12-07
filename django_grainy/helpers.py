@@ -1,9 +1,42 @@
 import six
+import inspect
 from .conf import (
     PERM_CHOICES,
     REQUEST_METHOD_TO_FLAG,
     DJANGO_OP_TO_FLAG
 )
+
+def namespace(target):
+
+    """
+    Convert `target` to permissioning namespace
+
+    Arguments:
+        - target <object|class|string>: if an object or class is passed here it 
+            will be required to contain a `Grainy` meta class, otherwise a 
+            TypeError will be raised.
+
+    Returns:
+        - string
+    """
+
+    if not target:
+        return ""
+
+    handler_class = getattr(target, "Grainy", None)
+
+    if inspect.isclass(handler_class):
+        if inspect.isclass(target):
+            return target.Grainy.namespace()
+        return target.Grainy.namespace(instance=target)
+
+
+    if isinstance(target, six.string_types):
+        return target
+
+    raise TypeError("`target` {} could not be convered to a permissioning namespace".format(target))
+
+
 
 def dict_get_namespace(data, namespace):
     d = data

@@ -14,37 +14,10 @@ from grainy.core import PermissionSet
 
 from .fields import PermissionField
 from .conf import PERM_CHOICES
-
-def namespace(target):
-
-    """
-    Convert `target` to permissioning namespace
-
-    Arguments:
-        - target <object|class|string>: if an object or class is passed here it 
-            will be required to contain a `Grainy` meta class, otherwise a 
-            TypeError will be raised.
-
-    Returns:
-        - string
-    """
-
-    if not target:
-        return ""
-
-    handler_class = getattr(target, "Grainy", None)
-
-    if inspect.isclass(handler_class) and issubclass(handler_class, GrainyHandler):
-        if inspect.isclass(target):
-            return target.Grainy.namespace()
-        return target.Grainy.namespace(instance=target)
-
-
-    if isinstance(target, six.string_types):
-        return target
-
-    raise TypeError("`target` {} could not be convered to a permissioning namespace".format(target))
-
+from .helpers import (
+    namespace,
+    int_flags
+)
 
 
 class PermissionQuerySet(models.QuerySet):
@@ -80,10 +53,14 @@ class PermissionManager(models.Manager):
         Add all permissions specified in a PermissionSet
 
         Arguments:
-            - pset <grainy.PermissionSet>
+            - pset <grainy.PermissionSet|dict>: if passed as `dict` permission
+                values may be passed as string flags
         """
 
         _pset = self.permission_set()
+
+        if not isinstance(pset, PermissionSet) and isinstance(pset, dict):
+            pset = PermissionSet({ns:int_flags(f) for ns,f in pset.items()})
 
         for namespace, permission in pset.permissions.items():
             _pset[namespace] = permission
@@ -102,7 +79,6 @@ class PermissionManager(models.Manager):
             - target <object|class|str>
             - permission <str|int>: permission flags
         """
-        from .util import namespace, int_flags
 
         self.update_or_create(
             namespace = namespace(target),
