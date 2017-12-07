@@ -19,6 +19,9 @@ REQUEST_METHOD_TO_FLAG = getattr(settings, "GRAINY_REQUEST_METHOD_TO_FLAG", {
     "DELETE" : grainy.const.PERM_DELETE,
 })
 
+ANONYMOUS_PERMS = getattr(settings, "GRAINY_ANONYMOUS_PERMS", {
+})
+
 PERM_CHOICES = getattr(settings, "GRAINY_PERM_CHOICES", PERM_CHOICES_CRUD)
 PERM_CHOICES_FOR_FIELD = [(n,v) for n,v,c in PERM_CHOICES]
 
