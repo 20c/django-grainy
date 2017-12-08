@@ -10,7 +10,7 @@ from django.contrib.auth.models import Group
 from django.utils.translation import ugettext_lazy as _
 
 from grainy.const import PERM_READ
-from grainy.core import PermissionSet
+from grainy.core import PermissionSet, Namespace
 
 from .fields import PermissionField
 from .conf import PERM_CHOICES
@@ -139,13 +139,63 @@ class GroupPermission(Permission):
 
 
 class GrainyHandler(object):
-
     """
-    The base class to use for the Grainy Meta class to put inside
-    Models that you want to use grainy permissions on
+    The base class to use for the Grainy Meta class
     """
 
-    # the model handled
+    parent = None
+    namespace_base = None
+
+    @classmethod
+    def namespace_instance(cls, instance):
+        """
+        Returns the permissioning namespace for the passed instance
+
+        Arguments:
+            - instance <object|str|Namespace>: the value of this will be appended
+                to the base namespace and returned
+
+        Returns:
+            - unicode: namespace
+        """
+
+        if not isinstance(cls.namespace_base, Namespace):
+            raise ValueError("`namespace_base` needs to be a Namespace instance")
+
+        return u"{}".format(cls.namespace_base + Namespace(str(instance))).lower()
+
+    @classmethod
+    def namespace(cls, instance=None):
+        """
+        Wrapper function to return either the result of namespace_base or 
+        namespace instance depending on whether or not a value was passed in
+        `instance`
+
+        Keyword Arguments:
+            - instance <object|str|Namespace>: the value of this will be appended
+        Returns:
+            - unicode
+        """
+        if instance:
+            return cls.namespace_instance(instance)
+        return u"{}".format(cls.namespace_base).lower()
+
+    @classmethod
+    def set_namespace_base(cls, value):
+        if not isinstance(value, Namespace):
+            raise TypeError("`value` needs to be a Namespace instance")
+        cls.namespace_base = value
+
+    @classmethod
+    def set_parent(cls, parent):
+        cls.parent = parent
+
+class GrainyModelHandler(GrainyHandler):
+
+    """
+    grainy model handler meta class
+    """
+
     model = None
 
     @classmethod
@@ -155,44 +205,24 @@ class GrainyHandler(object):
         passed.
 
         Arguments:
-            - instance (models.Model): model instance
+            - instance <models.Model>: model instance
 
         Returns:
             - unicode
         """
-        return u"{}.{}".format(
-            cls.namespace_model(),
+        return GrainyHandler.namespace_instance.__func__(
+            cls,
             instance.id
-        ).lower()
+        )
 
     @classmethod
-    def namespace_model(cls):
-        """
-        Returns the permissioning namespace for the model specified
-        in cls.model
-
-        Returns:
-            - unicode
-        """
-        return u"{}.{}".format(
-            cls.model._meta.app_label,
-            cls.model._meta.object_name
-        ).lower()
-
-    @classmethod
-    def namespace(cls, instance=None):
-        """
-        Returns the permissioning namespace of the model class mangaged
-        by this handler, or an instance of said model if it is specified.
-
-        Keyword Arguments:
-            - instance <models.Model>: model instance, if specified 
-                the permissioning namespace returned will be fore this instance.
-
-        Returns:
-            - unicode
-        """
-        if instance:
-            return cls.namespace_instance(instance)
-        return cls.namespace_model()
+    def set_parent(cls, model):
+        cls.parent = model
+        cls.model = model
+        cls.set_namespace_base(
+            Namespace([
+                model._meta.app_label,
+                model._meta.object_name
+            ])
+        )
 

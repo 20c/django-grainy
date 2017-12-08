@@ -8,7 +8,11 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.serializers.json import DjangoJSONEncoder
 
 from grainy.core import Namespace
-from .models import GrainyHandler as _GrainyHandler
+
+from .models import (
+    GrainyHandler,
+    GrainyModelHandler
+)
 from .util import Permissions
 from .exceptions import (
     DecoratorRequiresNamespace,
@@ -30,6 +34,8 @@ class grainy_decorator(object):
         - handlers <dict>: grainy applicator handlers
     """
 
+    handler_class = GrainyHandler
+
     # if true, this decorator cannot have a None namespace
     require_namespace = False
 
@@ -39,23 +45,18 @@ class grainy_decorator(object):
         if self.require_namespace and not namespace:
             raise DecoratorRequiresNamespace(self)
 
-    def make_grainy_handler(self, model):
-        class Grainy(_GrainyHandler):
+    def make_grainy_handler(self, target):
+        class Grainy(self.handler_class):
             pass
-        Grainy.model = model
+        Grainy.set_parent(target)
 
-        if not model and not self.namespace:
+        if not target and not self.namespace:
             raise DecoratorRequiresNamespace(self)
 
         if self.namespace is not None:
-            namespace = self.namespace
-
-            @classmethod
-            def namespace_model(cls):
-                return namespace.lower()
-            Grainy.namespace_model = namespace_model
+            namespace = Namespace(self.namespace)
+            Grainy.set_namespace_base(namespace)
         return Grainy
-
 
 
 class grainy_model(grainy_decorator):
@@ -63,6 +64,8 @@ class grainy_model(grainy_decorator):
     """
     Initialize grainy permissions for the targeted model
     """
+
+    handler_class = GrainyModelHandler
 
     def __call__(self, model):
         model.Grainy = self.make_grainy_handler(model)
