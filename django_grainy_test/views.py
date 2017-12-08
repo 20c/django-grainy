@@ -7,8 +7,9 @@ from django.views import View as BaseView
 
 from rest_framework import viewsets
 from django_grainy.decorators import (
+    grainy_view,
+    grainy_json_view,
     grainy_rest_viewset,
-    grainy_view
 )
 
 from .models import ModelA
@@ -47,3 +48,18 @@ class View(BaseView):
     def patch(self, request):
         return HttpResponse(content="PATCH Response")
 
+@grainy_json_view(
+    namespace="site.view",
+    handlers = {
+        "nested_dict.secret" : { "explicit" : True }
+    }
+)
+class JsonView(BaseView):
+    def get(self, request):
+        return JsonResponse({
+            "hello" : "world",
+            "nested_dict" : {
+                "public": "something",
+                "secret": "hidden"
+            }
+        })
