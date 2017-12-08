@@ -229,7 +229,7 @@ class grainy_json_view(grainy_view):
         response.content = JsonResponse(
             self._apply_perms(
                 request, json.loads(
-                    response.content,
+                    response.content.decode("utf-8"),
                     cls = self.extra.get("decoder")
                 ), view
             ),
