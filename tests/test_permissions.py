@@ -1,3 +1,5 @@
+import json
+
 from .util import UserTestCase
 from django.test import RequestFactory
 from django.test.utils import override_settings
@@ -20,7 +22,8 @@ from django_grainy_test.models import (
 
 from django_grainy_test.views import (
     View,
-    view
+    view,
+    JsonView
 )
 
 from django_grainy.util import (
@@ -44,7 +47,7 @@ class TestPermissions(UserTestCase):
         ModelA.Grainy.namespace() : PERM_READ,
         ModelB.Grainy.namespace() : PERM_READ | PERM_UPDATE,
         view.Grainy.namespace() : PERM_READ,
-        View.Grainy.namespace() : PERM_READ | PERM_CREATE | PERM_UPDATE | PERM_DELETE
+        View.Grainy.namespace() : PERM_READ | PERM_CREATE | PERM_UPDATE | PERM_DELETE,
     })
 
     GROUP_PERMISSIONS_A = PermissionSet({
@@ -63,6 +66,13 @@ class TestPermissions(UserTestCase):
         cls.users["user_b"].grainy_permissions.add_permission_set(
             {
                 "x.y.z" : "r"
+            }
+        )
+
+        cls.users["user_c"].grainy_permissions.add_permission_set(
+            {
+                JsonView.Grainy.namespace(): "r",
+                JsonView.Grainy.namespace("nested_dict.secret"): "r"
             }
         )
 
@@ -158,9 +168,28 @@ class TestPermissions(UserTestCase):
 
 
 
+    def test_grainy_json_view(self):
+        """
+        test grainy_json_view decorator
+        """
 
+        factory = RequestFactory()
 
+        request = factory.get("/view_class_json/")
+        request.user = self.users["user_a"]
+        response = JsonView.as_view()(request)
+        self.assertEqual(response.status_code, 200)
 
+        self.assertEqual(
+            json.loads(response.content.decode("utf-8")),
+            {"hello": "world", "nested_dict": {"public": "something"}}
+        )
 
-
-
+        request = factory.get("/view_class_json/")
+        request.user = self.users["user_c"]
+        response = JsonView().dispatch(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.content.decode("utf-8")),
+            {"hello": "world", "nested_dict": {"secret": "hidden", "public": "something"}}
+        )
