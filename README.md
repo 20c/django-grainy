@@ -13,5 +13,5 @@ Granular permissions for django
 
 ## Documentation
 
-**stable**: http://django-grainy.readthedocs.io/en/stable/
-**latest**: http://django-grainy.readthedocs.io/en/latest/
+- **stable**: http://django-grainy.readthedocs.io/en/stable/
+- **latest**: http://django-grainy.readthedocs.io/en/latest/
