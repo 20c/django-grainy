@@ -13,3 +13,6 @@ perms.check(TestModelA, "r") # True
 
 # check user permission on instance
 perms.check(instance, "r") # True
+
+# check permissions to the name field
+perms.check( (instance, "name"), "r")

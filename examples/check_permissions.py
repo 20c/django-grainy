@@ -21,3 +21,9 @@ perms.check("a.b.c", "r") # True
 perms.check("a.b.c.d", "r") # True
 perms.check("a.b.c.d", "ru") # False
 perms.check("x.y.z", "r") # False
+
+# The `explicit` option allows us to require that excplicit
+# permissions need to exist for a check to succeed, meaning
+# having permissions to `a.b.c` will not grant permissions
+# to `a.b.c.d` if `explicit`=True
+perms.check("a.b.c.d", "r", explicit=True) # False
