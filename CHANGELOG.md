@@ -3,6 +3,7 @@
 
 ## [Unreleased]
 ### Added
+- Passing a `tuple` or `list` to `helpers.namespace` will now return a joint namespace of all contained elements
 ### Fixed
 ### Changed
 ### Deprecated

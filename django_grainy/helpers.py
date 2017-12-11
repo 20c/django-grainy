@@ -1,5 +1,8 @@
 import six
 import inspect
+from grainy.core import (
+    Namespace,
+)
 from .conf import (
     PERM_CHOICES,
     REQUEST_METHOD_TO_FLAG,
@@ -12,16 +15,26 @@ def namespace(target):
     Convert `target` to permissioning namespace
 
     Arguments:
-        - target <object|class|string>: if an object or class is passed here it 
+        - target <object|class|string|tuple>: if an object or class is passed here it 
             will be required to contain a `Grainy` meta class, otherwise a 
             TypeError will be raised.
 
+            If a tuple is passed all elements of the tuple will be passed to
+            the namespace function individually and the resulting namespaces will
+            be joined together and returned as one namespace string
+
     Returns:
-        - string
+        - string 
     """
 
     if not target:
         return ""
+
+    if isinstance(target, tuple) or isinstance(target, list):
+        result = []
+        for _t in target:
+            result.append(namespace(_t))
+        return str(Namespace(result))
 
     handler_class = getattr(target, "Grainy", None)
 

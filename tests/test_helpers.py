@@ -10,13 +10,33 @@ from grainy.const import (
     PERM_CREATE
 )
 from django_grainy.helpers import (
+    namespace,
     int_flags,
     str_flags,
     dict_get_namespace,
     request_to_flag,
 )
 
+from django_grainy_test.models import(
+    ModelA
+)
+
 class TestHelpers(TestCase):
+
+    def test_namespace(self):
+        """
+        test django_grainy.util.namespace
+        """
+
+        self.assertEqual(namespace(ModelA), "django_grainy_test.modela")
+        self.assertEqual(namespace(ModelA()), "django_grainy_test.modela.none")
+        self.assertEqual(namespace("a.b.c"), "a.b.c")
+        self.assertEqual(namespace(None), "")
+        with self.assertRaises(TypeError):
+            namespace(object())
+
+        self.assertEqual(namespace( (ModelA, "name") ), "django_grainy_test.modela.name")
+        self.assertEqual(namespace( (ModelA(), "name") ), "django_grainy_test.modela.none.name")
 
 
     def test_request_to_flag(self):

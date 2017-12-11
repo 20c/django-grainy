@@ -80,18 +80,6 @@ class TestPermissions(UserTestCase):
             cls.GROUP_PERMISSIONS_A
         )
 
-    def test_namespace(self):
-        """
-        test django_grainy.util.namespace
-        """
-
-        self.assertEqual(namespace(ModelA), "django_grainy_test.modela")
-        self.assertEqual(namespace(ModelA()), "django_grainy_test.modela.none")
-        self.assertEqual(namespace("a.b.c"), "a.b.c")
-        self.assertEqual(namespace(None), "")
-        with self.assertRaises(TypeError):
-            namespace(object())
-
     def test_permissions_init(self):
         """
         test django.grainy.util.Permissions.__init__
