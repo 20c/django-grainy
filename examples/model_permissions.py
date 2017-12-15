@@ -21,4 +21,4 @@ perms.check( (instance, "name"), "r")
 instances = perms.instances(TestModelA, "r")
 
 # this could also take a queryset
-instances = perms.instances(TestModelA.filter(id__gt=10), "r")
+instances = perms.instances(TestModelA.objects.filter(id__gt=10), "r")
