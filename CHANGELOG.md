@@ -4,6 +4,7 @@
 ## [Unreleased]
 ### Added
 - Passing a `tuple` or `list` to `helpers.namespace` will now return a joint namespace of all contained elements
+- Implemented `util.Permissions.instances` method to retrieve all instances of a model according to permissions
 ### Fixed
 ### Changed
 ### Deprecated
