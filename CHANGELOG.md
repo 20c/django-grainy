@@ -3,13 +3,19 @@
 
 ## [Unreleased]
 ### Added
-- Passing a `tuple` or `list` to `helpers.namespace` will now return a joint namespace of all contained elements
-- Implemented `util.Permissions.instances` method to retrieve all instances of a model according to permissions
 ### Fixed
 ### Changed
 ### Deprecated
 ### Removed
 ### Security
+
+## 1.1.0
+
+### Added
+
+- Passing a `tuple` or `list` to `helpers.namespace` will now return a joint namespace of all contained elements
+- Implemented `util.Permissions.instances` method to retrieve all instances of a model according to permissions
+- `decorators.grainy_view` decorator can now use url parameters to format it s namespace
 
 ## 1.0.0
 
