@@ -3,6 +3,7 @@ from grainy.core import (
     Applicator
 )
 
+from django.db.models import QuerySet
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, AnonymousUser
 
@@ -111,7 +112,38 @@ class Permissions(object):
         return self.pset.get_permission(namespace(target))
 
     def apply(self, data):
+        """
+        Applies permissions to the specified data, removing all content that
+        is not permissioned on a READ level
+
+        Arguments:
+            - data <dict>
+        
+        Returns:
+            - dict: sanitized data
+        """
         if self.grant_all:
             return data
         self.applicator.pset = self.pset
         return self.pset.apply(data, applicator=self.applicator)
+
+    def instances(self, model, permissions):
+        """
+        Return a list of all instances of the specified model that
+        are permissioned at the specified level
+
+        Arguments:
+            - model <Model|QuerySet>
+            - permissions <str|int>: permission flag(s)
+
+        Returns:
+            - list: model instances
+        """
+
+        if isinstance(model, QuerySet):
+            q = model
+        else:
+            q = model.objects.all()
+
+        return [instance for instance in q if self.check(instance, permissions)]
+

@@ -181,3 +181,33 @@ class TestPermissions(UserTestCase):
             json.loads(response.content.decode("utf-8")),
             {"hello": "world", "nested_dict": {"secret": "hidden", "public": "something"}}
         )
+
+    def test_permissions_instances(self):
+        """
+        test util.Permissions.instances
+        """
+
+        perms_a = Permissions(self.users["user_a"])
+        perms_b = Permissions(self.users["user_b"])
+
+        for i in range(1,4):
+            ModelA.objects.create(name="Test {}".format(i))
+
+        # user a should have read to all 3 instances of model a
+        instances = perms_a.instances(ModelA, "r")
+        self.assertEqual(len(instances), 3)
+
+        # user b should not have any
+        instances = perms_b.instances(ModelA, "r")
+        self.assertEqual(len(instances), 0)
+
+        # deny user a permissions to first instance of model a
+        # and reload permissions util
+        self.users["user_a"].grainy_permissions.add_permission(ModelA.objects.first(), 0)
+        perms_a.load(refresh=True)
+
+        # user a should now have read access to 2 instances of model a
+        instances = perms_a.instances(ModelA, "r")
+        self.assertEqual(len(instances), 2)
+
+

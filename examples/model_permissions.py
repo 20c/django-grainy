@@ -16,3 +16,6 @@ perms.check(instance, "r") # True
 
 # check permissions to the name field
 perms.check( (instance, "name"), "r")
+
+# return all instances of the model according to permissions
+instances = perms.instances(TestModelA, "r")
