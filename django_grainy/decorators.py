@@ -118,7 +118,7 @@ class grainy_view(grainy_decorator):
                         self
                     )
 
-                def gate(self, request):
+                def gate(self, request, *args, **kwargs):
 
                     """
                     Gates the request behind grainy permissions depending
@@ -126,8 +126,9 @@ class grainy_view(grainy_decorator):
                     """
 
                     perms = Permissions(request.user)
+
                     if not perms.check(
-                        self.Grainy.namespace(get_object(self)),
+                        self.Grainy.namespace(get_object(self)).format(**kwargs),
                         request_to_flag(request)
                     ):
                         return HttpResponse(status=403)
@@ -141,7 +142,7 @@ class grainy_view(grainy_decorator):
 
             for n in self.response_handlers:
                 def _response(_self, request, handler_name=n, *args, **kwargs):
-                    gated_response = _self.gate(request)
+                    gated_response = _self.gate(request, *args, **kwargs)
                     if gated_response:
                         return gated_response
                     fn = getattr(super(GrainyView, _self), handler_name.lower(), None)
@@ -160,7 +161,7 @@ class grainy_view(grainy_decorator):
             def grainy_view(request, *args, **kwargs):
                 perms = Permissions(request.user)
                 if not perms.check(
-                    view.Grainy.namespace(get_object(view)),
+                    view.Grainy.namespace(get_object(view)).format(**kwargs),
                     request_to_flag(request)
                 ):
                     return HttpResponse(status=403)

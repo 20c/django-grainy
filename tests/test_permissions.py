@@ -1,7 +1,7 @@
 import json
 
 from .util import UserTestCase
-from django.test import RequestFactory
+from django.test import Client, RequestFactory
 from django.test.utils import override_settings
 from django.db import models
 from django.contrib.auth.models import AnonymousUser
@@ -23,6 +23,8 @@ from django_grainy_test.models import (
 from django_grainy_test.views import (
     View,
     view,
+    detail,
+    Detail,
     JsonView
 )
 
@@ -48,6 +50,7 @@ class TestPermissions(UserTestCase):
         ModelB.Grainy.namespace() : PERM_READ | PERM_UPDATE,
         view.Grainy.namespace() : PERM_READ,
         View.Grainy.namespace() : PERM_READ | PERM_CREATE | PERM_UPDATE | PERM_DELETE,
+        "detail.1" : PERM_READ | PERM_CREATE | PERM_UPDATE | PERM_DELETE
     })
 
     GROUP_PERMISSIONS_A = PermissionSet({
@@ -153,6 +156,29 @@ class TestPermissions(UserTestCase):
             request.user = self.users["user_b"]
             response = View().dispatch(request)
             self.assertEqual(response.status_code, 403)
+
+        # test namespace formatting from request param
+
+        client = Client()
+        client.login(username="user_a", password="user_a")
+
+        response = client.get("/detail/1/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.decode("utf-8"), "ID 1")
+
+        response = client.get("/detail/2/")
+        self.assertEqual(response.status_code, 403)
+
+        for method in ["get","post","delete","put","patch"]:
+            response = getattr(client, method)("/detail_class/1/")
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.content.decode("utf-8"), "{} Response 1".format(method.upper()))
+
+            response = getattr(client, method)("/detail_class/2/")
+            self.assertEqual(response.status_code, 403)
+
+
+
 
 
 

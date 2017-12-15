@@ -30,3 +30,8 @@ class View(BaseView):
     def delete(self, request):
         return HttpResponse()
 
+
+# grainy view with formatted namespace
+@grainy_view(namespace="detail.{id}")
+def detail_view(request, id):
+    return HttpResponse()

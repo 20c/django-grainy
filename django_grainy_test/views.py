@@ -31,6 +31,12 @@ class ModelAViewSet(viewsets.ModelViewSet):
 def view(request):
     return HttpResponse()
 
+@grainy_view(namespace="detail.{id}")
+def detail(request, id):
+    from django.urls import resolve
+    print(resolve(request.path))
+    return HttpResponse("ID {}".format(id))
+
 @grainy_view(namespace="site.view")
 class View(BaseView):
     def get(self, request):
@@ -47,6 +53,25 @@ class View(BaseView):
 
     def patch(self, request):
         return HttpResponse(content="PATCH Response")
+
+@grainy_view(namespace="detail.{id}")
+class Detail(BaseView):
+
+    def get(self, request, id):
+        return HttpResponse(content="GET Response {}".format(id))
+
+    def post(self, request, id):
+        return HttpResponse(content="POST Response {}".format(id))
+
+    def put(self, request, id):
+        return HttpResponse(content="PUT Response {}".format(id))
+
+    def delete(self, request, id):
+        return HttpResponse(content="DELETE Response {}".format(id))
+
+    def patch(self, request, id):
+        return HttpResponse(content="PATCH Response {}".format(id))
+
 
 @grainy_json_view(
     namespace="site.view",

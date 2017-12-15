@@ -4,7 +4,9 @@ from .views import (
     ModelAViewSet,
     JsonView,
     View,
-    view
+    view,
+    Detail,
+    detail
 )
 
 router = routers.DefaultRouter()
@@ -13,6 +15,8 @@ router.register(r'a', ModelAViewSet)
 
 urlpatterns = [
     url(r'^view/', view),
+    url(r'^detail/(?P<id>[0-9]+)/$', detail),
+    url(r'^detail_class/(?P<id>[0-9]+)/$', Detail.as_view()),
     url(r'^view_class/', View.as_view()),
     url(r'^view_class_json/', JsonView.as_view()),
     url(r'^', include(router.urls)),
