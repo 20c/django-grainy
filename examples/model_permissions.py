@@ -19,3 +19,6 @@ perms.check( (instance, "name"), "r")
 
 # return all instances of the model according to permissions
 instances = perms.instances(TestModelA, "r")
+
+# this could also take a queryset
+instances = perms.instances(TestModelA.filter(id__gt=10), "r")
