@@ -9,6 +9,12 @@
 ### Removed
 ### Security
 
+## 1.2.1
+
+### Fixed
+
+- Template files not being installed
+
 ## 1.2.0
 
 ### Added
