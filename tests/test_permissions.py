@@ -117,6 +117,10 @@ class TestPermissions(UserTestCase):
         self.assertTrue(perms.check("x.y.z", PERM_READ))
         self.assertFalse(perms.check("x.y.z", PERM_UPDATE))
 
+        perms = Permissions(self.users["user_admin_a"])
+        self.assertTrue(perms.check("x.y.z", PERM_READ))
+        self.assertFalse(perms.check("x.y.z", PERM_READ, ignore_grant_all=True))
+
 
     def test_anonymous_permissions(self):
         user = AnonymousUser()
@@ -215,13 +219,30 @@ class TestPermissions(UserTestCase):
 
         perms_a = Permissions(self.users["user_a"])
         perms_b = Permissions(self.users["user_b"])
+        perms_admin = Permissions(self.users["user_admin_a"])
 
         for i in range(1,4):
             ModelA.objects.create(name="Test {}".format(i))
 
         # user a should have read to all 3 instances of model a
+        # through implicit permissions
         instances = perms_a.instances(ModelA, "r")
         self.assertEqual(len(instances), 3)
+
+        # user as should have read to to 0 instances of model a
+        # through explicit permissions
+        instances = perms_a.instances(ModelA, "r", explicit=True)
+        self.assertEqual(len(instances), 0)
+
+        # add user a permission to first isntance of model a
+        # and reload permissions util
+        self.users["user_a"].grainy_permissions.add_permission(ModelA.objects.first(), "r")
+        perms_a.load(refresh=True)
+
+        # user a should now habe read to 1 instances of model a
+        # through explicit permissions
+        instances = perms_a.instances(ModelA, "r", explicit=True)
+        self.assertEqual(len(instances), 1)
 
         # user b should not have any
         instances = perms_b.instances(ModelA, "r")
@@ -235,5 +256,15 @@ class TestPermissions(UserTestCase):
         # user a should now have read access to 2 instances of model a
         instances = perms_a.instances(ModelA, "r")
         self.assertEqual(len(instances), 2)
+
+        # admin user should have read to all 3 instances of model a
+        # through grant all
+        instances = perms_admin.instances(ModelA, "r")
+        self.assertEqual(len(instances), 3)
+
+        # admin user should have read to 0 instances of model
+        # when ignoring grant all
+        instances = perms_admin.instances(ModelA, "r", ignore_grant_all=True)
+        self.assertEqual(len(instances), 0)
 
 

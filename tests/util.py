@@ -4,6 +4,7 @@ from django.contrib.auth.models import Group
 
 class UserTestCase(TestCase):
     setup_users = ["user_a", "user_b", "user_c"]
+    setup_admins = ["user_admin_a"]
     setup_groups = {
         "group_a" : ["user_a"],
         "group_b" : ["user_b"],
@@ -16,6 +17,13 @@ class UserTestCase(TestCase):
             (k, get_user_model().objects.create_user(k, "{}@example.com".format(k), password=k))
             for k in cls.setup_users
         ])
+
+        # create admin users
+        cls.users.update(dict([
+            (k, get_user_model().objects.create_user(k, "{}@example.com".format(k), password=k, is_staff=True, is_superuser=True))
+            for k in cls.setup_admins
+        ]))
+
 
         # create usergroups
         cls.groups = dict([

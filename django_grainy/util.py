@@ -76,7 +76,7 @@ class Permissions(object):
                     )
             self.loaded = True
 
-    def check(self, target, permissions, explicit=False):
+    def check(self, target, permissions, explicit=False, ignore_grant_all=False):
         """
         Check permissions for the specified target
 
@@ -87,8 +87,11 @@ class Permissions(object):
         Keyword Arguments:
             - explicit <bool>: require explicit permissions to the complete target
                 namespsace
+            - ignore_grant_all <bool>: if True the `grant_all` property will be ignored
+                during permission checks. If false, users with the `superuser` status will
+                automatically pass all the permission checks.
         """
-        if self.grant_all:
+        if self.grant_all and not ignore_grant_all:
             return True
         return self.pset.check(namespace(target), int_flags(permissions), explicit=explicit)
 
@@ -127,7 +130,7 @@ class Permissions(object):
         self.applicator.pset = self.pset
         return self.pset.apply(data, applicator=self.applicator)
 
-    def instances(self, model, permissions):
+    def instances(self, model, permissions, explicit=False, ignore_grant_all=False):
         """
         Return a list of all instances of the specified model that
         are permissioned at the specified level
@@ -135,6 +138,13 @@ class Permissions(object):
         Arguments:
             - model <Model|QuerySet>
             - permissions <str|int>: permission flag(s)
+
+        Keyword Arguments:
+            - explicit <bool>: require explicit permissions to the complete target
+                namespsace
+            - ignore_grant_all <bool>: if True the `grant_all` property will be ignored
+                during permission checks. If false, users with the `superuser` status will
+                automatically pass all the permission checks.
 
         Returns:
             - list: model instances
@@ -145,5 +155,13 @@ class Permissions(object):
         else:
             q = model.objects.all()
 
-        return [instance for instance in q if self.check(instance, permissions)]
+        return [
+            instance for instance in q
+            if self.check(
+                instance,
+                permissions,
+                explicit=explicit,
+                ignore_grant_all=ignore_grant_all
+            )
+        ]
 
