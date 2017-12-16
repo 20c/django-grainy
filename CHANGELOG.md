@@ -3,16 +3,19 @@
 
 ## [Unreleased]
 ### Added
-
-- Permissions.instances(): add `explicit` keyword argument
-- Permissions.instances(): add `ignore_grant_all` keyword argument
-- Permissions.check(): add `ignore_grant_all` keyword argument
-
 ### Fixed
 ### Changed
 ### Deprecated
 ### Removed
 ### Security
+
+## 1.2.0
+
+### Added
+
+- Permissions.instances(): add `explicit` keyword argument
+- Permissions.instances(): add `ignore_grant_all` keyword argument
+- Permissions.check(): add `ignore_grant_all` keyword argument
 
 ## 1.1.0
 
