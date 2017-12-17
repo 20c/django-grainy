@@ -7,6 +7,9 @@ from django.http import HttpResponse, JsonResponse
 from django.utils.translation import ugettext_lazy as _
 from django.core.serializers.json import DjangoJSONEncoder
 
+from django.views import View
+from django.http import HttpRequest
+
 from grainy.core import Namespace
 
 from .models import (
@@ -77,7 +80,7 @@ class grainy_model(grainy_decorator):
         return model
 
 
-class grainy_view(grainy_decorator):
+class grainy_view_response(grainy_decorator):
 
     """
     Initialize grainy permissions for the targeted view
@@ -94,97 +97,39 @@ class grainy_view(grainy_decorator):
     # needs to be set in decorator
     require_namespace = True
 
-    # the response handlers that will be affected by grainy
-    # permissions
-    response_handlers = [
-        "get",
-        "post",
-        "put",
-        "delete",
-        "patch",
-        "head",
-        "options"
-    ]
+    view = None
 
-    def __call__(self, view):
+    def __call__(self, view_function):
+
         get_object = self.get_object
         apply_perms = self.apply_perms
         extra = self.extra
 
-        if inspect.isclass(view):
+        grainy_handler = self.make_grainy_handler(view_function)
 
-            # handle class views
+        def response_handler(*args, **kwargs):
+            if isinstance(args[0], HttpRequest):
+                self = None
+                request = args[0]
+            else:
+                self = args[0]
+                request = args[1]
 
-            class GrainyView(view):
+            perms = Permissions(request.user)
 
-                def sanitize(self, request, response):
+            if not perms.check(
+                grainy_handler.namespace(get_object(self)).format(**kwargs),
+                request_to_flag(request),
+                explicit=extra.get("explicit", False),
+                ignore_grant_all=extra.get("ignore_grant_all", False)
+            ):
+                return HttpResponse(status=403)
+            return apply_perms(request, view_function(*args, **kwargs), view_function, self)
 
-                    """
-                    Sanitizes the response returned by the request according
-                    to grainy permissions
-                    """
-
-                    return apply_perms(
-                        request,
-                        response,
-                        self
-                    )
-
-                def gate(self, request, *args, **kwargs):
-
-                    """
-                    Gates the request behind grainy permissions depending
-                    on the request.method
-                    """
-
-                    perms = Permissions(request.user)
-
-                    if not perms.check(
-                        self.Grainy.namespace(get_object(self)).format(**kwargs),
-                        request_to_flag(request),
-                        explicit=extra.get("explicit", False),
-                        ignore_grant_all=extra.get("ignore_grant_all", False)
-                    ):
-                        return HttpResponse(status=403)
-                    return None
-
-            GrainyView.__name__ = view.__name__
-            GrainyView.Grainy = self.make_grainy_handler(view)
-
-            # dynamically add response handler methods to the grainy view
-            # class
-
-            for n in self.response_handlers:
-                def _response(_self, request, handler_name=n, *args, **kwargs):
-                    gated_response = _self.gate(request, *args, **kwargs)
-                    if gated_response:
-                        return gated_response
-                    fn = getattr(super(GrainyView, _self), handler_name.lower(), None)
-                    if not fn:
-                        return HttpResponse()
-                    return _self.sanitize(request, fn(request, *args, **kwargs))
-                setattr(GrainyView, n, _response)
-
-            return GrainyView
-
-        else:
-
-            # handle function view
-
-            view.Grainy = self.make_grainy_handler(view)
-            def grainy_view(request, *args, **kwargs):
-                perms = Permissions(request.user)
-                if not perms.check(
-                    view.Grainy.namespace(get_object(view)).format(**kwargs),
-                    request_to_flag(request),
-                    explicit=extra.get("explicit", False),
-                    ignore_grant_all=extra.get("ignore_grant_all", False)
-                ):
-                    return HttpResponse(status=403)
-                return apply_perms(request, view(request, *args, **kwargs), self)
-
-            grainy_view.Grainy = view.Grainy
-            return grainy_view
+        grainy_handler.view = self.extra.get("view")
+        response_handler.Grainy = self.Grainy = grainy_handler
+        response_handler.__name__ = view_function.__name__
+        return response_handler
 
     def get_object(self, view):
         """
@@ -198,7 +143,7 @@ class grainy_view(grainy_decorator):
             return view.get_object()
         return None
 
-    def apply_perms(self, request, response, view):
+    def apply_perms(self, request, response, view_function, view):
         """
         Apply permissions to the generated response
         """
@@ -206,12 +151,12 @@ class grainy_view(grainy_decorator):
 
 
 
-class grainy_json_view(grainy_view):
+class grainy_json_view_response(grainy_view_response):
 
     """
-    A view that will apply grainy permissions to the json data
-    in the generated response, removing any content the requesting
-    user does not have `READ` permissions to
+    A view response handler that will apply grainy permissions to 
+    the json data in the generated response, removing any content the 
+    requesting user does not have `READ` permissions to
 
     Keyword Arguments:
         - decoder: allows you to specify a json decoder class
@@ -220,13 +165,13 @@ class grainy_json_view(grainy_view):
         - json_dumps_params <dict>: passed to DjangoJSONEncoder
     """
 
-    def _apply_perms(self, request, data, view):
+    def _apply_perms(self, request, data, view_function, view):
         perms = Permissions(request.user)
         try:
             obj = self.get_object(view)
         except AssertionError as inst:
             obj = None
-        namespace = Namespace(view.Grainy.namespace(obj))
+        namespace = Namespace(self.Grainy.namespace(obj))
 
         if isinstance(data, list):
             prefix = "{}.*".format(namespace)
@@ -242,13 +187,13 @@ class grainy_json_view(grainy_view):
         except KeyError as inst:
             return {}
 
-    def apply_perms(self, request, response, view):
+    def apply_perms(self, request, response, view_function, view):
         response.content = JsonResponse(
             self._apply_perms(
                 request, json.loads(
                     response.content.decode("utf-8"),
                     cls = self.extra.get("decoder")
-                ), view
+                ), view_function, view
             ),
             encoder = self.extra.get("encoder", DjangoJSONEncoder),
             safe = self.extra.get("safe", True),
@@ -257,11 +202,11 @@ class grainy_json_view(grainy_view):
         return response
 
 
-class grainy_rest_viewset(grainy_json_view):
+class grainy_rest_viewset_response(grainy_json_view_response):
 
     """
     Initialize grainy permissions for the targeted rest 
-    framework viewset.
+    framework viewset response.
 
     This will apply the permissions to the data returned 
     in the viewset response. Any fields that the requesting
@@ -273,6 +218,89 @@ class grainy_rest_viewset(grainy_json_view):
     """
 
     require_namespace = True
+    def get_object(self, view):
+        try:
+            return super(grainy_rest_viewset_response, self).get_object(view)
+        except AssertionError as inst:
+            return None
+
+    def apply_perms(self, request, response, view_function, view):
+        response.data = self._apply_perms(request, response.data, view_function, view)
+        return response
+
+
+class grainy_view(grainy_decorator):
+
+    """
+    Applies `grainy_view_response` decorators to all response
+    handlers in the decorated view.
+
+    Response handlers that already have been made grainy manually
+    or otherwise will be skipped
+    """
+
+    # the response handlers that will be affected by grainy
+    # permissions
+    response_handlers = [
+        "get",
+        "post",
+        "put",
+        "delete",
+        "patch",
+        "head",
+        "options"
+    ]
+
+    decorator = grainy_view_response
+    require_namespace = True
+
+    def __init__(self, *args, **kwargs):
+        self.args = args
+        self.kwargs = kwargs
+        super(grainy_view, self).__init__(*args, **kwargs)
+
+    def __call__(self, view):
+
+        view.Grainy = self.make_grainy_handler(view)
+
+        if inspect.isclass(view):
+            self.kwargs["view"] = view
+            for rh in self.response_handlers:
+                if hasattr(view, rh):
+                    view_function = getattr(view, rh)
+                    if not hasattr(view_function, "Grainy") or view_function.Grainy.view:
+                        setattr(view, rh, self.decorate(view_function))
+                    else:
+                        print(view_function,view_function.Grainy)
+            return view
+        else:
+            return self.decorate(view)
+
+    def decorate(self, view):
+        return self.decorator(*self.args, **self.kwargs)(view)
+
+class grainy_json_view(grainy_view):
+
+    """
+    Applies `grainy_json_view_response` decorators to all response
+    handlers in the decorated view.
+
+    Response handlers that already have been made grainy manually
+    or otherwise will be skipped
+    """
+
+    decorator = grainy_json_view_response
+
+class grainy_rest_viewset(grainy_json_view):
+
+    """
+    Applies `grainy_rest_viewset_response` decorators to all response
+    handlers in the decorated view.
+
+    Response handlers that already have been made grainy manually
+    or otherwise will be skipped
+    """
+
     response_handlers = [
         "list",
         "retrieve",
@@ -282,12 +310,6 @@ class grainy_rest_viewset(grainy_json_view):
         "destroy"
     ]
 
-    def get_object(self, view):
-        try:
-            return super(grainy_rest_viewset, self).get_object(view)
-        except AssertionError as inst:
-            return None
 
-    def apply_perms(self, request, response, view):
-        response.data = self._apply_perms(request, response.data, view)
-        return response
+    decorator = grainy_rest_viewset_response
+

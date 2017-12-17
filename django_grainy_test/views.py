@@ -10,6 +10,7 @@ from django_grainy.decorators import (
     grainy_view,
     grainy_json_view,
     grainy_rest_viewset,
+    grainy_view_response
 )
 
 from .models import ModelA
@@ -82,6 +83,7 @@ class Detail(BaseView):
     def patch(self, request, id):
         return HttpResponse(content="PATCH Response {}".format(id))
 
+
 @grainy_view(
     namespace="detail.{id}",
     explicit=True,
@@ -89,6 +91,17 @@ class Detail(BaseView):
 )
 class DetailExplicit(Detail):
     pass
+
+
+@grainy_view(namespace="detail_manual.{id}")
+class DetailManual(BaseView):
+
+    def get(self, request, id):
+        return HttpResponse(content="GET Response {}".format(id))
+
+    @grainy_view_response(namespace="detail_manual")
+    def post(self, request):
+        return HttpResponse(content="POST Response 1")
 
 
 @grainy_json_view(

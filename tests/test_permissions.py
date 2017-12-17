@@ -50,7 +50,9 @@ class TestPermissions(UserTestCase):
         ModelB.Grainy.namespace() : PERM_READ | PERM_UPDATE,
         view.Grainy.namespace() : PERM_READ,
         View.Grainy.namespace() : PERM_READ | PERM_CREATE | PERM_UPDATE | PERM_DELETE,
-        "detail.1" : PERM_READ | PERM_CREATE | PERM_UPDATE | PERM_DELETE
+        "detail.1" : PERM_READ | PERM_CREATE | PERM_UPDATE | PERM_DELETE,
+        "detail_manual.1" : PERM_READ | PERM_CREATE | PERM_UPDATE | PERM_DELETE,
+        "detail_manual" : PERM_CREATE,
     })
 
     GROUP_PERMISSIONS_A = PermissionSet({
@@ -177,7 +179,7 @@ class TestPermissions(UserTestCase):
             response = getattr(client, method)("/detail_class/2/")
             self.assertEqual(response.status_code, 403)
 
-        # test explicit function view
+        # test explicit view
 
         for username in ["user_c", "user_admin_a"]:
 
@@ -197,6 +199,15 @@ class TestPermissions(UserTestCase):
                 self.assertEqual(response.status_code, 403)
 
 
+
+        # test class manual view
+        response = self.userclient("user_a").get("/detail_class_manual/1/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.decode("utf-8"), "GET Response 1")
+
+        response = self.userclient("user_a").post("/detail_class_manual/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.decode("utf-8"), "POST Response 1")
 
 
 

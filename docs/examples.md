@@ -45,6 +45,29 @@ When a view is made grainy it will automatically check for apropriate permission
 {!examples/grainy_view.py!}
 ```
 
+### Manually decorate view response handlers
+
+The `grainy_view` decorator simply calls the apropriate response decorator on all the response handlers
+in the view.
+
+It follows that
+
+```py
+{!examples/grainy_view_manual_a.py!}
+```
+
+is the same as
+
+```py
+{!examples/grainy_view_manual_b.py!}
+```
+
+You may also use both decorators
+
+```py
+{!examples/grainy_view_manual_c.py!}
+```
+
 ## Rest Framework Integration
 
 Use the grainy_rest_viewset decorator to apply grainy permissions to the output of a django_rest_framework ViewSet. This means any content that the user does not have permission to view will be dropped from the api response.

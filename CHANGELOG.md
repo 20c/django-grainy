@@ -3,8 +3,21 @@
 
 ## [Unreleased]
 ### Added
+
+- implemented `decorators.grainy_view_response`
+- implemented `decorators.grainy_json_view_response`
+- implemented `decorators.grainy_rest_viewset_response`
+
 ### Fixed
 ### Changed
+
+- `decorators.grainy_view` now simply decorates all response handlers
+    with `decorators.grainy_view_response`
+- `decorators.grainy_json_view` now simply decorates all response handlers
+    with `decorators.grainy_json_view_response`
+- `decorators.grainy_rest_viewset` now simply decorates all response handlers
+    with `decorators.grainy_rest_viewset_response`
+
 ### Deprecated
 ### Removed
 ### Security

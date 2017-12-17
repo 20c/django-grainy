@@ -8,7 +8,8 @@ from .views import (
     Detail,
     detail,
     DetailExplicit,
-    detail_explicit
+    detail_explicit,
+    DetailManual
 )
 
 router = routers.DefaultRouter()
@@ -21,6 +22,8 @@ urlpatterns = [
     url(r'^detail_explicit/(?P<id>[0-9]+)/$', detail_explicit),
     url(r'^detail_class/(?P<id>[0-9]+)/$', Detail.as_view()),
     url(r'^detail_class_explicit/(?P<id>[0-9]+)/$', DetailExplicit.as_view()),
+    url(r'^detail_class_manual/(?P<id>[0-9]+)/$', DetailManual.as_view()),
+    url(r'^detail_class_manual/$', DetailManual.as_view()),
     url(r'^view_class/', View.as_view()),
     url(r'^view_class_json/', JsonView.as_view()),
     url(r'^', include(router.urls)),
