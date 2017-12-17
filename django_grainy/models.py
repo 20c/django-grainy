@@ -145,6 +145,7 @@ class GrainyHandler(object):
 
     parent = None
     namespace_base = None
+    namespace_instance_template = u"{namespace}.{instance}"
 
     @classmethod
     def namespace_instance(cls, instance):
@@ -162,7 +163,10 @@ class GrainyHandler(object):
         if not isinstance(cls.namespace_base, Namespace):
             raise ValueError("`namespace_base` needs to be a Namespace instance")
 
-        return u"{}".format(cls.namespace_base + Namespace(str(instance))).lower()
+        return cls.namespace_instance_template.format(
+            namespace=cls.namespace_base,
+            instance=instance
+        ).lower()
 
     @classmethod
     def namespace(cls, instance=None):
@@ -197,23 +201,7 @@ class GrainyModelHandler(GrainyHandler):
     """
 
     model = None
-
-    @classmethod
-    def namespace_instance(cls, instance):
-        """
-        Returns the permissioning namespace for the model instance
-        passed.
-
-        Arguments:
-            - instance <models.Model>: model instance
-
-        Returns:
-            - unicode
-        """
-        return GrainyHandler.namespace_instance.__func__(
-            cls,
-            instance.id
-        )
+    namespace_instance_template = u"{namespace}.{instance.id}"
 
     @classmethod
     def set_parent(cls, model):

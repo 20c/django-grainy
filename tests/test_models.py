@@ -5,7 +5,8 @@ from django_grainy.decorators import grainy_model
 
 from django_grainy_test.models import (
     ModelA,
-    ModelB
+    ModelB,
+    ModelC
 )
 
 from grainy.const import (
@@ -27,4 +28,8 @@ class TestGrainyHandler(UserTestCase):
         self.assertEqual(a.Grainy.namespace(a), "django_grainy_test.modela.{}".format(a.id))
         b = ModelB.objects.create(name="B1")
         self.assertEqual(b.Grainy.namespace(b), "something.arbitrary.{}".format(b.id))
+
+        c = ModelC.objects.create(name="C1",b=b)
+        self.assertEqual(c.Grainy.namespace(), ModelB.Grainy.namespace())
+        self.assertEqual(c.Grainy.namespace(c), "something.arbitrary.2.c.3")
 

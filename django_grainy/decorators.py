@@ -39,8 +39,9 @@ class grainy_decorator(object):
     # if true, this decorator cannot have a None namespace
     require_namespace = False
 
-    def __init__(self, namespace=None, **kwargs):
+    def __init__(self, namespace=None, namespace_instance=None, **kwargs):
         self.namespace = namespace
+        self.namespace_instance = namespace_instance
         self.extra = kwargs
         if self.require_namespace and not namespace:
             raise DecoratorRequiresNamespace(self)
@@ -56,6 +57,10 @@ class grainy_decorator(object):
         if self.namespace is not None:
             namespace = Namespace(self.namespace)
             Grainy.set_namespace_base(namespace)
+
+        if self.namespace_instance is not None:
+            Grainy.namespace_instance_template = self.namespace_instance
+
         return Grainy
 
 

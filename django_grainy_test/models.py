@@ -24,3 +24,10 @@ class ModelA(ModelBase):
 @grainy_model(namespace="something.arbitrary")
 class ModelB(ModelA):
     pass
+
+@grainy_model(
+    namespace=ModelB.Grainy.namespace(),
+    namespace_instance=u"{namespace}.{instance.b.id}.c.{instance.id}"
+)
+class ModelC(ModelA):
+    b = models.ForeignKey(ModelB, related_name="c")
