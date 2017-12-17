@@ -3,15 +3,18 @@
 
 ## [Unreleased]
 ### Added
-
-- grainy_model: allow specifying of custom instance namespace formatting
-- graint_view: impl explicit namespace handing during request gating
-
 ### Fixed
 ### Changed
 ### Deprecated
 ### Removed
 ### Security
+
+## 1.3.0
+
+### Added
+
+- grainy_model: allow specifying of custom instance namespace formatting
+- grainy_view: impl explicit namespace handling during request gating
 
 ## 1.2.1
 
