@@ -135,36 +135,25 @@ class TestPermissions(UserTestCase):
         test grainy_view decorator
         """
 
-        factory = RequestFactory()
         ## test function view
-
-        request = factory.get("/view/")
-        request.user = self.users["user_a"]
-        response = view(request)
+        response = self.userclient("user_a").get("/view/")
         self.assertEqual(response.status_code, 200)
 
-        request = factory.get("/view/")
-        request.user = self.users["user_b"]
-        response = view(request)
+        response = self.userclient("user_b").get("/view/")
         self.assertEqual(response.status_code, 403)
 
         ## test class view
 
         for method in ["POST", "GET", "PUT", "PATCH", "DELETE"]:
-            request = getattr(factory, method.lower())("/view_class/")
-            request.user = self.users["user_a"]
-            response = View().dispatch(request)
+            response = getattr(self.userclient("user_a"), method.lower())("/view_class/")
             self.assertEqual(response.status_code, 200)
 
-            request = getattr(factory, method.lower())("/view_class/")
-            request.user = self.users["user_b"]
-            response = View().dispatch(request)
+            response = getattr(self.userclient("user_b"), method.lower())("/view_class/")
             self.assertEqual(response.status_code, 403)
 
         # test namespace formatting from request param
 
-        client = Client()
-        client.login(username="user_a", password="user_a")
+        client = self.userclient("user_a")
 
         response = client.get("/detail/1/")
         self.assertEqual(response.status_code, 200)

@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 
@@ -10,6 +10,7 @@ class UserTestCase(TestCase):
         "group_b" : ["user_b"],
         "group_c" : ["user_c"]
     }
+
     @classmethod
     def setUpTestData(cls):
         # create users
@@ -36,4 +37,7 @@ class UserTestCase(TestCase):
                 group.user_set.add(cls.users.get(username))
 
 
-
+    def userclient(self, username):
+        client = Client()
+        client.login(username=username, password=username)
+        return client
