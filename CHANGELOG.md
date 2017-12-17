@@ -5,6 +5,7 @@
 ### Added
 
 - grainy_model: allow specifying of custom instance namespace formatting
+- graint_view: impl explicit namespace handing during request gating
 
 ### Fixed
 ### Changed

@@ -74,14 +74,23 @@ class TestPermissions(UserTestCase):
 
         cls.users["user_c"].grainy_permissions.add_permission_set(
             {
+                "detail" : "r",
+                "detail.1" : "crud",
                 JsonView.Grainy.namespace(): "r",
                 JsonView.Grainy.namespace("nested_dict.secret"): "r"
+            }
+        )
+
+        cls.users["user_admin_a"].grainy_permissions.add_permission_set(
+            {
+                "detail.1" : "crud"
             }
         )
 
         cls.groups["group_a"].grainy_permissions.add_permission_set(
             cls.GROUP_PERMISSIONS_A
         )
+
 
     def test_permissions_init(self):
         """
@@ -143,7 +152,6 @@ class TestPermissions(UserTestCase):
         self.assertEqual(response.status_code, 403)
 
         ## test class view
-
         for method in ["POST", "GET", "PUT", "PATCH", "DELETE"]:
             response = getattr(self.userclient("user_a"), method.lower())("/view_class/")
             self.assertEqual(response.status_code, 200)
@@ -152,7 +160,6 @@ class TestPermissions(UserTestCase):
             self.assertEqual(response.status_code, 403)
 
         # test namespace formatting from request param
-
         client = self.userclient("user_a")
 
         response = client.get("/detail/1/")
@@ -170,6 +177,24 @@ class TestPermissions(UserTestCase):
             response = getattr(client, method)("/detail_class/2/")
             self.assertEqual(response.status_code, 403)
 
+        # test explicit function view
+
+        for username in ["user_c", "user_admin_a"]:
+
+            response = self.userclient(username).get("/detail_explicit/1/")
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.content.decode("utf-8"), "ID 1")
+
+            response = self.userclient(username).get("/detail_explicit/2/")
+            self.assertEqual(response.status_code, 403)
+
+            for method in ["get","post","delete","put","patch"]:
+                response = getattr(self.userclient(username), method)("/detail_class_explicit/1/")
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.content.decode("utf-8"), "{} Response 1".format(method.upper()))
+
+                response = getattr(self.userclient(username), method)("/detail_class_explicit/2/")
+                self.assertEqual(response.status_code, 403)
 
 
 

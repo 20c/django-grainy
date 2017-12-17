@@ -27,15 +27,25 @@ class ModelAViewSet(viewsets.ModelViewSet):
     queryset = ModelA.objects.all()
     serializer_class = ModelASerializer
 
+
 @grainy_view(namespace="site.view")
 def view(request):
     return HttpResponse()
 
+
 @grainy_view(namespace="detail.{id}")
 def detail(request, id):
-    from django.urls import resolve
-    print(resolve(request.path))
     return HttpResponse("ID {}".format(id))
+
+
+@grainy_view(
+    namespace="detail.{id}",
+    explicit=True,
+    ignore_grant_all=True
+)
+def detail_explicit(request, id):
+    return HttpResponse("ID {}".format(id))
+
 
 @grainy_view(namespace="site.view")
 class View(BaseView):
@@ -71,6 +81,14 @@ class Detail(BaseView):
 
     def patch(self, request, id):
         return HttpResponse(content="PATCH Response {}".format(id))
+
+@grainy_view(
+    namespace="detail.{id}",
+    explicit=True,
+    ignore_grant_all=True
+)
+class DetailExplicit(Detail):
+    pass
 
 
 @grainy_json_view(

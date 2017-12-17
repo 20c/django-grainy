@@ -81,6 +81,12 @@ class grainy_view(grainy_decorator):
 
     """
     Initialize grainy permissions for the targeted view
+
+    Keyword Arguments:
+        - explicit <bool> - if true, permissions checks during
+            request gating will be explicit (default=False)
+        - ignore_grant_all <bool> - if true, permissions checks during
+            request gating will ignore superuser priviledges (default=False)
     """
 
     # There is no way to make a sensible namespace from
@@ -103,6 +109,7 @@ class grainy_view(grainy_decorator):
     def __call__(self, view):
         get_object = self.get_object
         apply_perms = self.apply_perms
+        extra = self.extra
 
         if inspect.isclass(view):
 
@@ -134,7 +141,9 @@ class grainy_view(grainy_decorator):
 
                     if not perms.check(
                         self.Grainy.namespace(get_object(self)).format(**kwargs),
-                        request_to_flag(request)
+                        request_to_flag(request),
+                        explicit=extra.get("explicit", False),
+                        ignore_grant_all=extra.get("ignore_grant_all", False)
                     ):
                         return HttpResponse(status=403)
                     return None
@@ -167,7 +176,9 @@ class grainy_view(grainy_decorator):
                 perms = Permissions(request.user)
                 if not perms.check(
                     view.Grainy.namespace(get_object(view)).format(**kwargs),
-                    request_to_flag(request)
+                    request_to_flag(request),
+                    explicit=extra.get("explicit", False),
+                    ignore_grant_all=extra.get("ignore_grant_all", False)
                 ):
                     return HttpResponse(status=403)
                 return apply_perms(request, view(request, *args, **kwargs), self)
