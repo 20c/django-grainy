@@ -3,6 +3,9 @@
 
 ## [Unreleased]
 ### Added
+
+- grainy_model: allow specifying of custom instance namespace formatting
+
 ### Fixed
 ### Changed
 ### Deprecated
