@@ -21,6 +21,7 @@ from .exceptions import (
     DecoratorRequiresNamespace,
 )
 from .helpers import (
+    namespace,
     dict_get_namespace,
     request_to_flag
 )
@@ -58,11 +59,10 @@ class grainy_decorator(object):
             raise DecoratorRequiresNamespace(self)
 
         if self.namespace is not None:
-            namespace = Namespace(self.namespace)
-            Grainy.set_namespace_base(namespace)
+            Grainy.set_namespace_base(Namespace(namespace(self.namespace)))
 
         if self.namespace_instance is not None:
-            Grainy.namespace_instance_template = self.namespace_instance
+            Grainy.namespace_instance_template = namespace(self.namespace_instance)
 
         return Grainy
 

@@ -15,6 +15,7 @@
 
 - `decorators.grainy_view` request GET parameters now available for namespace formatting
 - `decorators.grainy_view` get_object() now available as `instance` for base namespace formatting if it exists
+- `decorators.grainy_decorator` decorator namespaces can now be passed as lists in which case the resulting namespace is a joint namespace of all the elements
 
 ### Deprecated
 ### Removed
