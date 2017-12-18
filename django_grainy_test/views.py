@@ -10,6 +10,7 @@ from django_grainy.decorators import (
     grainy_view,
     grainy_json_view,
     grainy_rest_viewset,
+    grainy_rest_viewset_response,
     grainy_view_response
 )
 
@@ -27,6 +28,29 @@ from .serializers import ModelASerializer
 class ModelAViewSet(viewsets.ModelViewSet):
     queryset = ModelA.objects.all()
     serializer_class = ModelASerializer
+
+
+class ExplicitViewSet(viewsets.ModelViewSet):
+    queryset = ModelA.objects.all()
+    serializer_class = ModelASerializer
+
+    @grainy_rest_viewset_response(
+        namespace="api.a_x",
+        namespace_instance="{namespace}.{instance.id}",
+        explicit=True,
+        explicit_object=False
+    )
+    def retrieve(self,*args,**kwargs):
+        return super(ExplicitViewSet, self).retrieve(*args, **kwargs)
+
+    @grainy_rest_viewset_response(
+        namespace="api.a_x",
+        namespace_instance="{namespace}.{instance.id}",
+        explicit=True
+    )
+    def destroy(self,*args,**kwargs):
+        return super(ExplicitViewSet, self).destroy(*args, **kwargs)
+
 
 
 @grainy_view(namespace="site.view")

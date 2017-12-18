@@ -36,7 +36,8 @@ class TestGrainyViewSet(UserTestCase):
 
         cls.users["user_b"].grainy_permissions.add_permission_set(
             PermissionSet({
-                "api" : PERM_READ
+                "api" : PERM_READ,
+                "api.a_x" : PERM_READ
             })
         )
 
@@ -57,6 +58,12 @@ class TestGrainyViewSet(UserTestCase):
         r = client_a.delete("/a/2/", follow=True)
         self.assertEqual(r.status_code, 404)
 
+        r = client_a.get("/a_x/1/")
+        self.assertEqual(r.status_code, 403)
+        r = client_a.delete("/a_x/1/")
+        self.assertEqual(r.status_code, 403)
+
+
         client_b = APIClient()
         client_b.force_authenticate(user=self.users["user_b"])
 
@@ -68,6 +75,13 @@ class TestGrainyViewSet(UserTestCase):
         self.assertEqual(r.status_code, 403)
         r = client_b.delete("/a/1/", follow=True)
         self.assertEqual(r.status_code, 403)
+
+        r = client_b.get("/a_x/1/")
+        self.assertEqual(r.status_code, 200)
+        r = client_b.delete("/a_x/1/")
+        self.assertEqual(r.status_code, 403)
+
+
 
 
 

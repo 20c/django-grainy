@@ -4,7 +4,8 @@
 ## [Unreleased]
 ### Added
 
-- `util.Permissions.get` now accepts `explicit` keyword argument
+- `util.Permissions.get` now accepts the `explicit` keyword argument
+- `decorators.grainy_view` now accepts the `explicit_object` keyword argument
 
 ### Fixed
 

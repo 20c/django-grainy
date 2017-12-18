@@ -88,6 +88,11 @@ class grainy_view_response(grainy_decorator):
     Keyword Arguments:
         - explicit <bool> - if true, permissions checks during
             request gating will be explicit (default=False)
+        - explicit_object <bool|None> - if true, permission checks during
+            requests to response handlers that provide an object instance 
+            via view.get_object() will require explicit permissions. 
+            if None, value will be inherited from `explicit` keyword argument. 
+            (default=None)
         - ignore_grant_all <bool> - if true, permissions checks during
             request gating will ignore superuser priviledges (default=False)
     """
@@ -116,14 +121,27 @@ class grainy_view_response(grainy_decorator):
                 request = args[1]
 
             perms = Permissions(request.user)
+            obj = get_object(self)
 
+            # check base namespace permissions
             if not perms.check(
-                grainy_handler.namespace(get_object(self)).format(**kwargs),
+                grainy_handler.namespace().format(**kwargs),
                 request_to_flag(request),
                 explicit=extra.get("explicit", False),
                 ignore_grant_all=extra.get("ignore_grant_all", False)
             ):
                 return HttpResponse(status=403)
+
+            # if object was retrieved, check object permissions as well
+            if obj and not perms.check(
+                grainy_handler.namespace(obj).format(**kwargs),
+                request_to_flag(request),
+                explicit=extra.get("explicit_object", extra.get("explicit",False)),
+                ignore_grant_all=extra.get("ignore_grant_all", False)
+            ):
+                return HttpResponse(status=403)
+
+
             return apply_perms(request, view_function(*args, **kwargs), view_function, self)
 
         grainy_handler.view = self.extra.get("view")

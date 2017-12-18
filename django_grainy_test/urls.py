@@ -2,6 +2,7 @@ from django.conf.urls import url, include
 from rest_framework import routers
 from .views import (
     ModelAViewSet,
+    ExplicitViewSet,
     JsonView,
     View,
     view,
@@ -14,6 +15,7 @@ from .views import (
 
 router = routers.DefaultRouter()
 router.register(r'a', ModelAViewSet)
+router.register(r'a_x', ExplicitViewSet)
 
 
 urlpatterns = [
