@@ -3,7 +3,13 @@
 
 ## [Unreleased]
 ### Added
+
+- `util.Permissions.get` now accepts `explicit` keyword argument
+
 ### Fixed
+
+- `util.Permissions.get` now works correctly
+
 ### Changed
 ### Deprecated
 ### Removed

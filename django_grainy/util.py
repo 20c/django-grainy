@@ -95,7 +95,7 @@ class Permissions(object):
             return True
         return self.pset.check(namespace(target), int_flags(permissions), explicit=explicit)
 
-    def get(self, target, as_string=False):
+    def get(self, target, as_string=False, explicit=False):
         """
         Returns the permission flags for the specified target
 
@@ -105,14 +105,15 @@ class Permissions(object):
         
         Keyword Arguments:
             - as_string <bool>: if True returns string flags instead of int flags
+            - explicit <bool>: require explicit permissions to the complete target
 
         Returns:
             - <int>: permission flags
             - <str>: permission flags, if as_string=True
         """
         if as_string:
-            return str_flags(self.pset.get_permission(namespace(target)))
-        return self.pset.get_permission(namespace(target))
+            return str_flags(self.pset.get_permissions(namespace(target), explicit=explicit))
+        return self.pset.get_permissions(namespace(target), explicit=explicit)
 
     def apply(self, data):
         """

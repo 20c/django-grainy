@@ -132,6 +132,23 @@ class TestPermissions(UserTestCase):
         self.assertTrue(perms.check("x.y.z", PERM_READ))
         self.assertFalse(perms.check("x.y.z", PERM_READ, ignore_grant_all=True))
 
+    def test_permissions_get(self):
+        """
+        test django.grainy.util.Permissions.get
+        """
+
+        perms = Permissions(self.users["user_a"])
+
+        self.assertEqual(perms.get(ModelA), PERM_READ)
+        self.assertEqual(perms.get(ModelA, as_string=True), "r")
+        self.assertEqual(perms.get(ModelB), PERM_READ | PERM_UPDATE)
+        self.assertEqual(perms.get(ModelB, as_string=True), "ru")
+        self.assertEqual(perms.get("detail_manual", as_string=True), "c")
+        self.assertEqual(perms.get("detail_manual.1", as_string=True, explicit=True), "crud")
+        self.assertEqual(perms.get("detail_manual.2", as_string=True, explicit=True), "")
+        self.assertEqual(perms.get("detail_manual.2", as_string=True), "c")
+
+
 
     def test_anonymous_permissions(self):
         user = AnonymousUser()
