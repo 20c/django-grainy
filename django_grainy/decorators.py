@@ -123,9 +123,14 @@ class grainy_view_response(grainy_decorator):
             perms = Permissions(request.user)
             obj = get_object(self)
 
+            # prepare parameters for namespace formatting
+            nsparam = {"instance":obj}
+            nsparam.update(kwargs)
+            nsparam.update(request.GET)
+
             # check base namespace permissions
             if not perms.check(
-                grainy_handler.namespace().format(**kwargs),
+                grainy_handler.namespace().format(**nsparam),
                 request_to_flag(request),
                 explicit=extra.get("explicit", False),
                 ignore_grant_all=extra.get("ignore_grant_all", False)
@@ -134,7 +139,7 @@ class grainy_view_response(grainy_decorator):
 
             # if object was retrieved, check object permissions as well
             if obj and not perms.check(
-                grainy_handler.namespace(obj).format(**kwargs),
+                grainy_handler.namespace(obj).format(**nsparam),
                 request_to_flag(request),
                 explicit=extra.get("explicit_object", extra.get("explicit",False)),
                 ignore_grant_all=extra.get("ignore_grant_all", False)

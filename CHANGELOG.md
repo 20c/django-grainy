@@ -12,6 +12,10 @@
 - `util.Permissions.get` now works correctly
 
 ### Changed
+
+- `decorators.grainy_view` request GET parameters now available for namespace formatting
+- `decorators.grainy_view` get_object() now available as `instance` for base namespace formatting if it exists
+
 ### Deprecated
 ### Removed
 ### Security
