@@ -3,6 +3,16 @@
 
 ## [Unreleased]
 ### Added
+### Fixed
+### Changed
+### Deprecated
+### Removed
+### Security
+
+
+## 1.5.0
+
+### Added
 
 - `util.Permissions.get` now accepts the `explicit` keyword argument
 - `decorators.grainy_view` now accepts the `explicit_object` keyword argument
@@ -17,9 +27,6 @@
 - `decorators.grainy_view` get_object() now available as `instance` for base namespace formatting if it exists
 - `decorators.grainy_decorator` decorator namespaces can now be passed as lists in which case the resulting namespace is a joint namespace of all the elements
 
-### Deprecated
-### Removed
-### Security
 
 ## 1.4.0
 
