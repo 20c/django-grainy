@@ -52,6 +52,7 @@ class TestPermissions(UserTestCase):
         View.Grainy.namespace() : PERM_READ | PERM_CREATE | PERM_UPDATE | PERM_DELETE,
         "detail.1" : PERM_READ | PERM_CREATE | PERM_UPDATE | PERM_DELETE,
         "detail_manual.1" : PERM_READ | PERM_CREATE | PERM_UPDATE | PERM_DELETE,
+        "detail_manual.GET" : PERM_READ,
         "detail_manual" : PERM_CREATE,
     })
 
@@ -226,6 +227,14 @@ class TestPermissions(UserTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content.decode("utf-8"), "POST Response 1")
 
+        # test class view with request object in namespace
+        # formatting
+        response = self.userclient("user_a").get("/detail_class_reqfmt/1/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.decode("utf-8"), "GET Response 1")
+
+        response = self.userclient("user_a").delete("/detail_class_reqfmt/1/")
+        self.assertEqual(response.status_code, 403)
 
 
     def test_grainy_json_view(self):

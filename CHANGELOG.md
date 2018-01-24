@@ -3,6 +3,9 @@
 
 ## [Unreleased]
 ### Added
+
+- grainy view decorators can now access the request object when formatting namespaces
+
 ### Fixed
 ### Changed
 ### Deprecated

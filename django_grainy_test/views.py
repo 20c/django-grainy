@@ -127,6 +127,10 @@ class DetailManual(BaseView):
     def post(self, request):
         return HttpResponse(content="POST Response 1")
 
+@grainy_view(namespace="detail_manual.{request.method}.{id}")
+class DetailReqFmt(Detail):
+    pass
+
 
 @grainy_json_view(
     namespace="site.view",

@@ -10,7 +10,8 @@ from .views import (
     detail,
     DetailExplicit,
     detail_explicit,
-    DetailManual
+    DetailManual,
+    DetailReqFmt
 )
 
 router = routers.DefaultRouter()
@@ -24,6 +25,7 @@ urlpatterns = [
     url(r'^detail_explicit/(?P<id>[0-9]+)/$', detail_explicit),
     url(r'^detail_class/(?P<id>[0-9]+)/$', Detail.as_view()),
     url(r'^detail_class_explicit/(?P<id>[0-9]+)/$', DetailExplicit.as_view()),
+    url(r'^detail_class_reqfmt/(?P<id>[0-9]+)/$', DetailReqFmt.as_view()),
     url(r'^detail_class_manual/(?P<id>[0-9]+)/$', DetailManual.as_view()),
     url(r'^detail_class_manual/$', DetailManual.as_view()),
     url(r'^view_class/', View.as_view()),

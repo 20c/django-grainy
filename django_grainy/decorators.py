@@ -124,7 +124,7 @@ class grainy_view_response(grainy_decorator):
             obj = get_object(self)
 
             # prepare parameters for namespace formatting
-            nsparam = {"instance":obj}
+            nsparam = {"instance": obj, "request": request}
             nsparam.update(kwargs)
             nsparam.update(request.GET)
 
