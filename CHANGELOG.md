@@ -9,6 +9,12 @@
 ### Removed
 ### Security
 
+## 1.6.2
+
+### Fixed
+
+- when applying perms to a grainy view response, make sure to return the proper container when it is empty
+
 ## 1.6.1
 
 ### Fixed
