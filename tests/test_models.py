@@ -6,7 +6,8 @@ from django_grainy.decorators import grainy_model
 from django_grainy_test.models import (
     ModelA,
     ModelB,
-    ModelC
+    ModelC,
+    ModelD
 )
 
 from grainy.const import (
@@ -33,3 +34,10 @@ class TestGrainyHandler(UserTestCase):
         self.assertEqual(c.Grainy.namespace(), ModelB.Grainy.namespace())
         self.assertEqual(c.Grainy.namespace(c), "something.arbitrary.2.c.3")
 
+
+        d = ModelD.objects.create(name="D1")
+        self.assertEqual(d.Grainy.namespace(value="parent"), "dynamic.parent")
+        self.assertEqual(
+            d.Grainy.namespace(d, value="parent", other_value="child"),
+            "dynamic.parent.child"
+        )

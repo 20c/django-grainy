@@ -18,7 +18,8 @@ from django_grainy.helpers import (
 )
 
 from django_grainy_test.models import(
-    ModelA
+    ModelA,
+    ModelD
 )
 
 class TestHelpers(TestCase):
@@ -37,6 +38,12 @@ class TestHelpers(TestCase):
 
         self.assertEqual(namespace( (ModelA, "name") ), "django_grainy_test.modela.name")
         self.assertEqual(namespace( (ModelA(), "name") ), "django_grainy_test.modela.none.name")
+
+        self.assertEqual(namespace(ModelD, value="parent"), "dynamic.parent")
+        self.assertEqual(
+            namespace(ModelD(), value="parent", other_value="child"),
+            "dynamic.parent.child"
+        )
 
 
     def test_request_to_flag(self):

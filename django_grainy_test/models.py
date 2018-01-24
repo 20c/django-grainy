@@ -31,3 +31,10 @@ class ModelB(ModelA):
 )
 class ModelC(ModelA):
     b = models.ForeignKey(ModelB, related_name="c")
+
+@grainy_model(
+    namespace=u"dynamic.{value}",
+    namespace_instance=u"{namespace}.{other_value}"
+)
+class ModelD(ModelA):
+    pass

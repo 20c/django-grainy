@@ -9,10 +9,13 @@ from .conf import (
     DJANGO_OP_TO_FLAG
 )
 
-def namespace(target):
+def namespace(target, **kwargs):
 
     """
     Convert `target` to permissioning namespace
+
+    Any keyword arguments will be used for formatting of the 
+    namespace (as applicable)
 
     Arguments:
         - target <object|class|string|tuple>: if an object or class is passed here it 
@@ -40,8 +43,8 @@ def namespace(target):
 
     if inspect.isclass(handler_class):
         if inspect.isclass(target):
-            return target.Grainy.namespace()
-        return target.Grainy.namespace(instance=target)
+            return target.Grainy.namespace(**kwargs)
+        return target.Grainy.namespace(instance=target, **kwargs)
 
 
     if isinstance(target, six.string_types):

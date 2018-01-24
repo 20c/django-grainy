@@ -148,13 +148,17 @@ class GrainyHandler(object):
     namespace_instance_template = u"{namespace}.{instance}"
 
     @classmethod
-    def namespace_instance(cls, instance):
+    def namespace_instance(cls, instance, **kwargs):
         """
         Returns the permissioning namespace for the passed instance
 
         Arguments:
             - instance <object|str|Namespace>: the value of this will be appended
                 to the base namespace and returned
+
+        Keyword Arguments:
+            - any keyword arguments will be used for formatting of the
+                namespace 
 
         Returns:
             - unicode: namespace
@@ -164,25 +168,33 @@ class GrainyHandler(object):
             raise ValueError("`namespace_base` needs to be a Namespace instance")
 
         return cls.namespace_instance_template.format(
-            namespace=cls.namespace_base,
-            instance=instance
+            namespace=str(cls.namespace_base).format(**kwargs),
+            instance=instance,
+            **kwargs
         ).lower()
 
     @classmethod
-    def namespace(cls, instance=None):
+    def namespace(cls, instance=None, **kwargs):
         """
         Wrapper function to return either the result of namespace_base or 
         namespace instance depending on whether or not a value was passed in
         `instance`
+        
+        All keyword arguments will be available while formatting the 
+        namespace string.
 
         Keyword Arguments:
             - instance <object|str|Namespace>: the value of this will be appended
+
         Returns:
             - unicode
         """
         if instance:
-            return cls.namespace_instance(instance)
-        return u"{}".format(cls.namespace_base).lower()
+            return cls.namespace_instance(instance, **kwargs)
+        namespace = u"{}".format(cls.namespace_base)
+        if kwargs:
+            namespace = namespace.format(**kwargs)
+        return namespace.lower()
 
     @classmethod
     def set_namespace_base(cls, value):

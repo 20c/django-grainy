@@ -5,6 +5,7 @@
 ### Added
 
 - grainy view decorators can now access the request object when formatting namespaces
+- you can now use extra keyword arguments passed to `Grainy.namespace` and `helpers.namespace` to further format the namespace string
 
 ### Fixed
 ### Changed
