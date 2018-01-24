@@ -38,7 +38,7 @@ class ExplicitViewSet(viewsets.ModelViewSet):
         namespace="api.a_x",
         namespace_instance="{namespace}.{instance.id}",
         explicit=True,
-        explicit_object=False
+        explicit_instance=False
     )
     def retrieve(self,*args,**kwargs):
         return super(ExplicitViewSet, self).retrieve(*args, **kwargs)

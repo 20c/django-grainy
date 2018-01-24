@@ -9,6 +9,9 @@
 
 ### Fixed
 ### Changed
+
+- grainy view decorators: renamed `explicit_object` to `explicit_instance`
+
 ### Deprecated
 ### Removed
 ### Security
