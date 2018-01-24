@@ -207,11 +207,17 @@ class grainy_json_view_response(grainy_view_response):
         for ns,p in self.extra.get("handlers", {}).items():
             perms.applicator.handler("{}.{}".format(prefix, ns), **p)
 
+
         data, tail = namespace.container(data)
+
         data = perms.apply(data)
         try:
             return dict_get_namespace(data, namespace)
         except KeyError as inst:
+            pass
+        if isinstance(tail, list):
+            return []
+        else:
             return {}
 
     def apply_perms(self, request, response, view_function, view):
