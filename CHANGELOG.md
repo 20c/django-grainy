@@ -3,18 +3,22 @@
 
 ## [Unreleased]
 ### Added
+### Fixed
+### Changed
+### Deprecated
+### Removed
+### Security
+
+## 1.6.0
+
+### Added
 
 - grainy view decorators can now access the request object when formatting namespaces
 - you can now use extra keyword arguments passed to `Grainy.namespace` and `helpers.namespace` to further format the namespace string
 
-### Fixed
 ### Changed
 
 - grainy view decorators: renamed `explicit_object` to `explicit_instance`
-
-### Deprecated
-### Removed
-### Security
 
 
 ## 1.5.0
