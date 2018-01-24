@@ -52,7 +52,7 @@ class TestPermissions(UserTestCase):
         View.Grainy.namespace() : PERM_READ | PERM_CREATE | PERM_UPDATE | PERM_DELETE,
         "detail.1" : PERM_READ | PERM_CREATE | PERM_UPDATE | PERM_DELETE,
         "detail_manual.1" : PERM_READ | PERM_CREATE | PERM_UPDATE | PERM_DELETE,
-        "detail_manual.GET" : PERM_READ,
+        "detail_manual.get" : PERM_READ,
         "detail_manual" : PERM_CREATE,
     })
 

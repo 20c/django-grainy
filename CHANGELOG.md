@@ -9,6 +9,12 @@
 ### Removed
 ### Security
 
+## 1.6.1
+
+### Fixed
+
+- Fixed issue with namespace formatting for grainy views that was introduced in 1.6.0 where trying to format using url parameters would raise a KeyError
+
 ## 1.6.0
 
 ### Added
