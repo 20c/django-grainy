@@ -124,27 +124,31 @@ class grainy_view_response(grainy_decorator):
             obj = get_object(self)
 
             # prepare parameters for namespace formatting
-            nsparam = {"instance": obj, "request": request}
+            nsparam = { "request": request}
             nsparam.update(kwargs)
             nsparam.update(request.GET)
 
             # check base namespace permissions
             if not perms.check(
-                grainy_handler.namespace().format(**nsparam),
+                grainy_handler.namespace(**nsparam).format(**nsparam),
                 request_to_flag(request),
                 explicit=extra.get("explicit", False),
                 ignore_grant_all=extra.get("ignore_grant_all", False)
             ):
                 return HttpResponse(status=403)
 
+            nsparam["instance"] = obj
+
             # if object was retrieved, check object permissions as well
             if obj and not perms.check(
-                grainy_handler.namespace(obj).format(**nsparam),
+                grainy_handler.namespace(**nsparam).format(**nsparam),
                 request_to_flag(request),
                 explicit=extra.get("explicit_instance", extra.get("explicit",False)),
                 ignore_grant_all=extra.get("ignore_grant_all", False)
             ):
                 return HttpResponse(status=403)
+
+            request.nsparam = nsparam
 
 
             return apply_perms(request, view_function(*args, **kwargs), view_function, self)
@@ -194,7 +198,7 @@ class grainy_json_view_response(grainy_view_response):
             obj = self.get_object(view)
         except AssertionError as inst:
             obj = None
-        namespace = Namespace(self.Grainy.namespace(obj))
+        namespace = Namespace(self.Grainy.namespace(**request.nsparam))
 
         if isinstance(data, list):
             prefix = "{}.*".format(namespace)
