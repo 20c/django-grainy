@@ -32,7 +32,7 @@ class PermissionQuerySet(models.QuerySet):
         the rows in the query
 
         Returns:
-            - grainy.PermissionSet 
+            - grainy.PermissionSet
         """
         pset = PermissionSet()
         for row in self:
@@ -158,7 +158,7 @@ class GrainyHandler(object):
 
         Keyword Arguments:
             - any keyword arguments will be used for formatting of the
-                namespace 
+                namespace
 
         Returns:
             - unicode: namespace
@@ -176,11 +176,11 @@ class GrainyHandler(object):
     @classmethod
     def namespace(cls, instance=None, **kwargs):
         """
-        Wrapper function to return either the result of namespace_base or 
+        Wrapper function to return either the result of namespace_base or
         namespace instance depending on whether or not a value was passed in
         `instance`
-        
-        All keyword arguments will be available while formatting the 
+
+        All keyword arguments will be available while formatting the
         namespace string.
 
         Keyword Arguments:

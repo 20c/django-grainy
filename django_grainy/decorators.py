@@ -89,9 +89,9 @@ class grainy_view_response(grainy_decorator):
         - explicit <bool> - if true, permissions checks during
             request gating will be explicit (default=False)
         - explicit_instance <bool|None> - if true, permission checks during
-            requests to response handlers that provide an object instance 
-            via view.get_object() will require explicit permissions. 
-            if None, value will be inherited from `explicit` keyword argument. 
+            requests to response handlers that provide an object instance
+            via view.get_object() will require explicit permissions.
+            if None, value will be inherited from `explicit` keyword argument.
             (default=None)
         - ignore_grant_all <bool> - if true, permissions checks during
             request gating will ignore superuser priviledges (default=False)
@@ -160,7 +160,7 @@ class grainy_view_response(grainy_decorator):
 
     def get_object(self, view):
         """
-        Attempts to call and return `get_object` on the decorated view. 
+        Attempts to call and return `get_object` on the decorated view.
 
         If implemented on the decorated view it should return an object instance
         relevant to the request that can be used to pass to the namespace getter
@@ -181,8 +181,8 @@ class grainy_view_response(grainy_decorator):
 class grainy_json_view_response(grainy_view_response):
 
     """
-    A view response handler that will apply grainy permissions to 
-    the json data in the generated response, removing any content the 
+    A view response handler that will apply grainy permissions to
+    the json data in the generated response, removing any content the
     requesting user does not have `READ` permissions to
 
     Keyword Arguments:
@@ -238,10 +238,10 @@ class grainy_json_view_response(grainy_view_response):
 class grainy_rest_viewset_response(grainy_json_view_response):
 
     """
-    Initialize grainy permissions for the targeted rest 
+    Initialize grainy permissions for the targeted rest
     framework viewset response.
 
-    This will apply the permissions to the data returned 
+    This will apply the permissions to the data returned
     in the viewset response. Any fields that the requesting
     user does not have READ permissions to will get dropped
     from the data

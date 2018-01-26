@@ -122,7 +122,7 @@ class TestGrainyViewSet(UserTestCase):
         client.force_authenticate(user=self.users["user_a"])
         response = client.get("/a/1/?format=json", follow=True)
 
-        self.assertEqual(response.data, 
+        self.assertEqual(response.data,
             {
                 "name": "Test1",
                 "id":1,

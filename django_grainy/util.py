@@ -46,7 +46,7 @@ class Permissions(object):
     def load(self, refresh=False):
         """
         Loads the permission set for the user or group specified in
-        `self.obj` 
+        `self.obj`
 
         In case `self.obj` holds an `AnonymousUser` instance, perms are loaded
         from settings.GRAINY_ANONYMOUS_PERMS
@@ -68,7 +68,7 @@ class Permissions(object):
             self.pset = self.obj.grainy_permissions.permission_set()
             if isinstance(self.obj, get_user_model()):
                 # if we are loading permissions for user, we need
-                # to also merge in permissions from any of the 
+                # to also merge in permissions from any of the
                 # groups the user is a part of
                 for group in self.obj.groups.all():
                     self.pset.update(
@@ -101,8 +101,8 @@ class Permissions(object):
 
         Arguments:
             - target <object|class|str>: return permissions to this object /
-                namespsace 
-        
+                namespsace
+
         Keyword Arguments:
             - as_string <bool>: if True returns string flags instead of int flags
             - explicit <bool>: require explicit permissions to the complete target
@@ -122,7 +122,7 @@ class Permissions(object):
 
         Arguments:
             - data <dict>
-        
+
         Returns:
             - dict: sanitized data
         """

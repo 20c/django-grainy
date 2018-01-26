@@ -14,12 +14,12 @@ def namespace(target, **kwargs):
     """
     Convert `target` to permissioning namespace
 
-    Any keyword arguments will be used for formatting of the 
+    Any keyword arguments will be used for formatting of the
     namespace (as applicable)
 
     Arguments:
-        - target <object|class|string|tuple>: if an object or class is passed here it 
-            will be required to contain a `Grainy` meta class, otherwise a 
+        - target <object|class|string|tuple>: if an object or class is passed here it
+            will be required to contain a `Grainy` meta class, otherwise a
             TypeError will be raised.
 
             If a tuple is passed all elements of the tuple will be passed to
@@ -27,7 +27,7 @@ def namespace(target, **kwargs):
             be joined together and returned as one namespace string
 
     Returns:
-        - string 
+        - string
     """
 
     if not target:
@@ -111,12 +111,12 @@ def django_op_to_flag(op):
 def int_flags(flags):
     """
     Converts string permission flags into integer permission flags
-    
+
     Arguments:
         - flags <str>: one or more flags as they are defined in GRAINY_PERM_CHOICES
-            
+
             For example: "crud" or "ru" or "r"
-    
+
     Returns:
         - int
     """
@@ -141,12 +141,12 @@ def int_flags(flags):
 def str_flags(flags):
     """
     Converts integer permission flags into string permission flags
-    
+
     Arguments:
         - flags <int>: one or more flags as they are defined in GRAINY_PERM_CHOICES
-            
+
             For example: PERM_READ or PERM_READ | PERM_UPDATE
-    
+
     Returns:
         - str
     """
