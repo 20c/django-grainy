@@ -10,6 +10,7 @@ Granular permissions for django
 ## Supported Django Versions
 
 - Django 1.11
+- Django 2.0
 
 ## Documentation
 

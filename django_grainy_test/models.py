@@ -30,7 +30,7 @@ class ModelB(ModelA):
     namespace_instance=u"{namespace}.{instance.b.id}.c.{instance.id}"
 )
 class ModelC(ModelA):
-    b = models.ForeignKey(ModelB, related_name="c")
+    b = models.ForeignKey(ModelB, related_name="c", on_delete=models.CASCADE)
 
 @grainy_model(
     namespace=u"dynamic.{value}",
