@@ -3,6 +3,9 @@
 
 ## [Unreleased]
 ### Added
+
+- tests for django 2.1
+
 ### Fixed
 ### Changed
 ### Deprecated
