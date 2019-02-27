@@ -71,13 +71,50 @@ class grainy_model(grainy_decorator):
 
     """
     Initialize grainy permissions for the targeted model
+
+    Keyword Arguments:
+        - related <str>: name of a ForeignKey field on the model, if specified
+            the instance namespace will be built, prefixing the instance namespace
+            from the related model.
+
+            Use this to quickly do namespace inheritance.
     """
 
     handler_class = GrainyModelHandler
 
+    def __init__(self, namespace=None, related=None, **kwargs):
+        self.related = related
+        return super(grainy_model, self).__init__(namespace=namespace, **kwargs)
+
     def __call__(self, model):
         model.Grainy = self.make_grainy_handler(model)
+        if self.related:
+            model.Grainy.related_field = self.related
+            model.Grainy.related_model = model._meta.get_field(self.related).remote_field.model
+            self.related_namespacing(model)
+
         return model
+
+
+    def related_namespacing(self, model):
+        namespace = [model.Grainy.namespace(), "{instance.pk}"]
+        fields = ["instance"]
+
+        related = model.Grainy.related_model
+        related_field = model.Grainy.related_field
+
+        while related:
+            fields += [related_field]
+            namespace = [related.Grainy.namespace(), "{"+".".join(fields)+".pk}"] + namespace
+            _related = getattr(related.Grainy, "related_model", None)
+            if _related:
+                related_field = related.Grainy.related_field
+            related = _related
+
+
+        #namespace = [related.Grainy.namespace] + namespace
+        model.Grainy.namespace_instance_template = ".".join(namespace)
+
 
 
 class grainy_view_response(grainy_decorator):

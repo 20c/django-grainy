@@ -7,7 +7,10 @@ from django_grainy_test.models import (
     ModelA,
     ModelB,
     ModelC,
-    ModelD
+    ModelD,
+    ModelX,
+    ModelY,
+    ModelZ
 )
 
 from grainy.const import (
@@ -41,3 +44,16 @@ class TestGrainyHandler(UserTestCase):
             d.Grainy.namespace(d, value="parent", other_value="child"),
             "dynamic.parent.child"
         )
+
+        x = ModelX.objects.create(name="X1")
+        self.assertEqual(x.Grainy.namespace(), "x")
+        self.assertEqual(x.Grainy.namespace(x), "x.{}".format(x.id))
+
+        y = ModelY.objects.create(name="Y1",x=x)
+        self.assertEqual(y.Grainy.namespace(), "custom")
+        self.assertEqual(y.Grainy.namespace_instance_template, "x.{instance.x.pk}.custom.{instance.pk}")
+        self.assertEqual(y.Grainy.namespace(y), "x.5.custom.6")
+
+        z = ModelZ.objects.create(name="Z1",y=y)
+        self.assertEqual(z.Grainy.namespace_instance_template, "x.{instance.y.x.pk}.custom.{instance.y.pk}.z.{instance.pk}")
+        self.assertEqual(z.Grainy.namespace(z), "x.5.custom.6.z.7")

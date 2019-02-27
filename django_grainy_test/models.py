@@ -38,3 +38,17 @@ class ModelC(ModelA):
 )
 class ModelD(ModelA):
     pass
+
+
+@grainy_model(namespace="x")
+class ModelX(ModelA):
+    pass
+
+@grainy_model(namespace="custom", related="x")
+class ModelY(ModelA):
+    x = models.ForeignKey(ModelX, related_name="y", on_delete=models.CASCADE)
+
+@grainy_model(namespace="z", related="y")
+class ModelZ(ModelA):
+    y = models.ForeignKey(ModelY, related_name="z", on_delete=models.CASCADE)
+
