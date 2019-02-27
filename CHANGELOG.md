@@ -5,6 +5,7 @@
 ### Added
 
 - tests for django 2.1
+- fix #33: easy namespace inheritance through related models
 
 ### Fixed
 ### Changed
