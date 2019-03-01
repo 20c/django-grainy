@@ -22,11 +22,13 @@ class UserPermissionInlineAdmin(admin.TabularInline):
     model = UserPermission
     form = UserPermissionForm
     extra = 1
+    ordering = ("namespace",)
 
 class GroupPermissionInlineAdmin(admin.TabularInline):
     model = GroupPermission
     form = GroupPermissionForm
     extra = 1
+    ordering = ("namespace",)
 
 ## INIT
 
