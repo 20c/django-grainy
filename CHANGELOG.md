@@ -8,6 +8,9 @@
 - fix #33: easy namespace inheritance through related models
 
 ### Fixed
+
+- admin inlines: sort by namespace alphabetically (#24)
+
 ### Changed
 
 - move from facsimile to Ctl (#32)
