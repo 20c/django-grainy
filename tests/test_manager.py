@@ -81,3 +81,31 @@ class TestPermissionManager(UserTestCase):
         self.assertEqual(self.EXPECTED_PERMISSIONS_C.permissions, pset.permissions)
 
 
+    def test_del_permission(self):
+        self.users["user_b"].grainy_permissions.add_permission(
+            ModelA, "crud"
+        )
+        self.users["user_c"].grainy_permissions.add_permission(
+            ModelA, "crud"
+        )
+        self.users["user_c"].grainy_permissions.add_permission(
+            ModelB, PERM_READ
+        )
+        pset = self.users["user_c"].grainy_permissions.permission_set()
+        self.assertEqual(self.EXPECTED_PERMISSIONS_C.permissions, pset.permissions)
+
+        self.users["user_c"].grainy_permissions.delete_permission(ModelA)
+
+        pset = self.users["user_c"].grainy_permissions.permission_set()
+        self.assertNotEqual(self.EXPECTED_PERMISSIONS_C.permissions, pset.permissions)
+        self.assertEqual(pset.check(ModelB.Grainy.namespace(), PERM_READ), True)
+
+        pset = self.users["user_b"].grainy_permissions.permission_set()
+        self.assertEqual(pset.check(ModelA.Grainy.namespace(), PERM_CREATE), True)
+
+
+
+
+
+
+

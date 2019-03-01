@@ -85,6 +85,21 @@ class PermissionManager(models.Manager):
             defaults = { "permission" : int_flags(permission) }
         )
 
+    def delete_permission(self, target):
+        """
+        Remove an explicit permission rule set for the
+        specified target.
+
+        Note that this does not touch permissions granted
+        by rulings higher up in the namespace path
+
+        Arguments:
+            - target <object|class|str>
+        """
+
+        self.get_queryset().filter(namespace = namespace(target)).delete()
+
+
     def permission_set(self):
         """
         Return grainy.PermissionSet instance from all rows returned
