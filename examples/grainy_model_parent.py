@@ -1,5 +1,5 @@
 # starting with 1.7 you can also use the `parent` argument
-# to quickly setup namespace inheritance between parent models
+# to quickly setup namespace inheritance for models
 
 @grainy_model(namespace="x")
 class ModelX(ModelA):

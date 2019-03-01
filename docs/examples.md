@@ -37,7 +37,7 @@ Afterwards the model can be used directly to set or check permissions to it
 In the `grainy_model` decorator you can also specify if you want grainy to
 treat the model as a child of another grainy model by using the `parent` parameter.
 
-This also you to quickly chain namespaces with the child getting it's namespace
+This allows you to quickly chain namespaces with the child getting it's namespace
 prefixed with the parent's namespace
 
 ```py
