@@ -1,6 +1,6 @@
 include LICENSE
-recursive-include facsimile *.txt
+recursive-include Ctl *.txt
 recursive-include django_grainy *.py
 recursive-include django_grainy *.html
 recursive-include django_grainy_test *.py
-include facsimile/VERSION
+include Ctl/VERSION
