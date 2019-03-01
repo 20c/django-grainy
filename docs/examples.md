@@ -34,6 +34,16 @@ Afterwards the model can be used directly to set or check permissions to it
 {!examples/model_permissions.py!}
 ```
 
+In the `grainy_model` decorator you can also specify if you want grainy to
+treat the model as a child of another grainy model by using the `parent` parameter.
+
+This also you to quickly chain namespaces with the child getting it's namespace
+prefixed with the parent's namespace
+
+```py
+{!examples/grainy_model_parent.py!}
+```
+
 ## Grainy views
 
 A django view can be initialized for grainy permissions using the grainy_view

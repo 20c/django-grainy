@@ -73,46 +73,46 @@ class grainy_model(grainy_decorator):
     Initialize grainy permissions for the targeted model
 
     Keyword Arguments:
-        - related <str>: name of a ForeignKey field on the model, if specified
+        - parent <str>: name of a ForeignKey field on the model, if specified
             the instance namespace will be built, prefixing the instance namespace
-            from the related model.
+            from the parent model.
 
             Use this to quickly do namespace inheritance.
     """
 
     handler_class = GrainyModelHandler
 
-    def __init__(self, namespace=None, related=None, **kwargs):
-        self.related = related
+    def __init__(self, namespace=None, parent=None, **kwargs):
+        self.parent = parent
         return super(grainy_model, self).__init__(namespace=namespace, **kwargs)
 
     def __call__(self, model):
         model.Grainy = self.make_grainy_handler(model)
-        if self.related:
-            model.Grainy.related_field = self.related
-            model.Grainy.related_model = model._meta.get_field(self.related).remote_field.model
-            self.related_namespacing(model)
+        if self.parent:
+            model.Grainy.parent_field = self.parent
+            model.Grainy.parent_model = model._meta.get_field(self.parent).remote_field.model
+            self.parent_namespacing(model)
 
         return model
 
 
-    def related_namespacing(self, model):
+    def parent_namespacing(self, model):
         namespace = [model.Grainy.namespace(), "{instance.pk}"]
         fields = ["instance"]
 
-        related = model.Grainy.related_model
-        related_field = model.Grainy.related_field
+        parent = model.Grainy.parent_model
+        parent_field = model.Grainy.parent_field
 
-        while related:
-            fields += [related_field]
-            namespace = [related.Grainy.namespace(), "{"+".".join(fields)+".pk}"] + namespace
-            _related = getattr(related.Grainy, "related_model", None)
-            if _related:
-                related_field = related.Grainy.related_field
-            related = _related
+        while parent:
+            fields += [parent_field]
+            namespace = [parent.Grainy.namespace(), "{"+".".join(fields)+".pk}"] + namespace
+            _parent = getattr(parent.Grainy, "parent_model", None)
+            if _parent:
+                parent_field = parent.Grainy.parent_field
+            parent = _parent
 
 
-        #namespace = [related.Grainy.namespace] + namespace
+        #namespace = [parent.Grainy.namespace] + namespace
         model.Grainy.namespace_instance_template = ".".join(namespace)
 
 

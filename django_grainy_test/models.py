@@ -44,11 +44,11 @@ class ModelD(ModelA):
 class ModelX(ModelA):
     pass
 
-@grainy_model(namespace="custom", related="x")
+@grainy_model(namespace="custom", parent="x")
 class ModelY(ModelA):
     x = models.ForeignKey(ModelX, related_name="y", on_delete=models.CASCADE)
 
-@grainy_model(namespace="z", related="y")
+@grainy_model(namespace="z", parent="y")
 class ModelZ(ModelA):
     y = models.ForeignKey(ModelY, related_name="z", on_delete=models.CASCADE)
 
