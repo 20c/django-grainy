@@ -57,3 +57,10 @@ class TestGrainyHandler(UserTestCase):
         z = ModelZ.objects.create(name="Z1",y=y)
         self.assertEqual(z.Grainy.namespace_instance_template, "x.{instance.y.x.pk}.custom.{instance.y.pk}.z.{instance.pk}")
         self.assertEqual(z.Grainy.namespace(z), "x.5.custom.6.z.7")
+
+
+    def test_grainy_mixin(self):
+        a = ModelA.objects.create(name="A1")
+        self.assertEqual(a.grainy_namespace, "django_grainy_test.modela.{}".format(a.id))
+
+

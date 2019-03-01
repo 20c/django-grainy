@@ -5,6 +5,8 @@ from django.db import models
 
 from django_grainy.decorators import grainy_model
 
+from django_grainy.models import GrainyMixin
+
 # Create your models here.
 
 """
@@ -13,7 +15,7 @@ unit tests. There is no need to ever install the "django_grainy_test"
 app in your project
 """
 
-class ModelBase(models.Model):
+class ModelBase(GrainyMixin, models.Model):
     class Meta(object):
         abstract = True
 

@@ -226,3 +226,9 @@ class GrainyModelHandler(GrainyHandler):
             ])
         )
 
+
+class GrainyMixin(object):
+
+    @property
+    def grainy_namespace(self):
+        return self.Grainy.namespace(self)
