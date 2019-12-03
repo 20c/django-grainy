@@ -5,6 +5,7 @@ python:
   - "3.4"
   - "3.5"
   - "3.6"
+  - "3.7"
 sudo: false
 branches:
   except:
@@ -13,6 +14,8 @@ env:
   - DJANGO=1.11
   - DJANGO=2.0
   - DJANGO=2.1
+  - DJANGO=2.2
+  - DJANGO=3.0
 matrix:
   fast_finish: true
 before_install:
