@@ -17,7 +17,9 @@ from django_grainy.decorators import grainy_model
 
 from django_grainy_test.models import (
     ModelA,
-    ModelB
+    ModelB,
+    APIKey,
+    APIKeyPermission
 )
 
 from django_grainy_test.views import (
@@ -65,9 +67,16 @@ class TestPermissions(UserTestCase):
     def setUpTestData(cls):
         UserTestCase.setUpTestData()
 
+        cls.api_key = APIKey.objects.create(key="test")
+
         cls.users["user_a"].grainy_permissions.add_permission_set(
             cls.EXPECTED_PERMISSIONS_A
         )
+
+        cls.api_key.grainy_permissions.add_permission_set(
+            cls.EXPECTED_PERMISSIONS_A
+        )
+
 
         cls.users["user_b"].grainy_permissions.add_permission_set(
             {
@@ -101,9 +110,11 @@ class TestPermissions(UserTestCase):
         """
         user = self.users["user_a"]
         group = self.groups["group_a"]
+        api_key = self.api_key
 
         self.assertEqual(Permissions(user).obj, user)
         self.assertEqual(Permissions(group).obj, group)
+        self.assertEqual(Permissions(api_key).obj, api_key)
         with self.assertRaises(ValueError):
             Permissions(object())
 
@@ -132,6 +143,18 @@ class TestPermissions(UserTestCase):
         perms = Permissions(self.users["user_admin_a"])
         self.assertTrue(perms.check("x.y.z", PERM_READ))
         self.assertFalse(perms.check("x.y.z", PERM_READ, ignore_grant_all=True))
+
+        perms = Permissions(self.api_key)
+        self.assertTrue(perms.check(ModelA, PERM_READ))
+        self.assertFalse(perms.check(ModelA, PERM_UPDATE))
+        self.assertTrue(perms.check(ModelB, PERM_READ))
+        self.assertTrue(perms.check(ModelB, PERM_UPDATE))
+        self.assertTrue(perms.check(ModelA(), PERM_READ))
+        self.assertFalse(perms.check(ModelA(), PERM_UPDATE))
+        self.assertTrue(perms.check(ModelB(), PERM_READ))
+        self.assertTrue(perms.check(ModelB(), PERM_UPDATE))
+
+
 
     def test_permissions_get(self):
         """

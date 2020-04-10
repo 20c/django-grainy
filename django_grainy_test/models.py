@@ -5,7 +5,7 @@ from django.db import models
 
 from django_grainy.decorators import grainy_model
 
-from django_grainy.models import GrainyMixin
+from django_grainy.models import GrainyMixin, Permission, PermissionManager
 
 # Create your models here.
 
@@ -53,4 +53,12 @@ class ModelY(ModelA):
 @grainy_model(namespace="z", parent="y")
 class ModelZ(ModelA):
     y = models.ForeignKey(ModelY, related_name="z", on_delete=models.CASCADE)
+
+
+class APIKey(models.Model):
+    key = models.CharField(max_length=255)
+
+class APIKeyPermission(Permission):
+    api_key = models.ForeignKey(APIKey, related_name="grainy_permissions", on_delete=models.CASCADE)
+    objects = PermissionManager()
 

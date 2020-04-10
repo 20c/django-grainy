@@ -6,6 +6,7 @@
 - tests for django 2.1
 - fix #33: easy namespace inheritance through related models
 - fix #31: add delete_permission function to grainy manager
+- fix #35: Custom permission holder implementation
 ### Fixed
 - admin inlines: sort by namespace alphabetically (#24)
 ### Changed

@@ -26,14 +26,12 @@ class Permissions(object):
     def __init__(self, obj):
         """
         Arguments:
-            - obj <User|AnonymousUser|Group>
+            - obj <User|AnonymousUser|Group|Model>
         """
-        if not isinstance(obj, get_user_model()) and not isinstance(obj, Group) and not isinstance(obj, AnonymousUser):
+
+        if not hasattr(obj, "grainy_permissions") and not isinstance(obj, AnonymousUser):
             raise ValueError(
-                "`obj` needs to be either of type `{}` or `Group`, but is `{}`".format(
-                    get_user_model(),
-                    obj
-                )
+                "`obj` needs to be have a `grainy_permissions` relationship"
             )
         self.obj = obj
         self.pset = PermissionSet()

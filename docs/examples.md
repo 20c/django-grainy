@@ -19,6 +19,15 @@ A user gets his permissions directly or from one of the auth Groups he is a memb
 {!examples/check_permissions.py!}
 ```
 
+## Custom permission holders
+
+Sometimes you want something else than a user or group model to hold 
+permissions - an APIkey implementation for example
+
+```py
+{!examples/custom_permission_holder.py!}
+```
+
 ## Grainy Models
 
 A django model can be initialized for grainy permissions using the
