@@ -75,7 +75,7 @@
   fixed:
   - when applying perms to a grainy view response, make sure to return the proper
     container when it is empty
-Unreleased:
+1.7.0:
   added:
   - tests for django 2.1
   - 'fix #33: easy namespace inheritance through related models'
@@ -83,8 +83,12 @@ Unreleased:
   - 'fix #35: Custom permission holder implementation'
   changed:
   - move from facsimile to Ctl (#32)
-  deprecated: []
   fixed:
   - 'admin inlines: sort by namespace alphabetically (#24)'
+Unreleased:
+  added: []
+  changed: []
+  deprecated: []
+  fixed: []
   removed: []
   security: []
