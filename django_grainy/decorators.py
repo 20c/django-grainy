@@ -47,6 +47,7 @@ class grainy_decorator(object):
         self.namespace = namespace
         self.namespace_instance = namespace_instance
         self.extra = kwargs
+        self.permissions_cls = kwargs.get("permissions_cls", Permissions)
         if self.require_namespace and not namespace:
             raise DecoratorRequiresNamespace(self)
 
@@ -146,6 +147,7 @@ class grainy_view_response(grainy_decorator):
         get_object = self.get_object
         apply_perms = self.apply_perms
         extra = self.extra
+        permissions_cls = self.permissions_cls
 
         grainy_handler = self.make_grainy_handler(view_function)
 
@@ -157,7 +159,7 @@ class grainy_view_response(grainy_decorator):
                 self = args[0]
                 request = args[1]
 
-            perms = Permissions(request.user)
+            perms = permissions_cls(request.user)
             obj = get_object(self)
 
             # prepare parameters for namespace formatting
@@ -230,7 +232,7 @@ class grainy_json_view_response(grainy_view_response):
     """
 
     def _apply_perms(self, request, data, view_function, view):
-        perms = Permissions(request.user)
+        perms = self.permissions_cls(request.user)
         try:
             obj = self.get_object(view)
         except AssertionError as inst:
