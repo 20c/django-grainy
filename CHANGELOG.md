@@ -2,6 +2,8 @@
 
 
 ## Unreleased
+### Added
+- remote grainy permissions
 ### Changed
 - fix #36: Grainy decorators should allow setting of Permissions class to use for permission checks
 
