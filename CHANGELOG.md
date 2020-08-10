@@ -6,6 +6,11 @@
 - remote grainy permissions
 ### Changed
 - fix #36: Grainy decorators should allow setting of Permissions class to use for permission checks
+### Removed
+- python2.7 support
+- python3.4 support
+- python3.5 support
+- django1.11 support
 
 
 ## 1.7.0
