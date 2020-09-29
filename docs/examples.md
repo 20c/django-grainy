@@ -106,3 +106,37 @@ While a user with `READ` permissions to `api.a` and `READ` permissions to `api.a
 ```py
 [{"name":"Test model 1","id":1,"nested_dict":{"secret":{"hidden":"data"},"something":"public"}}]
 ```
+
+## Remote permission provider
+
+This functionality is still a work in progress and subject to change.
+
+Here is a quick and dirty example on how to set up a django project to be a remote grainy permission provider for another django project.
+
+### provider
+
+Set up the grainy endpoints on the grainy permission provider instance
+
+```py
+{!examples/remote/provider/urls.py!}
+```
+
+For the sake of this example it is assumed that the provider instance runs at `localhost:8000`
+
+### receiver
+
+In order to correctly setup authentication from the receiver django instance the provider django instance you will want
+to implement an authentication protocol. In this example we go with a straight forward token authentication. Note that the
+actual authentication logic is omitted as that is not really in the scope of this example.
+
+```py
+{!examples/remote/receiver/permissions.py!}
+```
+
+Then use it like you would the normal `Permissions` util
+
+```py
+{!examples/remote/receiver/usage.py!}
+```
+
+
