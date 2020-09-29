@@ -1,2 +1,2 @@
-perms = Permissions(user)
+perms = RemotePermissions(user)
 perms.check("a.b.c", PREAM_READ)
