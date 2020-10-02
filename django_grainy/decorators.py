@@ -237,14 +237,14 @@ class grainy_json_view_response(grainy_view_response):
             obj = self.get_object(view)
         except AssertionError as inst:
             obj = None
-        namespace = Namespace(self.Grainy.namespace(**request.nsparam))
+        namespace = Namespace(self.Grainy.namespace(**request.nsparam).replace("?","*"))
 
         if isinstance(data, list):
             prefix = "{}.*".format(namespace)
         else:
             prefix = namespace
         for ns,p in self.extra.get("handlers", {}).items():
-            perms.applicator.handler("{}.{}".format(prefix, ns), **p)
+            perms.applicator.handler(f"{prefix}.{ns}", **p)
 
 
         data, tail = namespace.container(data)
