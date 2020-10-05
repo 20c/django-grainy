@@ -148,6 +148,7 @@ class grainy_view_response(grainy_decorator):
         apply_perms = self.apply_perms
         extra = self.extra
         permissions_cls = self.permissions_cls
+        decorator = self
 
         grainy_handler = self.make_grainy_handler(view_function)
 
@@ -189,6 +190,7 @@ class grainy_view_response(grainy_decorator):
 
             request.nsparam = nsparam
 
+            decorator.augment_request(request)
 
             return apply_perms(request, view_function(*args, **kwargs), view_function, self)
 
@@ -215,6 +217,11 @@ class grainy_view_response(grainy_decorator):
         """
         return response
 
+    def augment_request(self, request):
+        """
+        Augment the request instance
+        """
+        return request
 
 
 class grainy_json_view_response(grainy_view_response):
@@ -259,6 +266,7 @@ class grainy_json_view_response(grainy_view_response):
         else:
             return {}
 
+
     def apply_perms(self, request, response, view_function, view):
         response.content = JsonResponse(
             self._apply_perms(
@@ -299,6 +307,74 @@ class grainy_rest_viewset_response(grainy_json_view_response):
     def apply_perms(self, request, response, view_function, view):
         response.data = self._apply_perms(request, response.data, view_function, view)
         return response
+
+
+    def augment_request(self, request):
+        """
+        Augments the request by adding the following methods
+
+        - `grainy_data(defaults)`: returns a copy of request.data with grainy
+        permissions applied.
+        - `grainy_update_serializer(serializer_cls, instance, **kwargs)`: returns
+        a drf serializer instance for create / update. Data will be cleaned against
+        grainy permissions
+        """
+
+        decorator = self
+        namespace = Namespace(self.Grainy.namespace(**request.nsparam).replace("?","*"))
+        perms = decorator.permissions_cls(request.user)
+
+        def grainy_data(request, defaults):
+
+            """
+            Returns a cleaned up dict for request.data
+
+            Any fields that are permissioned to be writeable by
+            the request will have their values applied to the
+            result.
+
+            Any fields that are NOT permissioned to be writeable
+            by the request will fall back to their values in
+            `defaults`
+            """
+
+            if request.method in ["PUT", "PATCH"]:
+                op = "u"
+            elif request.method == "POST":
+                op = "c"
+            else:
+                return request.data
+
+            data = defaults
+
+            for field, value in request.data.items():
+                if perms.check([f"{namespace}", field], op):
+                    data[field] = value
+
+            return data
+
+        def grainy_update_serializer(serializer_cls, instance, **kwargs):
+            """
+            returns a django-rest-framework serializer instance with
+            for saves.
+
+            Will automatically apply grainy_data to the input data.
+            """
+            if instance:
+                data = grainy_data(request, serializer_cls(instance=instance).data)
+            else:
+                data = grainy_data(request, {})
+            return serializer_cls(
+                data = data,
+                instance = instance,
+                **kwargs
+            )
+
+        request.grainy_data = lambda defaults: grainy_data(request, defaults)
+        request.grainy_serializer = grainy_update_serializer
+
+        return request
+
 
 
 class grainy_view(grainy_decorator):
