@@ -14,12 +14,12 @@ from grainy.core import (
 
 from django_grainy.backends import GrainyBackend
 
+
 class TestGrainyBackend(UserTestCase):
 
-    EXPECTED_PERMISSIONS_A = PermissionSet({
-        "auth" : PERM_READ,
-        "auth.user" : PERM_READ | PERM_UPDATE
-    })
+    EXPECTED_PERMISSIONS_A = PermissionSet(
+        {"auth": PERM_READ, "auth.user": PERM_READ | PERM_UPDATE}
+    )
 
     @classmethod
     def setUpTestData(cls):
@@ -28,7 +28,6 @@ class TestGrainyBackend(UserTestCase):
         cls.users["user_a"].grainy_permissions.add_permission_set(
             cls.EXPECTED_PERMISSIONS_A
         )
-
 
     def test_has_module_perms(self):
         user = self.users["user_a"]
@@ -43,4 +42,3 @@ class TestGrainyBackend(UserTestCase):
         self.assertEqual(backend.has_perm(user, "auth.change_user"), True)
         self.assertEqual(backend.has_perm(user, "auth.add_user"), False)
         self.assertEqual(backend.has_perm(user, "auth.delete_user"), False)
-

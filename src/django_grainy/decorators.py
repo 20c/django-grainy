@@ -12,19 +12,12 @@ from django.http import HttpRequest
 
 from grainy.core import Namespace
 
-from .models import (
-    GrainyHandler,
-    GrainyModelHandler
-)
+from .models import GrainyHandler, GrainyModelHandler
 from .util import Permissions
 from .exceptions import (
     DecoratorRequiresNamespace,
 )
-from .helpers import (
-    namespace,
-    dict_get_namespace,
-    request_to_flag
-)
+from .helpers import namespace, dict_get_namespace, request_to_flag
 
 
 class grainy_decorator(object):
@@ -54,6 +47,7 @@ class grainy_decorator(object):
     def make_grainy_handler(self, target):
         class Grainy(self.handler_class):
             pass
+
         Grainy.set_parent(target)
 
         if not target and not self.namespace:
@@ -91,11 +85,12 @@ class grainy_model(grainy_decorator):
         model.Grainy = self.make_grainy_handler(model)
         if self.parent:
             model.Grainy.parent_field = self.parent
-            model.Grainy.parent_model = model._meta.get_field(self.parent).remote_field.model
+            model.Grainy.parent_model = model._meta.get_field(
+                self.parent
+            ).remote_field.model
             self.parent_namespacing(model)
 
         return model
-
 
     def parent_namespacing(self, model):
         namespace = [model.Grainy.namespace(), "{instance.pk}"]
@@ -106,16 +101,17 @@ class grainy_model(grainy_decorator):
 
         while parent:
             fields += [parent_field]
-            namespace = [parent.Grainy.namespace(), "{"+".".join(fields)+".pk}"] + namespace
+            namespace = [
+                parent.Grainy.namespace(),
+                "{" + ".".join(fields) + ".pk}",
+            ] + namespace
             _parent = getattr(parent.Grainy, "parent_model", None)
             if _parent:
                 parent_field = parent.Grainy.parent_field
             parent = _parent
 
-
-        #namespace = [parent.Grainy.namespace] + namespace
+        # namespace = [parent.Grainy.namespace] + namespace
         model.Grainy.namespace_instance_template = ".".join(namespace)
-
 
 
 class grainy_view_response(grainy_decorator):
@@ -164,7 +160,7 @@ class grainy_view_response(grainy_decorator):
             obj = get_object(self)
 
             # prepare parameters for namespace formatting
-            nsparam = { "request": request}
+            nsparam = {"request": request}
             nsparam.update(kwargs)
             nsparam.update(request.GET)
 
@@ -173,7 +169,7 @@ class grainy_view_response(grainy_decorator):
                 grainy_handler.namespace(**nsparam).format(**nsparam),
                 request_to_flag(request),
                 explicit=extra.get("explicit", False),
-                ignore_grant_all=extra.get("ignore_grant_all", False)
+                ignore_grant_all=extra.get("ignore_grant_all", False),
             ):
                 return HttpResponse(status=403)
 
@@ -183,8 +179,8 @@ class grainy_view_response(grainy_decorator):
             if obj and not perms.check(
                 grainy_handler.namespace(**nsparam).format(**nsparam),
                 request_to_flag(request),
-                explicit=extra.get("explicit_instance", extra.get("explicit",False)),
-                ignore_grant_all=extra.get("ignore_grant_all", False)
+                explicit=extra.get("explicit_instance", extra.get("explicit", False)),
+                ignore_grant_all=extra.get("ignore_grant_all", False),
             ):
                 return HttpResponse(status=403)
 
@@ -192,7 +188,9 @@ class grainy_view_response(grainy_decorator):
 
             decorator.augment_request(request)
 
-            return apply_perms(request, view_function(*args, **kwargs), view_function, self)
+            return apply_perms(
+                request, view_function(*args, **kwargs), view_function, self
+            )
 
         grainy_handler.view = self.extra.get("view")
         response_handler.Grainy = self.Grainy = grainy_handler
@@ -244,15 +242,16 @@ class grainy_json_view_response(grainy_view_response):
             obj = self.get_object(view)
         except AssertionError as inst:
             obj = None
-        namespace = Namespace(self.Grainy.namespace(**request.nsparam).replace("?","*"))
+        namespace = Namespace(
+            self.Grainy.namespace(**request.nsparam).replace("?", "*")
+        )
 
         if isinstance(data, list):
             prefix = "{}.*".format(namespace)
         else:
             prefix = namespace
-        for ns,p in self.extra.get("handlers", {}).items():
+        for ns, p in self.extra.get("handlers", {}).items():
             perms.applicator.handler(f"{prefix}.{ns}", **p)
-
 
         data, tail = namespace.container(data)
 
@@ -266,18 +265,19 @@ class grainy_json_view_response(grainy_view_response):
         else:
             return {}
 
-
     def apply_perms(self, request, response, view_function, view):
         response.content = JsonResponse(
             self._apply_perms(
-                request, json.loads(
-                    response.content.decode("utf-8"),
-                    cls = self.extra.get("decoder")
-                ), view_function, view
+                request,
+                json.loads(
+                    response.content.decode("utf-8"), cls=self.extra.get("decoder")
+                ),
+                view_function,
+                view,
             ),
-            encoder = self.extra.get("encoder", DjangoJSONEncoder),
-            safe = self.extra.get("safe", True),
-            json_dumps_params = self.extra.get("json_dumps_params")
+            encoder=self.extra.get("encoder", DjangoJSONEncoder),
+            safe=self.extra.get("safe", True),
+            json_dumps_params=self.extra.get("json_dumps_params"),
         )
         return response
 
@@ -298,6 +298,7 @@ class grainy_rest_viewset_response(grainy_json_view_response):
     """
 
     require_namespace = True
+
     def get_object(self, view):
         try:
             return super(grainy_rest_viewset_response, self).get_object(view)
@@ -307,7 +308,6 @@ class grainy_rest_viewset_response(grainy_json_view_response):
     def apply_perms(self, request, response, view_function, view):
         response.data = self._apply_perms(request, response.data, view_function, view)
         return response
-
 
     def augment_request(self, request):
         """
@@ -321,7 +321,9 @@ class grainy_rest_viewset_response(grainy_json_view_response):
         """
 
         decorator = self
-        namespace = Namespace(self.Grainy.namespace(**request.nsparam).replace("?","*"))
+        namespace = Namespace(
+            self.Grainy.namespace(**request.nsparam).replace("?", "*")
+        )
         perms = decorator.permissions_cls(request.user)
 
         def grainy_data(request, defaults):
@@ -364,17 +366,12 @@ class grainy_rest_viewset_response(grainy_json_view_response):
                 data = grainy_data(request, serializer_cls(instance=instance).data)
             else:
                 data = grainy_data(request, {})
-            return serializer_cls(
-                data = data,
-                instance = instance,
-                **kwargs
-            )
+            return serializer_cls(data=data, instance=instance, **kwargs)
 
         request.grainy_data = lambda defaults: grainy_data(request, defaults)
         request.grainy_update_serializer = grainy_update_serializer
 
         return request
-
 
 
 class grainy_view(grainy_decorator):
@@ -389,15 +386,7 @@ class grainy_view(grainy_decorator):
 
     # the response handlers that will be affected by grainy
     # permissions
-    response_handlers = [
-        "get",
-        "post",
-        "put",
-        "delete",
-        "patch",
-        "head",
-        "options"
-    ]
+    response_handlers = ["get", "post", "put", "delete", "patch", "head", "options"]
 
     decorator = grainy_view_response
     require_namespace = True
@@ -416,16 +405,20 @@ class grainy_view(grainy_decorator):
             for rh in self.response_handlers:
                 if hasattr(view, rh):
                     view_function = getattr(view, rh)
-                    if not hasattr(view_function, "Grainy") or view_function.Grainy.view:
+                    if (
+                        not hasattr(view_function, "Grainy")
+                        or view_function.Grainy.view
+                    ):
                         setattr(view, rh, self.decorate(view_function))
                     else:
-                        print(view_function,view_function.Grainy)
+                        print(view_function, view_function.Grainy)
             return view
         else:
             return self.decorate(view)
 
     def decorate(self, view):
         return self.decorator(*self.args, **self.kwargs)(view)
+
 
 class grainy_json_view(grainy_view):
 
@@ -438,6 +431,7 @@ class grainy_json_view(grainy_view):
     """
 
     decorator = grainy_json_view_response
+
 
 class grainy_rest_viewset(grainy_json_view):
 
@@ -455,9 +449,7 @@ class grainy_rest_viewset(grainy_json_view):
         "create",
         "update",
         "partial_update",
-        "destroy"
+        "destroy",
     ]
 
-
     decorator = grainy_rest_viewset_response
-

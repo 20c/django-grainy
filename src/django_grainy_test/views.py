@@ -11,7 +11,7 @@ from django_grainy.decorators import (
     grainy_json_view,
     grainy_rest_viewset,
     grainy_rest_viewset_response,
-    grainy_view_response
+    grainy_view_response,
 )
 
 from .models import ModelA
@@ -19,11 +19,9 @@ from .serializers import ModelASerializer
 
 # Create your views here.
 
+
 @grainy_rest_viewset(
-    namespace = "api.a",
-    handlers = {
-        "nested_dict.secret" : { "explicit" : True }
-    }
+    namespace="api.a", handlers={"nested_dict.secret": {"explicit": True}}
 )
 class ModelAViewSet(viewsets.ModelViewSet):
     queryset = ModelA.objects.all()
@@ -38,19 +36,18 @@ class ExplicitViewSet(viewsets.ModelViewSet):
         namespace="api.a_x",
         namespace_instance="{namespace}.{instance.id}",
         explicit=True,
-        explicit_instance=False
+        explicit_instance=False,
     )
-    def retrieve(self,*args,**kwargs):
+    def retrieve(self, *args, **kwargs):
         return super(ExplicitViewSet, self).retrieve(*args, **kwargs)
 
     @grainy_rest_viewset_response(
         namespace="api.a_x",
         namespace_instance="{namespace}.{instance.id}",
-        explicit=True
+        explicit=True,
     )
-    def destroy(self,*args,**kwargs):
+    def destroy(self, *args, **kwargs):
         return super(ExplicitViewSet, self).destroy(*args, **kwargs)
-
 
 
 @grainy_view(namespace="site.view")
@@ -63,11 +60,7 @@ def detail(request, id):
     return HttpResponse("ID {}".format(id))
 
 
-@grainy_view(
-    namespace="detail.{id}",
-    explicit=True,
-    ignore_grant_all=True
-)
+@grainy_view(namespace="detail.{id}", explicit=True, ignore_grant_all=True)
 def detail_explicit(request, id):
     return HttpResponse("ID {}".format(id))
 
@@ -89,9 +82,9 @@ class View(BaseView):
     def patch(self, request):
         return HttpResponse(content="PATCH Response")
 
+
 @grainy_view(namespace="detail.{id}")
 class Detail(BaseView):
-
     def get(self, request, id):
         return HttpResponse(content="GET Response {}".format(id))
 
@@ -108,18 +101,13 @@ class Detail(BaseView):
         return HttpResponse(content="PATCH Response {}".format(id))
 
 
-@grainy_view(
-    namespace="detail.{id}",
-    explicit=True,
-    ignore_grant_all=True
-)
+@grainy_view(namespace="detail.{id}", explicit=True, ignore_grant_all=True)
 class DetailExplicit(Detail):
     pass
 
 
 @grainy_view(namespace="detail_manual.{id}")
 class DetailManual(BaseView):
-
     def get(self, request, id):
         return HttpResponse(content="GET Response {}".format(id))
 
@@ -127,23 +115,20 @@ class DetailManual(BaseView):
     def post(self, request):
         return HttpResponse(content="POST Response 1")
 
+
 @grainy_view(namespace="detail_manual.{request.method}.{id}")
 class DetailReqFmt(Detail):
     pass
 
 
 @grainy_json_view(
-    namespace="site.view",
-    handlers = {
-        "nested_dict.secret" : { "explicit" : True }
-    }
+    namespace="site.view", handlers={"nested_dict.secret": {"explicit": True}}
 )
 class JsonView(BaseView):
     def get(self, request):
-        return JsonResponse({
-            "hello" : "world",
-            "nested_dict" : {
-                "public": "something",
-                "secret": "hidden"
+        return JsonResponse(
+            {
+                "hello": "world",
+                "nested_dict": {"public": "something", "secret": "hidden"},
             }
-        })
+        )

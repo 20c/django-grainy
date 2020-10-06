@@ -11,31 +11,15 @@ from django_grainy.models import (
     UserPermission,
     GroupPermission,
     GrainyHandler,
-    PermissionSet
+    PermissionSet,
 )
 from django_grainy.decorators import grainy_model
 
-from django_grainy_test.models import (
-    ModelA,
-    ModelB,
-    APIKey,
-    APIKeyPermission
-)
+from django_grainy_test.models import ModelA, ModelB, APIKey, APIKeyPermission
 
-from django_grainy_test.views import (
-    View,
-    view,
-    detail,
-    Detail,
-    JsonView
-)
+from django_grainy_test.views import View, view, detail, Detail, JsonView
 
-from django_grainy.util import (
-    namespace,
-    int_flags,
-    str_flags,
-    Permissions
-)
+from django_grainy.util import namespace, int_flags, str_flags, Permissions
 
 from grainy.const import (
     PERM_READ,
@@ -47,21 +31,23 @@ from grainy.const import (
 
 class TestPermissions(UserTestCase):
 
-    EXPECTED_PERMISSIONS_A = PermissionSet({
-        ModelA.Grainy.namespace() : PERM_READ,
-        ModelB.Grainy.namespace() : PERM_READ | PERM_UPDATE,
-        view.Grainy.namespace() : PERM_READ,
-        View.Grainy.namespace() : PERM_READ | PERM_CREATE | PERM_UPDATE | PERM_DELETE,
-        "detail.1" : PERM_READ | PERM_CREATE | PERM_UPDATE | PERM_DELETE,
-        "detail_manual.1" : PERM_READ | PERM_CREATE | PERM_UPDATE | PERM_DELETE,
-        "detail_manual.get" : PERM_READ,
-        "detail_manual" : PERM_CREATE,
-    })
+    EXPECTED_PERMISSIONS_A = PermissionSet(
+        {
+            ModelA.Grainy.namespace(): PERM_READ,
+            ModelB.Grainy.namespace(): PERM_READ | PERM_UPDATE,
+            view.Grainy.namespace(): PERM_READ,
+            View.Grainy.namespace(): PERM_READ
+            | PERM_CREATE
+            | PERM_UPDATE
+            | PERM_DELETE,
+            "detail.1": PERM_READ | PERM_CREATE | PERM_UPDATE | PERM_DELETE,
+            "detail_manual.1": PERM_READ | PERM_CREATE | PERM_UPDATE | PERM_DELETE,
+            "detail_manual.get": PERM_READ,
+            "detail_manual": PERM_CREATE,
+        }
+    )
 
-    GROUP_PERMISSIONS_A = PermissionSet({
-        "secret.group" : PERM_READ
-    })
-
+    GROUP_PERMISSIONS_A = PermissionSet({"secret.group": PERM_READ})
 
     @classmethod
     def setUpTestData(cls):
@@ -73,36 +59,26 @@ class TestPermissions(UserTestCase):
             cls.EXPECTED_PERMISSIONS_A
         )
 
-        cls.api_key.grainy_permissions.add_permission_set(
-            cls.EXPECTED_PERMISSIONS_A
-        )
+        cls.api_key.grainy_permissions.add_permission_set(cls.EXPECTED_PERMISSIONS_A)
 
-
-        cls.users["user_b"].grainy_permissions.add_permission_set(
-            {
-                "x.y.z" : "r"
-            }
-        )
+        cls.users["user_b"].grainy_permissions.add_permission_set({"x.y.z": "r"})
 
         cls.users["user_c"].grainy_permissions.add_permission_set(
             {
-                "detail" : "r",
-                "detail.1" : "crud",
+                "detail": "r",
+                "detail.1": "crud",
                 JsonView.Grainy.namespace(): "r",
-                JsonView.Grainy.namespace("nested_dict.secret"): "r"
+                JsonView.Grainy.namespace("nested_dict.secret"): "r",
             }
         )
 
         cls.users["user_admin_a"].grainy_permissions.add_permission_set(
-            {
-                "detail.1" : "crud"
-            }
+            {"detail.1": "crud"}
         )
 
         cls.groups["group_a"].grainy_permissions.add_permission_set(
             cls.GROUP_PERMISSIONS_A
         )
-
 
     def test_permissions_init(self):
         """
@@ -154,8 +130,6 @@ class TestPermissions(UserTestCase):
         self.assertTrue(perms.check(ModelB(), PERM_READ))
         self.assertTrue(perms.check(ModelB(), PERM_UPDATE))
 
-
-
     def test_permissions_get(self):
         """
         test django.grainy.util.Permissions.get
@@ -168,11 +142,13 @@ class TestPermissions(UserTestCase):
         self.assertEqual(perms.get(ModelB), PERM_READ | PERM_UPDATE)
         self.assertEqual(perms.get(ModelB, as_string=True), "ru")
         self.assertEqual(perms.get("detail_manual", as_string=True), "c")
-        self.assertEqual(perms.get("detail_manual.1", as_string=True, explicit=True), "crud")
-        self.assertEqual(perms.get("detail_manual.2", as_string=True, explicit=True), "")
+        self.assertEqual(
+            perms.get("detail_manual.1", as_string=True, explicit=True), "crud"
+        )
+        self.assertEqual(
+            perms.get("detail_manual.2", as_string=True, explicit=True), ""
+        )
         self.assertEqual(perms.get("detail_manual.2", as_string=True), "c")
-
-
 
     def test_anonymous_permissions(self):
         user = AnonymousUser()
@@ -180,7 +156,6 @@ class TestPermissions(UserTestCase):
         self.assertTrue(perms.check("a.b.c", PERM_READ))
         self.assertTrue(perms.check("a.b.c.d", PERM_UPDATE | PERM_READ))
         self.assertFalse(perms.check("x.y.z", PERM_READ))
-
 
     def test_grainy_view(self):
         """
@@ -196,10 +171,14 @@ class TestPermissions(UserTestCase):
 
         ## test class view
         for method in ["POST", "GET", "PUT", "PATCH", "DELETE"]:
-            response = getattr(self.userclient("user_a"), method.lower())("/view_class/")
+            response = getattr(self.userclient("user_a"), method.lower())(
+                "/view_class/"
+            )
             self.assertEqual(response.status_code, 200)
 
-            response = getattr(self.userclient("user_b"), method.lower())("/view_class/")
+            response = getattr(self.userclient("user_b"), method.lower())(
+                "/view_class/"
+            )
             self.assertEqual(response.status_code, 403)
 
         # test namespace formatting from request param
@@ -212,10 +191,12 @@ class TestPermissions(UserTestCase):
         response = client.get("/detail/2/")
         self.assertEqual(response.status_code, 403)
 
-        for method in ["get","post","delete","put","patch"]:
+        for method in ["get", "post", "delete", "put", "patch"]:
             response = getattr(client, method)("/detail_class/1/")
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(response.content.decode("utf-8"), "{} Response 1".format(method.upper()))
+            self.assertEqual(
+                response.content.decode("utf-8"), "{} Response 1".format(method.upper())
+            )
 
             response = getattr(client, method)("/detail_class/2/")
             self.assertEqual(response.status_code, 403)
@@ -231,15 +212,20 @@ class TestPermissions(UserTestCase):
             response = self.userclient(username).get("/detail_explicit/2/")
             self.assertEqual(response.status_code, 403)
 
-            for method in ["get","post","delete","put","patch"]:
-                response = getattr(self.userclient(username), method)("/detail_class_explicit/1/")
+            for method in ["get", "post", "delete", "put", "patch"]:
+                response = getattr(self.userclient(username), method)(
+                    "/detail_class_explicit/1/"
+                )
                 self.assertEqual(response.status_code, 200)
-                self.assertEqual(response.content.decode("utf-8"), "{} Response 1".format(method.upper()))
+                self.assertEqual(
+                    response.content.decode("utf-8"),
+                    "{} Response 1".format(method.upper()),
+                )
 
-                response = getattr(self.userclient(username), method)("/detail_class_explicit/2/")
+                response = getattr(self.userclient(username), method)(
+                    "/detail_class_explicit/2/"
+                )
                 self.assertEqual(response.status_code, 403)
-
-
 
         # test class manual view
         response = self.userclient("user_a").get("/detail_class_manual/1/")
@@ -259,7 +245,6 @@ class TestPermissions(UserTestCase):
         response = self.userclient("user_a").delete("/detail_class_reqfmt/1/")
         self.assertEqual(response.status_code, 403)
 
-
     def test_grainy_json_view(self):
         """
         test grainy_json_view decorator
@@ -274,7 +259,7 @@ class TestPermissions(UserTestCase):
 
         self.assertEqual(
             json.loads(response.content.decode("utf-8")),
-            {"hello": "world", "nested_dict": {"public": "something"}}
+            {"hello": "world", "nested_dict": {"public": "something"}},
         )
 
         request = factory.get("/view_class_json/")
@@ -283,7 +268,10 @@ class TestPermissions(UserTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             json.loads(response.content.decode("utf-8")),
-            {"hello": "world", "nested_dict": {"secret": "hidden", "public": "something"}}
+            {
+                "hello": "world",
+                "nested_dict": {"secret": "hidden", "public": "something"},
+            },
         )
 
     def test_permissions_instances(self):
@@ -295,7 +283,7 @@ class TestPermissions(UserTestCase):
         perms_b = Permissions(self.users["user_b"])
         perms_admin = Permissions(self.users["user_admin_a"])
 
-        for i in range(1,4):
+        for i in range(1, 4):
             ModelA.objects.create(name="Test {}".format(i))
 
         # user a should have read to all 3 instances of model a
@@ -310,7 +298,9 @@ class TestPermissions(UserTestCase):
 
         # add user a permission to first isntance of model a
         # and reload permissions util
-        self.users["user_a"].grainy_permissions.add_permission(ModelA.objects.first(), "r")
+        self.users["user_a"].grainy_permissions.add_permission(
+            ModelA.objects.first(), "r"
+        )
         perms_a.load(refresh=True)
 
         # user a should now habe read to 1 instances of model a
@@ -324,7 +314,9 @@ class TestPermissions(UserTestCase):
 
         # deny user a permissions to first instance of model a
         # and reload permissions util
-        self.users["user_a"].grainy_permissions.add_permission(ModelA.objects.first(), 0)
+        self.users["user_a"].grainy_permissions.add_permission(
+            ModelA.objects.first(), 0
+        )
         perms_a.load(refresh=True)
 
         # user a should now have read access to 2 instances of model a
@@ -340,5 +332,3 @@ class TestPermissions(UserTestCase):
         # when ignoring grant all
         instances = perms_admin.instances(ModelA, "r", ignore_grant_all=True)
         self.assertEqual(len(instances), 0)
-
-

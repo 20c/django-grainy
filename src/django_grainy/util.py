@@ -1,20 +1,12 @@
-from grainy.core import (
-    PermissionSet,
-    Applicator
-)
+from grainy.core import PermissionSet, Applicator
 
 from django.db.models import QuerySet
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, AnonymousUser
 
-from .helpers import (
-    namespace,
-    int_flags,
-    str_flags
-)
-from .conf import (
-    ANONYMOUS_PERMS
-)
+from .helpers import namespace, int_flags, str_flags
+from .conf import ANONYMOUS_PERMS
+
 
 class Permissions(object):
 
@@ -29,7 +21,9 @@ class Permissions(object):
             - obj <User|AnonymousUser|Group|Model>
         """
 
-        if not hasattr(obj, "grainy_permissions") and not isinstance(obj, AnonymousUser):
+        if not hasattr(obj, "grainy_permissions") and not isinstance(
+            obj, AnonymousUser
+        ):
             raise ValueError(
                 "`obj` needs to be have a `grainy_permissions` relationship"
             )
@@ -39,7 +33,7 @@ class Permissions(object):
         self.loaded = False
         self.load()
 
-        self.grant_all = (isinstance(obj, get_user_model()) and obj.is_superuser)
+        self.grant_all = isinstance(obj, get_user_model()) and obj.is_superuser
 
     def load(self, refresh=False):
         """
@@ -55,8 +49,8 @@ class Permissions(object):
         """
         if not hasattr(self.obj, "grainy_permissions"):
             if isinstance(self.obj, AnonymousUser):
-                #Permission for AnonymousUser instance are loaded from
-                #settigns
+                # Permission for AnonymousUser instance are loaded from
+                # settigns
                 if not self.loaded or refresh:
                     self.pset = PermissionSet(ANONYMOUS_PERMS)
                     self.loaded = True
@@ -91,7 +85,9 @@ class Permissions(object):
         """
         if self.grant_all and not ignore_grant_all:
             return True
-        return self.pset.check(namespace(target), int_flags(permissions), explicit=explicit)
+        return self.pset.check(
+            namespace(target), int_flags(permissions), explicit=explicit
+        )
 
     def get(self, target, as_string=False, explicit=False):
         """
@@ -110,7 +106,9 @@ class Permissions(object):
             - <str>: permission flags, if as_string=True
         """
         if as_string:
-            return str_flags(self.pset.get_permissions(namespace(target), explicit=explicit))
+            return str_flags(
+                self.pset.get_permissions(namespace(target), explicit=explicit)
+            )
         return self.pset.get_permissions(namespace(target), explicit=explicit)
 
     def apply(self, data):
@@ -155,12 +153,12 @@ class Permissions(object):
             q = model.objects.all()
 
         return [
-            instance for instance in q
+            instance
+            for instance in q
             if self.check(
                 instance,
                 permissions,
                 explicit=explicit,
-                ignore_grant_all=ignore_grant_all
+                ignore_grant_all=ignore_grant_all,
             )
         ]
-

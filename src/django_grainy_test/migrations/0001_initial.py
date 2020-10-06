@@ -12,101 +12,218 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='APIKey',
+            name="APIKey",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('key', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("key", models.CharField(max_length=255)),
             ],
         ),
         migrations.CreateModel(
-            name='APIKeyPermission',
+            name="APIKeyPermission",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('namespace', models.CharField(help_text="Permission namespace (A '.' delimited list of keys", max_length=255)),
-                ('permission', django_grainy.fields.PermissionField(default=1)),
-                ('api_key', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='grainy_permissions', to='django_grainy_test.APIKey')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "namespace",
+                    models.CharField(
+                        help_text="Permission namespace (A '.' delimited list of keys",
+                        max_length=255,
+                    ),
+                ),
+                ("permission", django_grainy.fields.PermissionField(default=1)),
+                (
+                    "api_key",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="grainy_permissions",
+                        to="django_grainy_test.APIKey",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='ModelA',
+            name="ModelA",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
             bases=(django_grainy.models.GrainyMixin, models.Model),
         ),
         migrations.CreateModel(
-            name='ModelB',
+            name="ModelB",
             fields=[
-                ('modela_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='django_grainy_test.ModelA')),
+                (
+                    "modela_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="django_grainy_test.ModelA",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
-            bases=('django_grainy_test.modela',),
+            bases=("django_grainy_test.modela",),
         ),
         migrations.CreateModel(
-            name='ModelC',
+            name="ModelC",
             fields=[
-                ('modela_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='django_grainy_test.ModelA')),
-                ('b', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='c', to='django_grainy_test.ModelB')),
+                (
+                    "modela_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="django_grainy_test.ModelA",
+                    ),
+                ),
+                (
+                    "b",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="c",
+                        to="django_grainy_test.ModelB",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
-            bases=('django_grainy_test.modela',),
+            bases=("django_grainy_test.modela",),
         ),
         migrations.CreateModel(
-            name='ModelD',
+            name="ModelD",
             fields=[
-                ('modela_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='django_grainy_test.ModelA')),
+                (
+                    "modela_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="django_grainy_test.ModelA",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
-            bases=('django_grainy_test.modela',),
+            bases=("django_grainy_test.modela",),
         ),
         migrations.CreateModel(
-            name='ModelX',
+            name="ModelX",
             fields=[
-                ('modela_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='django_grainy_test.ModelA')),
+                (
+                    "modela_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="django_grainy_test.ModelA",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
-            bases=('django_grainy_test.modela',),
+            bases=("django_grainy_test.modela",),
         ),
         migrations.CreateModel(
-            name='ModelY',
+            name="ModelY",
             fields=[
-                ('modela_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='django_grainy_test.ModelA')),
-                ('x', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='y', to='django_grainy_test.ModelX')),
+                (
+                    "modela_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="django_grainy_test.ModelA",
+                    ),
+                ),
+                (
+                    "x",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="y",
+                        to="django_grainy_test.ModelX",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
-            bases=('django_grainy_test.modela',),
+            bases=("django_grainy_test.modela",),
         ),
         migrations.CreateModel(
-            name='ModelZ',
+            name="ModelZ",
             fields=[
-                ('modela_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='django_grainy_test.ModelA')),
-                ('y', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='z', to='django_grainy_test.ModelY')),
+                (
+                    "modela_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="django_grainy_test.ModelA",
+                    ),
+                ),
+                (
+                    "y",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="z",
+                        to="django_grainy_test.ModelY",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
-            bases=('django_grainy_test.modela',),
+            bases=("django_grainy_test.modela",),
         ),
     ]

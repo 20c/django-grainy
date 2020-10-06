@@ -3,6 +3,7 @@ from django.db import models
 from django import forms
 from .conf import PERM_CHOICES
 
+
 class PermissionFormField(forms.IntegerField):
     def prepare_value(self, value):
         # if the form field is passed a bitmask we
@@ -10,7 +11,7 @@ class PermissionFormField(forms.IntegerField):
         # item represents a choice (flag)
         if isinstance(value, six.integer_types):
             _value = []
-            for f,n,c in PERM_CHOICES:
+            for f, n, c in PERM_CHOICES:
                 if value & f:
                     _value.append(f)
             value = _value
@@ -27,9 +28,7 @@ class PermissionFormField(forms.IntegerField):
         return value
 
 
-
 class PermissionField(models.IntegerField):
-
     def to_python(self, value):
         # if a string is passed it should be parsed
         # for string flags (for example 'c', 'r', 'u' and 'd')
@@ -45,4 +44,3 @@ class PermissionField(models.IntegerField):
             return 0
 
         return value
-

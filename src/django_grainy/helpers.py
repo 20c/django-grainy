@@ -3,11 +3,8 @@ import inspect
 from grainy.core import (
     Namespace,
 )
-from .conf import (
-    PERM_CHOICES,
-    REQUEST_METHOD_TO_FLAG,
-    DJANGO_OP_TO_FLAG
-)
+from .conf import PERM_CHOICES, REQUEST_METHOD_TO_FLAG, DJANGO_OP_TO_FLAG
+
 
 def namespace(target, **kwargs):
 
@@ -46,12 +43,12 @@ def namespace(target, **kwargs):
             return target.Grainy.namespace(**kwargs)
         return target.Grainy.namespace(instance=target, **kwargs)
 
-
     if isinstance(target, six.string_types):
         return target
 
-    raise TypeError("`target` {} could not be convered to a permissioning namespace".format(target))
-
+    raise TypeError(
+        "`target` {} could not be convered to a permissioning namespace".format(target)
+    )
 
 
 def dict_get_namespace(data, namespace):
@@ -59,10 +56,7 @@ def dict_get_namespace(data, namespace):
     path = []
     for k in namespace:
         if k not in d:
-            raise KeyError("`{}` does not exist at `{}`".format(
-                k,
-                ".".join(path)
-            ))
+            raise KeyError("`{}` does not exist at `{}`".format(k, ".".join(path)))
         path.append(k)
         d = d[k]
     return d
@@ -81,6 +75,7 @@ def request_to_flag(request):
     """
     return request_method_to_flag(request.method)
 
+
 def request_method_to_flag(method):
     """
     Converts a request method to the matching grainy permission
@@ -93,6 +88,7 @@ def request_method_to_flag(method):
         - int
     """
     return REQUEST_METHOD_TO_FLAG.get(method.upper(), 0)
+
 
 def django_op_to_flag(op):
     """
@@ -165,7 +161,3 @@ def str_flags(flags):
         if flags & f_i:
             r += f_s
     return r
-
-
-
-

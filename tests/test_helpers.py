@@ -3,12 +3,7 @@ from django.test import RequestFactory
 from grainy.core import (
     Namespace,
 )
-from grainy.const import (
-    PERM_READ,
-    PERM_DELETE,
-    PERM_UPDATE,
-    PERM_CREATE
-)
+from grainy.const import PERM_READ, PERM_DELETE, PERM_UPDATE, PERM_CREATE
 from django_grainy.helpers import (
     namespace,
     int_flags,
@@ -17,13 +12,10 @@ from django_grainy.helpers import (
     request_to_flag,
 )
 
-from django_grainy_test.models import(
-    ModelA,
-    ModelD
-)
+from django_grainy_test.models import ModelA, ModelD
+
 
 class TestHelpers(TestCase):
-
     def test_namespace(self):
         """
         test django_grainy.util.namespace
@@ -36,15 +28,16 @@ class TestHelpers(TestCase):
         with self.assertRaises(TypeError):
             namespace(object())
 
-        self.assertEqual(namespace( (ModelA, "name") ), "django_grainy_test.modela.name")
-        self.assertEqual(namespace( (ModelA(), "name") ), "django_grainy_test.modela.none.name")
+        self.assertEqual(namespace((ModelA, "name")), "django_grainy_test.modela.name")
+        self.assertEqual(
+            namespace((ModelA(), "name")), "django_grainy_test.modela.none.name"
+        )
 
         self.assertEqual(namespace(ModelD, value="parent"), "dynamic.parent")
         self.assertEqual(
             namespace(ModelD(), value="parent", other_value="child"),
-            "dynamic.parent.child"
+            "dynamic.parent.child",
         )
-
 
     def test_request_to_flag(self):
         """
@@ -59,18 +52,11 @@ class TestHelpers(TestCase):
         self.assertEqual(request_to_flag(factory.patch("/view_class")), PERM_UPDATE)
         self.assertEqual(request_to_flag(factory.delete("/view_class")), PERM_DELETE)
 
-
     def test_dict_get_namespace(self):
         namespace = Namespace("a.b.c")
-        self.assertEqual(
-            dict_get_namespace({"a":{"b":{"c":123}}}, namespace),
-            123
-        )
+        self.assertEqual(dict_get_namespace({"a": {"b": {"c": 123}}}, namespace), 123)
         with self.assertRaises(KeyError) as inst:
-            self.assertEqual(
-                dict_get_namespace({}, namespace),
-                123
-            )
+            self.assertEqual(dict_get_namespace({}, namespace), 123)
 
     def test_int_flags(self):
         """
@@ -80,14 +66,21 @@ class TestHelpers(TestCase):
         self.assertEqual(int_flags("c"), PERM_CREATE)
         self.assertEqual(int_flags("cr"), PERM_CREATE | PERM_READ)
         self.assertEqual(int_flags("cru"), PERM_CREATE | PERM_READ | PERM_UPDATE)
-        self.assertEqual(int_flags("crud"), PERM_CREATE | PERM_READ | PERM_UPDATE | PERM_DELETE)
+        self.assertEqual(
+            int_flags("crud"), PERM_CREATE | PERM_READ | PERM_UPDATE | PERM_DELETE
+        )
         self.assertEqual(int_flags("xyz"), 0)
         self.assertEqual(int_flags(None), 0)
 
         self.assertEqual(int_flags(int_flags("c")), PERM_CREATE)
         self.assertEqual(int_flags(int_flags("cr")), PERM_CREATE | PERM_READ)
-        self.assertEqual(int_flags(int_flags("cru")), PERM_CREATE | PERM_READ | PERM_UPDATE)
-        self.assertEqual(int_flags(int_flags("crud")), PERM_CREATE | PERM_READ | PERM_UPDATE | PERM_DELETE)
+        self.assertEqual(
+            int_flags(int_flags("cru")), PERM_CREATE | PERM_READ | PERM_UPDATE
+        )
+        self.assertEqual(
+            int_flags(int_flags("crud")),
+            PERM_CREATE | PERM_READ | PERM_UPDATE | PERM_DELETE,
+        )
 
         with self.assertRaises(TypeError):
             int_flags(object())
@@ -101,6 +94,3 @@ class TestHelpers(TestCase):
         self.assertEqual(str_flags(PERM_READ | PERM_UPDATE), "ru")
         self.assertEqual(str_flags(PERM_READ | PERM_CREATE), "cr")
         self.assertEqual(str_flags(PERM_READ | PERM_DELETE), "rd")
-
-
-
