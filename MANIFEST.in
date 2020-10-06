@@ -2,5 +2,6 @@ include LICENSE
 recursive-include Ctl *.txt
 recursive-include django_grainy *.py
 recursive-include django_grainy *.html
+recursive-include django_grainy *.js
 recursive-include django_grainy_test *.py
 include Ctl/VERSION

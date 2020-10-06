@@ -371,7 +371,7 @@ class grainy_rest_viewset_response(grainy_json_view_response):
             )
 
         request.grainy_data = lambda defaults: grainy_data(request, defaults)
-        request.grainy_serializer = grainy_update_serializer
+        request.grainy_update_serializer = grainy_update_serializer
 
         return request
 
