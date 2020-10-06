@@ -2,9 +2,13 @@
 
 
 ## Unreleased
+
+
+## 1.8.0
 ### Added
 - remote grainy permissions
 - field level permission checks when POST/PUT/PATCHing to REST api (#14)
+- python3.8 support
 ### Changed
 - fix #36: Grainy decorators should allow setting of Permissions class to use for permission checks
 ### Removed

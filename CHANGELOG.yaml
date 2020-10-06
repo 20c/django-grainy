@@ -85,18 +85,23 @@
   - move from facsimile to Ctl (#32)
   fixed:
   - 'admin inlines: sort by namespace alphabetically (#24)'
-Unreleased:
+1.8.0:
   added:
   - remote grainy permissions
   - field level permission checks when POST/PUT/PATCHing to REST api (#14)
   - python3.8 support
   changed:
-  - 'fix #36: Grainy decorators should allow setting of Permissions class to use for permission checks'
-  deprecated: []
-  fixed: []
+  - 'fix #36: Grainy decorators should allow setting of Permissions class to use for
+    permission checks'
   removed:
   - python2.7 support
   - python3.4 support
   - python3.5 support
   - django1.11 support
+Unreleased:
+  added: []
+  changed: []
+  deprecated: []
+  fixed: []
+  removed: []
   security: []
