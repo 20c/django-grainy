@@ -12,25 +12,21 @@ class UserTestCase(TestCase):
     def setUpTestData(cls):
         # create users
         cls.users = {
-                    k:
-                    get_user_model().objects.create_user(
-                        k, f"{k}@example.com", password=k
-                    )
-                for k in cls.setup_users
+            k: get_user_model().objects.create_user(k, f"{k}@example.com", password=k)
+            for k in cls.setup_users
         }
 
         # create admin users
         cls.users.update(
             {
-                        k:
-                        get_user_model().objects.create_user(
-                            k,
-                            f"{k}@example.com",
-                            password=k,
-                            is_staff=True,
-                            is_superuser=True,
-                        )
-                    for k in cls.setup_admins
+                k: get_user_model().objects.create_user(
+                    k,
+                    f"{k}@example.com",
+                    password=k,
+                    is_staff=True,
+                    is_superuser=True,
+                )
+                for k in cls.setup_admins
             }
         )
 

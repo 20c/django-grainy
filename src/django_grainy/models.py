@@ -186,7 +186,7 @@ class GrainyHandler:
         return cls.namespace_instance_template.format(
             namespace=str(cls.namespace_base).format(**kwargs),
             instance=instance,
-            **kwargs
+            **kwargs,
         ).lower()
 
     @classmethod

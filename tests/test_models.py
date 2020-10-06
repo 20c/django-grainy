@@ -23,9 +23,7 @@ class TestGrainyHandler(UserTestCase):
 
     def test_grainy_model_decorator(self):
         a = ModelA.objects.create(name="A1")
-        self.assertEqual(
-            a.Grainy.namespace(a), f"django_grainy_test.modela.{a.id}"
-        )
+        self.assertEqual(a.Grainy.namespace(a), f"django_grainy_test.modela.{a.id}")
         b = ModelB.objects.create(name="B1")
         self.assertEqual(b.Grainy.namespace(b), f"something.arbitrary.{b.id}")
 
@@ -61,6 +59,4 @@ class TestGrainyHandler(UserTestCase):
 
     def test_grainy_mixin(self):
         a = ModelA.objects.create(name="A1")
-        self.assertEqual(
-            a.grainy_namespace, f"django_grainy_test.modela.{a.id}"
-        )
+        self.assertEqual(a.grainy_namespace, f"django_grainy_test.modela.{a.id}")
