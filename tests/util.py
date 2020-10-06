@@ -11,39 +11,31 @@ class UserTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         # create users
-        cls.users = dict(
-            [
-                (
-                    k,
+        cls.users = {
+                    k:
                     get_user_model().objects.create_user(
-                        k, "{}@example.com".format(k), password=k
-                    ),
-                )
+                        k, f"{k}@example.com", password=k
+                    )
                 for k in cls.setup_users
-            ]
-        )
+        }
 
         # create admin users
         cls.users.update(
-            dict(
-                [
-                    (
-                        k,
+            {
+                        k:
                         get_user_model().objects.create_user(
                             k,
-                            "{}@example.com".format(k),
+                            f"{k}@example.com",
                             password=k,
                             is_staff=True,
                             is_superuser=True,
-                        ),
-                    )
+                        )
                     for k in cls.setup_admins
-                ]
-            )
+            }
         )
 
         # create usergroups
-        cls.groups = dict([(k, Group.objects.create(name=k)) for k in cls.setup_groups])
+        cls.groups = {k: Group.objects.create(name=k) for k in cls.setup_groups}
 
         # add users to groups
         for group in cls.groups.values():

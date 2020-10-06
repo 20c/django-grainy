@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views import View as BaseView
@@ -39,7 +36,7 @@ class ExplicitViewSet(viewsets.ModelViewSet):
         explicit_instance=False,
     )
     def retrieve(self, *args, **kwargs):
-        return super(ExplicitViewSet, self).retrieve(*args, **kwargs)
+        return super().retrieve(*args, **kwargs)
 
     @grainy_rest_viewset_response(
         namespace="api.a_x",
@@ -47,7 +44,7 @@ class ExplicitViewSet(viewsets.ModelViewSet):
         explicit=True,
     )
     def destroy(self, *args, **kwargs):
-        return super(ExplicitViewSet, self).destroy(*args, **kwargs)
+        return super().destroy(*args, **kwargs)
 
 
 @grainy_view(namespace="site.view")
@@ -57,12 +54,12 @@ def view(request):
 
 @grainy_view(namespace="detail.{id}")
 def detail(request, id):
-    return HttpResponse("ID {}".format(id))
+    return HttpResponse(f"ID {id}")
 
 
 @grainy_view(namespace="detail.{id}", explicit=True, ignore_grant_all=True)
 def detail_explicit(request, id):
-    return HttpResponse("ID {}".format(id))
+    return HttpResponse(f"ID {id}")
 
 
 @grainy_view(namespace="site.view")
@@ -86,19 +83,19 @@ class View(BaseView):
 @grainy_view(namespace="detail.{id}")
 class Detail(BaseView):
     def get(self, request, id):
-        return HttpResponse(content="GET Response {}".format(id))
+        return HttpResponse(content=f"GET Response {id}")
 
     def post(self, request, id):
-        return HttpResponse(content="POST Response {}".format(id))
+        return HttpResponse(content=f"POST Response {id}")
 
     def put(self, request, id):
-        return HttpResponse(content="PUT Response {}".format(id))
+        return HttpResponse(content=f"PUT Response {id}")
 
     def delete(self, request, id):
-        return HttpResponse(content="DELETE Response {}".format(id))
+        return HttpResponse(content=f"DELETE Response {id}")
 
     def patch(self, request, id):
-        return HttpResponse(content="PATCH Response {}".format(id))
+        return HttpResponse(content=f"PATCH Response {id}")
 
 
 @grainy_view(namespace="detail.{id}", explicit=True, ignore_grant_all=True)
@@ -109,7 +106,7 @@ class DetailExplicit(Detail):
 @grainy_view(namespace="detail_manual.{id}")
 class DetailManual(BaseView):
     def get(self, request, id):
-        return HttpResponse(content="GET Response {}".format(id))
+        return HttpResponse(content=f"GET Response {id}")
 
     @grainy_view_response(namespace="detail_manual")
     def post(self, request):

@@ -8,7 +8,7 @@ from .helpers import namespace, int_flags, str_flags
 from .conf import ANONYMOUS_PERMS
 
 
-class Permissions(object):
+class Permissions:
 
     """
     A utility class that will allow you to perform permission checks

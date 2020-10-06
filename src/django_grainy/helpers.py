@@ -43,11 +43,11 @@ def namespace(target, **kwargs):
             return target.Grainy.namespace(**kwargs)
         return target.Grainy.namespace(instance=target, **kwargs)
 
-    if isinstance(target, six.string_types):
+    if isinstance(target, str):
         return target
 
     raise TypeError(
-        "`target` {} could not be convered to a permissioning namespace".format(target)
+        f"`target` {target} could not be convered to a permissioning namespace"
     )
 
 
@@ -121,10 +121,10 @@ def int_flags(flags):
     if not flags:
         return r
 
-    if isinstance(flags, six.integer_types):
+    if isinstance(flags, int):
         return flags
 
-    if not isinstance(flags, six.string_types):
+    if not isinstance(flags, str):
         raise TypeError("`flags` needs to be a string or integer type")
 
     for f in flags:
@@ -151,10 +151,10 @@ def str_flags(flags):
     if not flags:
         return r
 
-    if isinstance(flags, six.string_types):
+    if isinstance(flags, str):
         return flags
 
-    if not isinstance(flags, six.integer_types):
+    if not isinstance(flags, int):
         raise TypeError("`flags` needs to be a string or integer type")
 
     for f_i, name, f_s in PERM_CHOICES:

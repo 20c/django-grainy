@@ -9,7 +9,7 @@ class PermissionFormField(forms.IntegerField):
         # if the form field is passed a bitmask we
         # need to convert it to a list, where each
         # item represents a choice (flag)
-        if isinstance(value, six.integer_types):
+        if isinstance(value, int):
             _value = []
             for f, n, c in PERM_CHOICES:
                 if value & f:
@@ -34,7 +34,7 @@ class PermissionField(models.IntegerField):
         # for string flags (for example 'c', 'r', 'u' and 'd')
         # as specified in the PERM_CHOICES setting and
         # convert to bitmask
-        if isinstance(value, six.string_types):
+        if isinstance(value, str):
             _value = 0
             for flag, name, str_flag in PERM_CHOICES:
                 if str_flag in value:

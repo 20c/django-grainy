@@ -195,7 +195,7 @@ class TestPermissions(UserTestCase):
             response = getattr(client, method)("/detail_class/1/")
             self.assertEqual(response.status_code, 200)
             self.assertEqual(
-                response.content.decode("utf-8"), "{} Response 1".format(method.upper())
+                response.content.decode("utf-8"), f"{method.upper()} Response 1"
             )
 
             response = getattr(client, method)("/detail_class/2/")
@@ -219,7 +219,7 @@ class TestPermissions(UserTestCase):
                 self.assertEqual(response.status_code, 200)
                 self.assertEqual(
                     response.content.decode("utf-8"),
-                    "{} Response 1".format(method.upper()),
+                    f"{method.upper()} Response 1",
                 )
 
                 response = getattr(self.userclient(username), method)(
@@ -284,7 +284,7 @@ class TestPermissions(UserTestCase):
         perms_admin = Permissions(self.users["user_admin_a"])
 
         for i in range(1, 4):
-            ModelA.objects.create(name="Test {}".format(i))
+            ModelA.objects.create(name=f"Test {i}")
 
         # user a should have read to all 3 instances of model a
         # through implicit permissions

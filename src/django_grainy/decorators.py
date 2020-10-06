@@ -20,7 +20,7 @@ from .exceptions import (
 from .helpers import namespace, dict_get_namespace, request_to_flag
 
 
-class grainy_decorator(object):
+class grainy_decorator:
 
     """
     base decorator that all the other grainy_* decorators
@@ -79,7 +79,7 @@ class grainy_model(grainy_decorator):
 
     def __init__(self, namespace=None, parent=None, **kwargs):
         self.parent = parent
-        return super(grainy_model, self).__init__(namespace=namespace, **kwargs)
+        return super().__init__(namespace=namespace, **kwargs)
 
     def __call__(self, model):
         model.Grainy = self.make_grainy_handler(model)
@@ -247,7 +247,7 @@ class grainy_json_view_response(grainy_view_response):
         )
 
         if isinstance(data, list):
-            prefix = "{}.*".format(namespace)
+            prefix = f"{namespace}.*"
         else:
             prefix = namespace
         for ns, p in self.extra.get("handlers", {}).items():
@@ -301,7 +301,7 @@ class grainy_rest_viewset_response(grainy_json_view_response):
 
     def get_object(self, view):
         try:
-            return super(grainy_rest_viewset_response, self).get_object(view)
+            return super().get_object(view)
         except AssertionError as inst:
             return None
 
@@ -394,7 +394,7 @@ class grainy_view(grainy_decorator):
     def __init__(self, *args, **kwargs):
         self.args = args
         self.kwargs = kwargs
-        super(grainy_view, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def __call__(self, view):
 

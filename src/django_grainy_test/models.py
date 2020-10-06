@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.db import models
 
 from django_grainy.decorators import grainy_model
@@ -17,7 +14,7 @@ app in your project
 
 
 class ModelBase(GrainyMixin, models.Model):
-    class Meta(object):
+    class Meta:
         abstract = True
 
 

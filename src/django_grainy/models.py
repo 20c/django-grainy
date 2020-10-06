@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 import six
 import inspect
 
@@ -110,7 +108,7 @@ class PermissionManager(models.Manager):
 
 
 class Permission(models.Model):
-    class Meta(object):
+    class Meta:
         abstract = True
 
     namespace = models.CharField(
@@ -120,7 +118,7 @@ class Permission(models.Model):
     permission = PermissionField(default=PERM_READ)
 
     def __unicode__(self):
-        return "{}: {}".format(self.namespace, self.permission)
+        return f"{self.namespace}: {self.permission}"
 
 
 class UserPermission(Permission):
@@ -129,7 +127,7 @@ class UserPermission(Permission):
     Describes permission for a user
     """
 
-    class Meta(object):
+    class Meta:
         verbose_name = _("User Permission")
         verbose_name_plural = _("User Permissions")
         base_manager_name = "objects"
@@ -145,7 +143,7 @@ class GroupPermission(Permission):
     Describes permission for a user group
     """
 
-    class Meta(object):
+    class Meta:
         verbose_name = _("Group Permission")
         verbose_name_plural = _("Group Permissions")
         base_manager_name = "objects"
@@ -156,7 +154,7 @@ class GroupPermission(Permission):
     objects = PermissionManager()
 
 
-class GrainyHandler(object):
+class GrainyHandler:
     """
     The base class to use for the Grainy Meta class
     """
@@ -209,7 +207,7 @@ class GrainyHandler(object):
         """
         if instance:
             return cls.namespace_instance(instance, **kwargs)
-        namespace = "{}".format(cls.namespace_base)
+        namespace = f"{cls.namespace_base}"
         if kwargs:
             namespace = namespace.format(**kwargs)
         return namespace.lower()
@@ -243,7 +241,7 @@ class GrainyModelHandler(GrainyHandler):
         )
 
 
-class GrainyMixin(object):
+class GrainyMixin:
     @property
     def grainy_namespace(self):
         return self.Grainy.namespace(self)
