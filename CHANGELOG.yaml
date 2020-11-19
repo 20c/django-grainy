@@ -100,6 +100,8 @@
   - django1.11 support
 Unreleased:
   added:
+  - python3.9 support
+  - django3.1 support
   - added rest.ModelViewSetPermission django-rest-framework permission class
   - added grainy_namespace property to decorated models
   - added util.check_permissions helper function

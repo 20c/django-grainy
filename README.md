@@ -12,6 +12,7 @@ Granular permissions for django
 
 - Django 2.2
 - Django 3.0
+- Django 3.1
 
 ## Documentation
 
