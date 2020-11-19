@@ -2,6 +2,9 @@
 
 
 ## Unreleased
+
+
+## 1.9.0
 ### Added
 - python3.9 support
 - django3.1 support

@@ -98,7 +98,7 @@
   - python3.4 support
   - python3.5 support
   - django1.11 support
-Unreleased:
+1.9.0:
   added:
   - python3.9 support
   - django3.1 support
@@ -109,9 +109,13 @@ Unreleased:
   - added GRAINY_ANONYMOUS_GROUP setting
   changed:
   - grainy handler classes moved to handlers.py to prevent circular depdendency issue
-  deprecated: []
   fixed:
   - fix django-admin user and group admin view unregister
   - fix instance namespacing on decorated models that have a grainy parent defined
+Unreleased:
+  added: []
+  changed: []
+  deprecated: []
+  fixed: []
   removed: []
   security: []
