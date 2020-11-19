@@ -26,8 +26,15 @@ class GroupPermissionInlineAdmin(admin.TabularInline):
 
 ## INIT
 
-admin.site.unregister(get_user_model())
-admin.site.unregister(Group)
+try:
+    admin.site.unregister(get_user_model())
+except admin.sites.NotRegistered:
+    pass
+
+try:
+    admin.site.unregister(Group)
+except admin.sites.NotRegistered:
+    pass
 
 _fieldsets = UserAdmin.fieldsets
 for name, info in _fieldsets:
