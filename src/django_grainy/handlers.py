@@ -34,7 +34,7 @@ class GrainyHandler:
             if "id" not in kwargs:
                 kwargs.update(id="*")
             if "pk" not in kwargs:
-                kwargs.update(kwargs.get("id"))
+                kwargs.update(pk=kwargs.get("id"))
             template = template.replace("{instance.pk}","*").replace("{instance.","{")
 
         return template.format(
