@@ -28,6 +28,7 @@ REQUEST_METHOD_TO_FLAG = getattr(
 )
 
 ANONYMOUS_PERMS = getattr(settings, "GRAINY_ANONYMOUS_PERMS", {})
+ANONYMOUS_GROUP = getattr(settings, "GRAINY_ANONYMOUS_GROUP", None)
 
 PERM_CHOICES = getattr(settings, "GRAINY_PERM_CHOICES", PERM_CHOICES_CRUD)
 PERM_CHOICES_FOR_FIELD = [(n, v) for n, v, c in PERM_CHOICES]

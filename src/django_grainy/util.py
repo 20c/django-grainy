@@ -5,7 +5,20 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, AnonymousUser
 
 from .helpers import namespace, int_flags, str_flags
-from .conf import ANONYMOUS_PERMS
+from .conf import ANONYMOUS_PERMS, ANONYMOUS_GROUP
+
+def check_permissions(obj, target, permissions, **kwargs):
+    if not hasattr(obj, "_permissions_util"):
+        obj._permissions_util = Permissions(obj)
+
+    return obj._permissions_util.check(target, permissions, **kwargs)
+
+
+def get_permissions(obj, target, **kwargs):
+    if not hasattr(obj, "_permissions_util"):
+        obj._permissions_util = Permissions(obj)
+    return obj._permissions_util.get(target, **kwargs)
+
 
 
 class Permissions:
@@ -53,6 +66,17 @@ class Permissions:
                 # settigns
                 if not self.loaded or refresh:
                     self.pset = PermissionSet(ANONYMOUS_PERMS)
+
+                    # apply anonymous group permissions if specified
+                    if ANONYMOUS_GROUP:
+                        try:
+                            group = Group.objects.get(name__iexact=ANONYMOUS_GROUP)
+                            self.pset.update(
+                                group.grainy_permissions.permission_set().permissions
+                            )
+                        except Group.DoesNotExist:
+                            pass
+
                     self.loaded = True
             return
 
