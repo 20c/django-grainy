@@ -12,7 +12,7 @@ from django.http import HttpRequest
 
 from grainy.core import Namespace
 
-from .models import GrainyHandler, GrainyModelHandler
+from .handlers import GrainyHandler, GrainyModelHandler
 from .util import Permissions
 from .exceptions import (
     DecoratorRequiresNamespace,
@@ -90,10 +90,18 @@ class grainy_model(grainy_decorator):
             ).remote_field.model
             self.parent_namespacing(model)
 
+        # shortcut property to retrieve grainy namespace
+        model.grainy_namespace = property(
+            lambda self: self.Grainy.namespace_instance(self)
+        )
+
         return model
 
     def parent_namespacing(self, model):
-        namespace = [model.Grainy.namespace(), "{instance.pk}"]
+        namespace = [model.Grainy.namespace_instance_template]
+        if not namespace:
+            namespace = [model.Grainy.namespace(), "{instance.pk}"]
+
         fields = ["instance"]
 
         parent = model.Grainy.parent_model
