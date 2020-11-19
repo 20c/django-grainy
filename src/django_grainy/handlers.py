@@ -33,9 +33,10 @@ class GrainyHandler:
         if instance == "*":
             if "id" not in kwargs:
                 kwargs.update(id="*")
-            template = template.replace("{instance.pk}","*").replace("{instance.id}","*").replace("{instance.","{")
-        if "pk" not in kwargs:
+            template = template.replace("{instance.","{")
+        if kwargs.get("pk") is None:
             kwargs.update(pk=kwargs.get("id"))
+
 
         return template.format(
             namespace=str(cls.namespace_base).format(**kwargs),
