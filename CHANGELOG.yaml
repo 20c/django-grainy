@@ -99,9 +99,17 @@
   - python3.5 support
   - django1.11 support
 Unreleased:
-  added: []
-  changed: []
+  added:
+  - added rest.ModelViewSetPermission django-rest-framework permission class
+  - added grainy_namespace property to decorated models
+  - added util.check_permissions helper function
+  - added util.get_permissions helper function
+  - added GRAINY_ANONYMOUS_GROUP setting
+  changed:
+  - grainy handler classes moved to handlers.py to prevent circular depdendency issue
   deprecated: []
-  fixed: []
+  fixed:
+  - fix django-admin user and group admin view unregister
+  - fix instance namespacing on decorated models that have a grainy parent defined
   removed: []
   security: []

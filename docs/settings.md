@@ -19,6 +19,16 @@ GRAINY_ANONYMOUS_PERMS = {
 GRAINY_ANONYMOUS_PERMS = {}
 ```
 
+## GRAINY_ANONYMOUS_GROUP
+
+Can be set to a user group name. AnonymousUser permissions will be augmented
+with permissions from that specified group.
+
+**default**
+```py
+GRAINY_ANONYMOUS_GROUP = None
+```
+
 ## GRAINY_DJANGO_OP_TO_FLAG
 
 ```dict``` used to convert a django admin operation to a grainy permission flag
