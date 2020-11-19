@@ -33,6 +33,8 @@ class GrainyHandler:
         if instance == "*":
             if "id" not in kwargs:
                 kwargs.update(id="*")
+            if "pk" not in kwargs:
+                kwargs.update(kwargs.get("id"))
             template = template.replace("{instance.pk}","*").replace("{instance.","{")
 
         return template.format(
@@ -82,7 +84,7 @@ class GrainyModelHandler(GrainyHandler):
     """
 
     model = None
-    namespace_instance_template = "{namespace}.{instance.id}"
+    namespace_instance_template = "{namespace}.{instance.pk}"
 
     @classmethod
     def set_parent(cls, model):

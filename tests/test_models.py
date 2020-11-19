@@ -46,14 +46,14 @@ class TestGrainyHandler(UserTestCase):
         self.assertEqual(y.Grainy.namespace(), "custom")
         self.assertEqual(
             y.Grainy.namespace_instance_template,
-            "x.{instance.x.pk}.custom.{instance.pk}",
+            "x.{instance.x.pk}.{namespace}.{instance.pk}",
         )
         self.assertEqual(y.Grainy.namespace(y), "x.5.custom.6")
 
         z = ModelZ.objects.create(name="Z1", y=y)
         self.assertEqual(
             z.Grainy.namespace_instance_template,
-            "x.{instance.y.x.pk}.custom.{instance.y.pk}.z.{instance.pk}",
+            "x.{instance.y.x.pk}.custom.{instance.y.pk}.{namespace}.{instance.pk}",
         )
         self.assertEqual(z.Grainy.namespace(z), "x.5.custom.6.z.7")
 

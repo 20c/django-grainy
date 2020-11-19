@@ -80,7 +80,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(django_grainy.models.GrainyMixin, models.Model),
+            bases=(django_grainy.handlers.GrainyMixin, models.Model),
         ),
         migrations.CreateModel(
             name="ModelB",
