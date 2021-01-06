@@ -72,7 +72,8 @@ class Permissions:
                         try:
                             group = Group.objects.get(name__iexact=ANONYMOUS_GROUP)
                             self.pset.update(
-                                group.grainy_permissions.permission_set().permissions
+                                group.grainy_permissions.permission_set().permissions,
+                                override=False,
                             )
                         except Group.DoesNotExist:
                             pass
@@ -88,7 +89,8 @@ class Permissions:
                 # groups the user is a part of
                 for group in self.obj.groups.all():
                     self.pset.update(
-                        group.grainy_permissions.permission_set().permissions
+                        group.grainy_permissions.permission_set().permissions,
+                        override=False,
                     )
             self.loaded = True
 
