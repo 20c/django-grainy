@@ -4,6 +4,11 @@
 ## Unreleased
 
 
+## 1.9.1
+### Fixed
+- bug where group permissions overwrote direct permissions
+
+
 ## 1.9.0
 ### Added
 - python3.9 support

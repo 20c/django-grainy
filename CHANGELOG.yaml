@@ -112,11 +112,13 @@
   fixed:
   - fix django-admin user and group admin view unregister
   - fix instance namespacing on decorated models that have a grainy parent defined
+1.9.1:
+  fixed:
+  - bug where group permissions overwrote direct permissions
 Unreleased:
   added: []
   changed: []
   deprecated: []
-  fixed:
-  - bug where group permissions overwrote direct permissions
+  fixed: []
   removed: []
   security: []
