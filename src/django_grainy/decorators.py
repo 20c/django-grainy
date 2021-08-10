@@ -258,7 +258,7 @@ class grainy_json_view_response(grainy_view_response):
             prefix = f"{namespace}.*"
         else:
             prefix = namespace
-        for ns, p in self.extra.get("handlers", {}).items():
+        for ns, p in list(self.extra.get("handlers", {}).items()):
             perms.applicator.handler(f"{prefix}.{ns}", **p)
 
         data, tail = namespace.container(data)
@@ -357,7 +357,7 @@ class grainy_rest_viewset_response(grainy_json_view_response):
 
             data = defaults
 
-            for field, value in request.data.items():
+            for field, value in list(request.data.items()):
                 if perms.check([f"{namespace}", field], op):
                     data[field] = value
 
@@ -419,7 +419,7 @@ class grainy_view(grainy_decorator):
                     ):
                         setattr(view, rh, self.decorate(view_function))
                     else:
-                        print(view_function, view_function.Grainy)
+                        print((view_function, view_function.Grainy))
             return view
         else:
             return self.decorate(view)

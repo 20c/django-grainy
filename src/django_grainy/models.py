@@ -57,12 +57,12 @@ class PermissionManager(models.Manager):
         _pset = self.permission_set()
 
         if not isinstance(pset, PermissionSet) and isinstance(pset, dict):
-            pset = PermissionSet({ns: int_flags(f) for ns, f in pset.items()})
+            pset = PermissionSet({ns: int_flags(f) for ns, f in list(pset.items())})
 
-        for namespace, permission in pset.permissions.items():
+        for namespace, permission in list(pset.permissions.items()):
             _pset[namespace] = permission
 
-        for namespace, permission in _pset.permissions.items():
+        for namespace, permission in list(_pset.permissions.items()):
             perm = self.update_or_create(
                 namespace=namespace, defaults={"permission": permission.value}
             )

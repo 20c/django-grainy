@@ -34,7 +34,7 @@ class UserTestCase(TestCase):
         cls.groups = {k: Group.objects.create(name=k) for k in cls.setup_groups}
 
         # add users to groups
-        for group in cls.groups.values():
+        for group in list(cls.groups.values()):
             for username in cls.setup_groups.get(group.name):
                 group.user_set.add(cls.users.get(username))
 
