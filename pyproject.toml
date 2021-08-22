@@ -41,6 +41,7 @@ bandit = "^1.6.2"
 black = "^20.8b1"
 isort = "^5.7.0"
 flake8 = "^3.8.4"
+pre-commit = "^2.13.0"
 
 # docs
 markdown = "*"
