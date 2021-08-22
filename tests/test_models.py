@@ -1,8 +1,8 @@
-from .util import UserTestCase
 from django.db import models
-from django_grainy.models import UserPermission, GroupPermission, GrainyHandler
-from django_grainy.decorators import grainy_model
+from grainy.const import PERM_CREATE, PERM_DELETE, PERM_READ, PERM_UPDATE
 
+from django_grainy.decorators import grainy_model
+from django_grainy.models import GrainyHandler, GroupPermission, UserPermission
 from django_grainy_test.models import (
     ModelA,
     ModelB,
@@ -13,7 +13,7 @@ from django_grainy_test.models import (
     ModelZ,
 )
 
-from grainy.const import PERM_READ, PERM_UPDATE, PERM_CREATE, PERM_DELETE
+from .util import UserTestCase
 
 
 class TestGrainyHandler(UserTestCase):

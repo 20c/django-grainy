@@ -1,4 +1,5 @@
-from django_grainy.remote import ProvideGet, ProvideLoad, Authenticator
+from django_grainy.remote import Authenticator, ProvideGet, ProvideLoad
+
 
 class GrainyRequestAuthenticator(Authenticator):
     def authenticate(self, request):

@@ -1,32 +1,23 @@
 import json
 
-from .util import UserTestCase
+from django.contrib.auth.models import AnonymousUser
+from django.db import models
 from django.test import Client, RequestFactory
 from django.test.utils import override_settings
-from django.db import models
-from django.contrib.auth.models import AnonymousUser
+from grainy.const import PERM_CREATE, PERM_DELETE, PERM_READ, PERM_UPDATE
 
-
-from django_grainy.models import (
-    UserPermission,
-    GroupPermission,
-    GrainyHandler,
-    PermissionSet,
-)
 from django_grainy.decorators import grainy_model
-
-from django_grainy_test.models import ModelA, ModelB, APIKey, APIKeyPermission
-
-from django_grainy_test.views import View, view, detail, Detail, JsonView
-
-from django_grainy.util import namespace, int_flags, str_flags, Permissions
-
-from grainy.const import (
-    PERM_READ,
-    PERM_UPDATE,
-    PERM_CREATE,
-    PERM_DELETE,
+from django_grainy.models import (
+    GrainyHandler,
+    GroupPermission,
+    PermissionSet,
+    UserPermission,
 )
+from django_grainy.util import Permissions, int_flags, namespace, str_flags
+from django_grainy_test.models import APIKey, APIKeyPermission, ModelA, ModelB
+from django_grainy_test.views import Detail, JsonView, View, detail, view
+
+from .util import UserTestCase
 
 
 class TestPermissions(UserTestCase):

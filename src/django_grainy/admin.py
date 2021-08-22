@@ -1,11 +1,11 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from django.contrib.auth import get_user_model
+from django.contrib.auth.admin import GroupAdmin, UserAdmin
 from django.contrib.auth.models import Group
 
 from .conf import ADMIN_REMOVE_DEFAULT_FORMS
-from .models import UserPermission, GroupPermission
-from .forms import UserPermissionForm, GroupPermissionForm
+from .forms import GroupPermissionForm, UserPermissionForm
+from .models import GroupPermission, UserPermission
 
 # Register your models here.
 

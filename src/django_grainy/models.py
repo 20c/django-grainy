@@ -1,19 +1,18 @@
-import six
 import inspect
 
-from django.db import models
+import six
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
 from grainy.const import PERM_READ
-from grainy.core import PermissionSet, Namespace
+from grainy.core import Namespace, PermissionSet
 
-from .fields import PermissionField
 from .conf import PERM_CHOICES
-from .helpers import namespace, int_flags
+from .fields import PermissionField
 from .handlers import GrainyHandler, GrainyModelHandler
+from .helpers import int_flags, namespace
 
 
 class PermissionQuerySet(models.QuerySet):

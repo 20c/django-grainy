@@ -1,5 +1,7 @@
 from django.views import BaseView
+
 from django_grainy.decorators import grainy_view_response
+
 
 # grainy class view
 class View(BaseView):

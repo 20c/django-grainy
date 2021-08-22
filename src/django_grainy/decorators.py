@@ -1,23 +1,17 @@
 import inspect
 import json
-
 from types import MethodType
 
-from django.http import HttpResponse, JsonResponse
-from django.utils.translation import ugettext_lazy as _
 from django.core.serializers.json import DjangoJSONEncoder
-
+from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.utils.translation import ugettext_lazy as _
 from django.views import View
-from django.http import HttpRequest
-
 from grainy.core import Namespace
 
+from .exceptions import DecoratorRequiresNamespace
 from .handlers import GrainyHandler, GrainyModelHandler
+from .helpers import dict_get_namespace, namespace, request_to_flag
 from .util import Permissions
-from .exceptions import (
-    DecoratorRequiresNamespace,
-)
-from .helpers import namespace, dict_get_namespace, request_to_flag
 
 
 class grainy_decorator:

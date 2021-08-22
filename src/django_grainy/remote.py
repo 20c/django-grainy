@@ -9,17 +9,14 @@ to request and check permissions from the provider.
 """
 import json
 
-from grainy.core import PermissionSet
+from django.core.cache import cache
 from django.http import HttpResponse, JsonResponse
 from django.views import View
-from django.core.cache import cache
-
-from grainy.core import Permission
+from grainy.core import Permission, PermissionSet
 
 import django_grainy.util
 
 from .conf import ANONYMOUS_PERMS
-
 
 # Soft requirement import of requests module
 # Error will be raised if remote Permissions

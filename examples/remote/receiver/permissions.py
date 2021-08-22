@@ -1,5 +1,7 @@
 from django.conf import settings
+
 import django_grainy.remote
+
 
 class RemotePermissions(django_grainy.remote.Permissions):
 

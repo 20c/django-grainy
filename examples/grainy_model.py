@@ -1,6 +1,7 @@
 from django.db import models
 from grainy.decorators import grainy_model
 
+
 # initialize grainy permissions for a model
 # with automatic namespacing
 @grainy_model()

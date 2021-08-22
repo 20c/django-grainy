@@ -1,21 +1,12 @@
-import re
 import logging
+import re
 
-
-from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth import get_user_model
+from django.contrib.auth.backends import ModelBackend
 
-from .helpers import (
-    django_op_to_flag,
-)
-
-from .models import (
-    namespace,
-)
-
-from .util import (
-    Permissions,
-)
+from .helpers import django_op_to_flag
+from .models import namespace
+from .util import Permissions
 
 
 class GrainyBackend(ModelBackend):

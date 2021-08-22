@@ -1,17 +1,18 @@
-from django.conf.urls import url, include
+from django.conf.urls import include, url
 from rest_framework import routers
+
 from .views import (
-    ModelAViewSet,
-    ExplicitViewSet,
-    JsonView,
-    View,
-    view,
     Detail,
-    detail,
     DetailExplicit,
-    detail_explicit,
     DetailManual,
     DetailReqFmt,
+    ExplicitViewSet,
+    JsonView,
+    ModelAViewSet,
+    View,
+    detail,
+    detail_explicit,
+    view,
 )
 
 router = routers.DefaultRouter()

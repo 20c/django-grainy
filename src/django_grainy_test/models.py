@@ -1,9 +1,8 @@
 from django.db import models
 
 from django_grainy.decorators import grainy_model
-
-from django_grainy.models import Permission, PermissionManager
 from django_grainy.handlers import GrainyMixin
+from django_grainy.models import Permission, PermissionManager
 
 # Create your models here.
 
