@@ -1,4 +1,3 @@
-import logging
 import re
 
 from django.contrib.auth import get_user_model
