@@ -3,6 +3,7 @@ class DecoratorRequiresNamespace(ValueError):
         super().__init__("This decorator requires you to specify a namespace")
         self.decorator = decorator
 
+
 class PermissionDenied(Exception):
     def __init__(self, reason):
         super(PermissionDenied, self).__init__(f"Permission denied: {reason}")

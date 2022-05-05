@@ -1,7 +1,7 @@
 from rest_framework.permissions import BasePermission
 
 from .helpers import request_method_to_flag
-from .util import check_permissions, namespace
+from .util import check_permissions
 
 
 class ModelViewSetPermissions(BasePermission):
@@ -31,4 +31,3 @@ class ModelViewSetPermissions(BasePermission):
     def has_object_permission(self, request, view, obj):
         flag = request_method_to_flag(request.method)
         return check_permissions(request.user, obj, flag)
-

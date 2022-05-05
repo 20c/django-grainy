@@ -1,6 +1,6 @@
-from django.db import modelsi
+from django.db import models
 
-from django_grainy.models import GrainyMixin, Permission, PermissionManager
+from django_grainy.models import Permission, PermissionManager
 
 
 class APIKey(models.Model):

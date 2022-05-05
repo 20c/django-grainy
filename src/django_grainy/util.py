@@ -20,7 +20,6 @@ def get_permissions(obj, target, **kwargs):
     return obj._permissions_util.get(target, **kwargs)
 
 
-
 class Permissions:
 
     """
@@ -44,7 +43,7 @@ class Permissions:
         self.pset = PermissionSet()
         self.applicator = Applicator(self.pset)
         self.loaded = False
-        self.load()
+        self.load()  # lgtm[py/init-calls-subclass]
 
         self.grant_all = isinstance(obj, get_user_model()) and obj.is_superuser
 

@@ -1,11 +1,8 @@
 import inspect
 import json
-from types import MethodType
 
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.utils.translation import ugettext_lazy as _
-from django.views import View
 from grainy.core import Namespace
 
 from .exceptions import DecoratorRequiresNamespace
@@ -241,9 +238,10 @@ class grainy_json_view_response(grainy_view_response):
     def _apply_perms(self, request, data, view_function, view):
         perms = self.permissions_cls(request.user)
         try:
-            obj = self.get_object(view)
-        except AssertionError as inst:
-            obj = None
+            self.get_object(view)
+        except AssertionError:
+            pass
+
         namespace = Namespace(
             self.Grainy.namespace(**request.nsparam).replace("?", "*")
         )
@@ -260,7 +258,7 @@ class grainy_json_view_response(grainy_view_response):
         data = perms.apply(data)
         try:
             return dict_get_namespace(data, namespace)
-        except KeyError as inst:
+        except KeyError:
             pass
         if isinstance(tail, list):
             return []
@@ -304,7 +302,7 @@ class grainy_rest_viewset_response(grainy_json_view_response):
     def get_object(self, view):
         try:
             return super().get_object(view)
-        except AssertionError as inst:
+        except AssertionError:
             return None
 
     def apply_perms(self, request, response, view_function, view):

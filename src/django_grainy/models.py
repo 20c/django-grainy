@@ -1,17 +1,11 @@
-import inspect
-
-import six
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from grainy.const import PERM_READ
-from grainy.core import Namespace, PermissionSet
+from grainy.core import PermissionSet
 
-from .conf import PERM_CHOICES
 from .fields import PermissionField
-from .handlers import GrainyHandler, GrainyModelHandler
 from .helpers import int_flags, namespace
 
 
@@ -58,12 +52,12 @@ class PermissionManager(models.Manager):
         if not isinstance(pset, PermissionSet) and isinstance(pset, dict):
             pset = PermissionSet({ns: int_flags(f) for ns, f in list(pset.items())})
 
-        for namespace, permission in list(pset.permissions.items()):
-            _pset[namespace] = permission
+        for _namespace, permission in list(pset.permissions.items()):
+            _pset[_namespace] = permission
 
-        for namespace, permission in list(_pset.permissions.items()):
-            perm = self.update_or_create(
-                namespace=namespace, defaults={"permission": permission.value}
+        for _namespace, permission in list(_pset.permissions.items()):
+            self.update_or_create(
+                namespace=_namespace, defaults={"permission": permission.value}
             )
 
     def add_permission(self, target, permission):
@@ -152,6 +146,3 @@ class GroupPermission(Permission):
         Group, related_name="grainy_permissions", on_delete=models.CASCADE
     )
     objects = PermissionManager()
-
-
-

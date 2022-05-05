@@ -1,6 +1,5 @@
 import re
 
-from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 
 from .helpers import django_op_to_flag
@@ -32,13 +31,13 @@ class GrainyBackend(ModelBackend):
         if obj:
             try:
                 ns = namespace(obj)
-            except TypeError as inst:
+            except TypeError:
                 ns = None
 
         try:
             label, action = tuple(perm.split("."))
             a = re.match("(add|delete|change|view)_(.+)", action)
-        except ValueError as inst:
+        except ValueError:
             a = None
 
         if a:

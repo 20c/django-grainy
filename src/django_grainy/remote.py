@@ -16,8 +16,6 @@ from grainy.core import Permission, PermissionSet
 
 import django_grainy.util
 
-from .conf import ANONYMOUS_PERMS
-
 # Soft requirement import of requests module
 # Error will be raised if remote Permissions
 # are instantiated and it is missing
@@ -87,7 +85,7 @@ class ProvideGet(Provider):
         self.authenticate(request)
         as_string = bool(request.GET.get("as_string", 0))
         explicit = bool(request.GET.get("explicit", 0))
-        return HttpResponse(self.permissions.get(namespace))
+        return HttpResponse(self.permissions.get(namespace), as_string=as_string, explicit=explicit)
 
 
 class ProvideLoad(Provider):
@@ -217,7 +215,7 @@ class Permissions(django_grainy.util.Permissions):
         """
         if self.url_load:
             self.load()
-            return super().get(*args, **kwargs)
+            return super().get(target, as_string=as_string, explicit=explicit)
         else:
             target = django_grainy.util.namespace(target)
             cache_key = f"grainy:get:{self.obj.id}:{target}"
