@@ -1,5 +1,6 @@
 import grainy.const
 from django.conf import settings
+
 from .const import PERM_CHOICES_CRUD
 
 DJANGO_OP_TO_FLAG = getattr(

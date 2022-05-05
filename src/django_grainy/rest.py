@@ -2,7 +2,6 @@ from rest_framework.permissions import BasePermission
 
 from .helpers import request_method_to_flag
 from .util import check_permissions, namespace
-from .exceptions import PermissionDenied
 
 
 class ModelViewSetPermissions(BasePermission):

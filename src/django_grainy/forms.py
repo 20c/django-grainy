@@ -1,12 +1,8 @@
 from django import forms
 
-from .models import UserPermission, GroupPermission
-from .conf import (
-    PERM_CHOICES_FOR_FIELD,
-)
-from .fields import (
-    PermissionFormField,
-)
+from .conf import PERM_CHOICES_FOR_FIELD
+from .fields import PermissionFormField
+from .models import GroupPermission, UserPermission
 
 
 class BitmaskSelect(forms.widgets.CheckboxSelectMultiple):

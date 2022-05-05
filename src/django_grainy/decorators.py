@@ -1,23 +1,17 @@
 import inspect
 import json
-
 from types import MethodType
 
-from django.http import HttpResponse, JsonResponse
-from django.utils.translation import ugettext_lazy as _
 from django.core.serializers.json import DjangoJSONEncoder
-
+from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.utils.translation import ugettext_lazy as _
 from django.views import View
-from django.http import HttpRequest
-
 from grainy.core import Namespace
 
+from .exceptions import DecoratorRequiresNamespace
 from .handlers import GrainyHandler, GrainyModelHandler
+from .helpers import dict_get_namespace, namespace, request_to_flag
 from .util import Permissions
-from .exceptions import (
-    DecoratorRequiresNamespace,
-)
-from .helpers import namespace, dict_get_namespace, request_to_flag
 
 
 class grainy_decorator:
@@ -258,7 +252,7 @@ class grainy_json_view_response(grainy_view_response):
             prefix = f"{namespace}.*"
         else:
             prefix = namespace
-        for ns, p in self.extra.get("handlers", {}).items():
+        for ns, p in list(self.extra.get("handlers", {}).items()):
             perms.applicator.handler(f"{prefix}.{ns}", **p)
 
         data, tail = namespace.container(data)
@@ -357,7 +351,7 @@ class grainy_rest_viewset_response(grainy_json_view_response):
 
             data = defaults
 
-            for field, value in request.data.items():
+            for field, value in list(request.data.items()):
                 if perms.check([f"{namespace}", field], op):
                     data[field] = value
 
@@ -419,7 +413,7 @@ class grainy_view(grainy_decorator):
                     ):
                         setattr(view, rh, self.decorate(view_function))
                     else:
-                        print(view_function, view_function.Grainy)
+                        print((view_function, view_function.Grainy))
             return view
         else:
             return self.decorate(view)

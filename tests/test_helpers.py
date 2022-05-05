@@ -1,17 +1,16 @@
 from unittest import TestCase
-from django.test import RequestFactory
-from grainy.core import (
-    Namespace,
-)
-from grainy.const import PERM_READ, PERM_DELETE, PERM_UPDATE, PERM_CREATE
-from django_grainy.helpers import (
-    namespace,
-    int_flags,
-    str_flags,
-    dict_get_namespace,
-    request_to_flag,
-)
 
+from django.test import RequestFactory
+from grainy.const import PERM_CREATE, PERM_DELETE, PERM_READ, PERM_UPDATE
+from grainy.core import Namespace
+
+from django_grainy.helpers import (
+    dict_get_namespace,
+    int_flags,
+    namespace,
+    request_to_flag,
+    str_flags,
+)
 from django_grainy_test.models import ModelA, ModelD
 
 

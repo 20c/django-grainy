@@ -1,5 +1,7 @@
 from django.views import BaseView
+
 from django_grainy.decorators import grainy_view
+
 
 # grainy class view
 @grainy_view(namespace="a.b.c")

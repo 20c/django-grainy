@@ -1,8 +1,9 @@
-from .util import UserTestCase
-from django_grainy.models import UserPermission, GroupPermission
-from django_grainy.fields import PermissionField, PermissionFormField
+from grainy.const import PERM_CREATE, PERM_DELETE, PERM_READ, PERM_UPDATE
 
-from grainy.const import PERM_READ, PERM_UPDATE, PERM_CREATE, PERM_DELETE
+from django_grainy.fields import PermissionField, PermissionFormField
+from django_grainy.models import GroupPermission, UserPermission
+
+from .util import UserTestCase
 
 
 class TestPermissionField(UserTestCase):

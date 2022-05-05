@@ -1,11 +1,11 @@
-from grainy.core import PermissionSet, Applicator
-
-from django.db.models import QuerySet
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group, AnonymousUser
+from django.contrib.auth.models import AnonymousUser, Group
+from django.db.models import QuerySet
+from grainy.core import Applicator, PermissionSet
 
-from .helpers import namespace, int_flags, str_flags
-from .conf import ANONYMOUS_PERMS, ANONYMOUS_GROUP
+from .conf import ANONYMOUS_GROUP, ANONYMOUS_PERMS
+from .helpers import int_flags, namespace, str_flags
+
 
 def check_permissions(obj, target, permissions, **kwargs):
     if not hasattr(obj, "_permissions_util"):

@@ -1,4 +1,5 @@
-from grainy.core import PermissionSet, Namespace
+from grainy.core import Namespace, PermissionSet
+
 
 class GrainyHandler:
     """

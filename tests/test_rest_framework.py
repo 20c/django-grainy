@@ -1,20 +1,12 @@
-from rest_framework.test import APIClient
 from django.test import RequestFactory
+from grainy.const import PERM_CREATE, PERM_DELETE, PERM_READ, PERM_UPDATE
+from grainy.core import PermissionSet
+from rest_framework.test import APIClient
+
+from django_grainy_test.models import ModelA
+from django_grainy_test.views import ModelAViewSet
+
 from .util import UserTestCase
-
-from grainy.const import PERM_READ, PERM_CREATE, PERM_UPDATE, PERM_DELETE
-
-from grainy.core import (
-    PermissionSet,
-)
-
-from django_grainy_test.views import (
-    ModelAViewSet,
-)
-
-from django_grainy_test.models import (
-    ModelA,
-)
 
 
 class TestGrainyViewSet(UserTestCase):

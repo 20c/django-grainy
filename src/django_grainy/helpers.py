@@ -1,9 +1,9 @@
-import six
 import inspect
-from grainy.core import (
-    Namespace,
-)
-from .conf import PERM_CHOICES, REQUEST_METHOD_TO_FLAG, DJANGO_OP_TO_FLAG
+
+import six
+from grainy.core import Namespace
+
+from .conf import DJANGO_OP_TO_FLAG, PERM_CHOICES, REQUEST_METHOD_TO_FLAG
 
 
 def namespace(target, **kwargs):

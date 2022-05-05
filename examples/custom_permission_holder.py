@@ -1,5 +1,7 @@
 from django.db import modelsi
+
 from django_grainy.models import GrainyMixin, Permission, PermissionManager
+
 
 class APIKey(models.Model):
     key = models.CharField(max_length=255)
