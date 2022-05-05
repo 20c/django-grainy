@@ -1,6 +1,5 @@
 import inspect
 
-import six
 from grainy.core import Namespace
 
 from .conf import DJANGO_OP_TO_FLAG, PERM_CHOICES, REQUEST_METHOD_TO_FLAG

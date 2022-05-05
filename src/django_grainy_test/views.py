@@ -1,5 +1,5 @@
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.utils.safestring import mark_safe
 from django.views import View as BaseView
 from rest_framework import viewsets
 
@@ -54,12 +54,12 @@ def view(request):
 
 @grainy_view(namespace="detail.{id}")
 def detail(request, id):
-    return HttpResponse(f"ID {id}")
+    return HttpResponse(f"ID {mark_safe(id)}")
 
 
 @grainy_view(namespace="detail.{id}", explicit=True, ignore_grant_all=True)
 def detail_explicit(request, id):
-    return HttpResponse(f"ID {id}")
+    return HttpResponse(f"ID {mark_safe(id)}")
 
 
 @grainy_view(namespace="site.view")
@@ -83,19 +83,19 @@ class View(BaseView):
 @grainy_view(namespace="detail.{id}")
 class Detail(BaseView):
     def get(self, request, id):
-        return HttpResponse(content=f"GET Response {id}")
+        return HttpResponse(content=f"GET Response {mark_safe(id)}")
 
     def post(self, request, id):
-        return HttpResponse(content=f"POST Response {id}")
+        return HttpResponse(content=f"POST Response {mark_safe(id)}")
 
     def put(self, request, id):
-        return HttpResponse(content=f"PUT Response {id}")
+        return HttpResponse(content=f"PUT Response {mark_safe(id)}")
 
     def delete(self, request, id):
-        return HttpResponse(content=f"DELETE Response {id}")
+        return HttpResponse(content=f"DELETE Response {mark_safe(id)}")
 
     def patch(self, request, id):
-        return HttpResponse(content=f"PATCH Response {id}")
+        return HttpResponse(content=f"PATCH Response {mark_safe(id)}")
 
 
 @grainy_view(namespace="detail.{id}", explicit=True, ignore_grant_all=True)
@@ -106,7 +106,7 @@ class DetailExplicit(Detail):
 @grainy_view(namespace="detail_manual.{id}")
 class DetailManual(BaseView):
     def get(self, request, id):
-        return HttpResponse(content=f"GET Response {id}")
+        return HttpResponse(content=f"GET Response {mark_safe(id)}")
 
     @grainy_view_response(namespace="detail_manual")
     def post(self, request):

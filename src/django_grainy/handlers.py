@@ -1,4 +1,4 @@
-from grainy.core import Namespace, PermissionSet
+from grainy.core import Namespace
 
 
 class GrainyHandler:
@@ -34,10 +34,9 @@ class GrainyHandler:
         if instance == "*":
             if "id" not in kwargs:
                 kwargs.update(id="*")
-            template = template.replace("{instance.","{")
+            template = template.replace("{instance.", "{")
         if kwargs.get("pk") is None:
             kwargs.update(pk=kwargs.get("id"))
-
 
         return template.format(
             namespace=str(cls.namespace_base).format(**kwargs),

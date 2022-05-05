@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import ModelA, ModelB
+from .models import ModelA
 
 # Register your models here.
 
