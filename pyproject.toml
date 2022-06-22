@@ -35,6 +35,7 @@ codecov = ">=2.0.5"
 coverage = ">=4.1"
 pytest-cov = ">=2.2.1"
 tox = "^3.25.0"
+tox-gh-actions = ">=2.9.1"
 
 
 # lint
