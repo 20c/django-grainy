@@ -47,14 +47,13 @@ pre-commit = "^2.13.0"
 pyupgrade = "^2.34.0"
 
 # docs
-markdown = "*"
-markdown-include = ">=0.5,<1"
-mkdocs = ">=1.0.0,<2.0.0"
+markdown-include = ">=0.5"
+mkdocs = "^1.2.3"
 
 # ctl
-ctl = "^1.0.0"
-jinja2 = "^2.11.2"
-tmpl = "^0.3.0"
+ctl = "^1"
+jinja2 = "^3"
+tmpl = "^1"
 
 [tool.poetry.plugins."markdown.extensions"]
 pymdgen = "pymdgen.md:Extension"
