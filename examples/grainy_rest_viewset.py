@@ -13,25 +13,20 @@ class ModelASerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = TestModelA
-        fields = ('name',"id", "nested_dict")
+        fields = ("name", "id", "nested_dict")
 
     def get_nested_dict(self, obj):
-        return {
-            "secret" : {
-                "hidden" : "data"
-            },
-            "something" : "public"
-        }
+        return {"secret": {"hidden": "data"}, "something": "public"}
 
 
 @grainy_rest_viewset(
-    namespace = "api.a",
-    handlers = {
+    namespace="api.a",
+    handlers={
         # with application handlers we can tell grainy that this
         # namespace needs to have explicit permissions in order
         # to be accessed
-        "nested_dict.secret" : { "explicit" : True }
-    }
+        "nested_dict.secret": {"explicit": True}
+    },
 )
 class ModelAViewSet(viewsets.ModelViewSet):
     queryset = TestModelA.objects.all()

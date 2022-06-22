@@ -8,6 +8,7 @@ from django_grainy.decorators import grainy_view
 def view(request):
     return HttpResponse()
 
+
 # grainy class view
 @grainy_view(namespace="a.b.c")
 class View(BaseView):
@@ -38,13 +39,14 @@ class View(BaseView):
 def detail_view(request, id):
     return HttpResponse()
 
+
 # you can also pass through flags for permissions checks
 @grainy_view(
     namespace="detail.{id}",
     # require that the user has explicitly set permissions for the namespace
     explicit=True,
     # ignore the user's superuser priviledges
-    ignore_grant_all=True
+    ignore_grant_all=True,
 )
 def detail_view(request, id):
     return HttpResponse()

@@ -6,4 +6,4 @@ class DecoratorRequiresNamespace(ValueError):
 
 class PermissionDenied(Exception):
     def __init__(self, reason):
-        super(PermissionDenied, self).__init__(f"Permission denied: {reason}")
+        super().__init__(f"Permission denied: {reason}")

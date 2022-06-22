@@ -4,7 +4,6 @@ import django_grainy.remote
 
 
 class RemotePermissions(django_grainy.remote.Permissions):
-
     def __init__(self, obj):
         super().__init__(
             obj,

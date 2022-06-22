@@ -43,7 +43,7 @@ class GrainyBackend(ModelBackend):
         if a:
             flag = django_op_to_flag(a.group(1))
             if not ns:
-                ns = "{}.{}".format(label, a.group(2))
+                ns = f"{label}.{a.group(2)}"
         else:
             flag = django_op_to_flag("view")
             if not ns:

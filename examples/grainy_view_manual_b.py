@@ -30,4 +30,3 @@ class View(BaseView):
     @grainy_view_response(namespace="a.b.c")
     def delete(self, request):
         return HttpResponse()
-

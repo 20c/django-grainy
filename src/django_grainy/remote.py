@@ -85,7 +85,9 @@ class ProvideGet(Provider):
         self.authenticate(request)
         as_string = bool(request.GET.get("as_string", 0))
         explicit = bool(request.GET.get("explicit", 0))
-        return HttpResponse(self.permissions.get(namespace), as_string=as_string, explicit=explicit)
+        return HttpResponse(
+            self.permissions.get(namespace), as_string=as_string, explicit=explicit
+        )
 
 
 class ProvideLoad(Provider):
