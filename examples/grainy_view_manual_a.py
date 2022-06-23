@@ -26,4 +26,3 @@ class View(BaseView):
     # will check for DELETE perms to "a.b.c", otherwise fails with 403
     def delete(self, request):
         return HttpResponse()
-

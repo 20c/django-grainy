@@ -9,13 +9,13 @@ user.grainy_permissions.add(instance, "crud")
 
 # check user permission on model class
 perms = Permissions(user)
-perms.check(TestModelA, "r") # True
+perms.check(TestModelA, "r")  # True
 
 # check user permission on instance
-perms.check(instance, "r") # True
+perms.check(instance, "r")  # True
 
 # check permissions to the name field
-perms.check( (instance, "name"), "r")
+perms.check((instance, "name"), "r")
 
 # return all instances of the model according to permissions
 instances = perms.instances(TestModelA, "r")

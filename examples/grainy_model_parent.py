@@ -1,9 +1,11 @@
 # starting with 1.7 you can also use the `parent` argument
 # to quickly setup namespace inheritance for models
 
+
 @grainy_model(namespace="x")
 class ModelX(ModelA):
     pass
+
 
 # We set parent to `x`, to indicate that we want to inherit
 # the namespacing from there. It needs to point to ForeignKey or OneToOne

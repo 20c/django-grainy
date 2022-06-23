@@ -8,11 +8,7 @@ from grainy.const import PERM_CREATE, PERM_DELETE, PERM_READ, PERM_UPDATE
 
 from django_grainy.decorators import grainy_model
 from django_grainy.handlers import GrainyHandler
-from django_grainy.models import (
-    GroupPermission,
-    PermissionSet,
-    UserPermission,
-)
+from django_grainy.models import GroupPermission, PermissionSet, UserPermission
 from django_grainy.util import Permissions, int_flags, namespace, str_flags
 from django_grainy_test.models import APIKey, APIKeyPermission, ModelA, ModelB
 from django_grainy_test.views import Detail, JsonView, View, detail, view
