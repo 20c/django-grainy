@@ -48,8 +48,7 @@ class grainy_decorator:
         if self.require_namespace and not namespace:
             raise DecoratorRequiresNamespace(self)
 
-    # TODO :Figure out
-    def make_grainy_handler(self, target):
+    def make_grainy_handler(self, target: Any) -> GrainyHandler:
         class Grainy(self.handler_class):
             pass
 
@@ -153,7 +152,7 @@ class grainy_view_response(grainy_decorator):
 
     view = None
 
-    def __call__(self, view_function: Callable):
+    def __call__(self, view_function: Callable) -> Callable:
 
         get_object = self.get_object
         apply_perms = self.apply_perms
