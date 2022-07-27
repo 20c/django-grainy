@@ -80,9 +80,8 @@ class GrainyHandler:
             raise TypeError("`value` needs to be a Namespace instance")
         cls.namespace_base = value
 
-    # TODO: type hint
     @classmethod
-    def set_parent(cls, parent):
+    def set_parent(cls, parent: Model):
         cls.parent = parent
 
 
