@@ -152,8 +152,7 @@ class Permissions(django_grainy.util.Permissions):
         )
         self.cache = cache
 
-    # TODO: Typing hints
-    def fetch(self, url: str, cache_key: str, **params) -> Any:
+    def fetch(self, url: str, cache_key: str, **params: Any) -> dict:
 
         """
         Retrieve grainy permissions from remote endpoint
