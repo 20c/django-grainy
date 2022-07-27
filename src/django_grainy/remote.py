@@ -8,11 +8,15 @@ Requesting django instance can than use the remote.Permissions utility
 to request and check permissions from the provider.
 """
 import json
+from typing import Any, Union
 
+from django.contrib.auth.models import AnonymousUser, Group, User
 from django.core.cache import cache
+from django.db.models import Model
 from django.http import HttpResponse, JsonResponse
 from django.views import View
-from grainy.core import Permission, PermissionSet
+from grainy.core import Namespace, Permission, PermissionSet
+from rest_framework.request import Request
 
 import django_grainy.util
 
@@ -81,7 +85,7 @@ class ProvideGet(Provider):
     namespace
     """
 
-    def get(self, request, namespace):
+    def get(self, request: Request, namespace: Namespace) -> HttpResponse:
         self.authenticate(request)
         as_string = bool(request.GET.get("as_string", 0))
         explicit = bool(request.GET.get("explicit", 0))
@@ -96,7 +100,7 @@ class ProvideLoad(Provider):
     Provide full permission set (dict)
     """
 
-    def get(self, request):
+    def get(self, request: Request) -> JsonResponse:
         self.authenticate(request)
         return JsonResponse(
             self.permissions.pset.permissions,
@@ -116,7 +120,13 @@ class Permissions(django_grainy.util.Permissions):
 
     """
 
-    def __init__(self, obj, url_load=None, url_get=None, cache=5):
+    def __init__(
+        self,
+        obj: Union[User, AnonymousUser, Group, Model],
+        url_load: str = None,
+        url_get: str = None,
+        cache: int = 5,
+    ):
         """
         Arguments:
         - obj (`User`|`AnonymousUser`|`Group`|Model`)
@@ -142,7 +152,8 @@ class Permissions(django_grainy.util.Permissions):
         )
         self.cache = cache
 
-    def fetch(self, url, cache_key, **params):
+    # TODO: Typing hints
+    def fetch(self, url: str, cache_key: str, **params) -> Any:
 
         """
         Retrieve grainy permissions from remote endpoint
@@ -172,7 +183,7 @@ class Permissions(django_grainy.util.Permissions):
 
         return data
 
-    def load(self, refresh=False):
+    def load(self, refresh: bool = False) -> None:
         """
         Load permission set from the remote provider
 
@@ -192,7 +203,9 @@ class Permissions(django_grainy.util.Permissions):
             self.pset.update(self.fetch(self.url_load, cache_key))
             self.loaded = True
 
-    def get(self, target, as_string=False, explicit=False):
+    def get(
+        self, target: Any, as_string: bool = False, explicit: bool = False
+    ) -> Union[int, str]:
         """
         Retrieve permission flags for the specified target namespace
         from the remote provider
@@ -231,7 +244,13 @@ class Permissions(django_grainy.util.Permissions):
                 return django_grainy.util.str_flags(r)
             return int(r)
 
-    def check(self, target, permissions, explicit=False, **kwargs):
+    def check(
+        self,
+        target: Any,
+        permissions: Union[int, str],
+        explicit: bool = False,
+        **kwargs,
+    ) -> bool:
         if self.url_load:
             self.load()
             return super().check(
@@ -241,7 +260,7 @@ class Permissions(django_grainy.util.Permissions):
             perms = self.get(target, explicit=explicit)
             return perms & django_grainy.util.int_flags(permissions) != 0
 
-    def apply(self, *args, **kwargs):
+    def apply(self, *args: Any, **kwargs: Any) -> dict:
         if not self.url_load:
             raise NotImplementedError(
                 "Specify `url_load` in order to use `apply` with remote permissions"
@@ -249,7 +268,7 @@ class Permissions(django_grainy.util.Permissions):
         self.load()
         return super().apply(*args, **kwargs)
 
-    def instances(self, *args, **kwargs):
+    def instances(self, *args: Any, **kwargs: Any) -> list:
         if not self.url_load:
             raise NotImplementedError(
                 "Specify `url_load` in order to use `instances` with remote permissions"

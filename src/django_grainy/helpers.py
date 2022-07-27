@@ -1,11 +1,14 @@
 import inspect
+from typing import Any, Union
 
+from django.core.handlers.wsgi import WSGIRequest
 from grainy.core import Namespace
+from rest_framework.request import Request
 
 from .conf import DJANGO_OP_TO_FLAG, PERM_CHOICES, REQUEST_METHOD_TO_FLAG
 
 
-def namespace(target, **kwargs):
+def namespace(target: Any, **kwargs: Any) -> str:
 
     """
     Convert `target` to permissioning namespace
@@ -50,7 +53,7 @@ def namespace(target, **kwargs):
     )
 
 
-def dict_get_namespace(data, namespace):
+def dict_get_namespace(data: Any, namespace: Namespace) -> Any:
     d = data
     path = []
     for k in namespace:
@@ -61,7 +64,7 @@ def dict_get_namespace(data, namespace):
     return d
 
 
-def request_to_flag(request):
+def request_to_flag(request: Request) -> int:
     """
     Returns the appropriate grainy permission flag for the request
     depending on the request's method.
@@ -75,7 +78,7 @@ def request_to_flag(request):
     return request_method_to_flag(request.method)
 
 
-def request_method_to_flag(method):
+def request_method_to_flag(method: str) -> int:
     """
     Converts a request method to the matching grainy permission
     flag
@@ -89,7 +92,7 @@ def request_method_to_flag(method):
     return REQUEST_METHOD_TO_FLAG.get(method.upper(), 0)
 
 
-def django_op_to_flag(op):
+def django_op_to_flag(op: str) -> int:
     """
     Converts a django admin operation string to the matching
     grainy permission flag
@@ -103,7 +106,7 @@ def django_op_to_flag(op):
     return DJANGO_OP_TO_FLAG.get(op, 0)
 
 
-def int_flags(flags):
+def int_flags(flags: Union[int, str]) -> int:
     """
     Converts string permission flags into integer permission flags
 
@@ -133,7 +136,7 @@ def int_flags(flags):
     return r
 
 
-def str_flags(flags):
+def str_flags(flags: int) -> str:
     """
     Converts integer permission flags into string permission flags
 

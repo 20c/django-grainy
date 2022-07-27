@@ -1,4 +1,6 @@
+from django.views import View
 from rest_framework.permissions import BasePermission
+from rest_framework.request import Request
 
 from .helpers import request_method_to_flag
 from .util import check_permissions
@@ -19,7 +21,7 @@ class ModelViewSetPermissions(BasePermission):
     - partial update
     """
 
-    def has_permission(self, request, view):
+    def has_permission(self, request: Request, view: View):
         if hasattr(view, "Grainy"):
             flag = request_method_to_flag(request.method)
             return check_permissions(request.user, view, flag)
@@ -28,6 +30,6 @@ class ModelViewSetPermissions(BasePermission):
 
         return True
 
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request: Request, view: View, obj: object):
         flag = request_method_to_flag(request.method)
         return check_permissions(request.user, obj, flag)
