@@ -10,13 +10,11 @@ Granular permissions for django
 
 ## Supported Django Versions
 
-- Django 2.2
 - Django 3.2
+- Django 4.0
 
 ## Documentation
 
-- **stable**: http://django-grainy.readthedocs.io/en/stable/
-- **latest**: http://django-grainy.readthedocs.io/en/latest/
 
 ## License
 
