@@ -15,6 +15,7 @@ Granular permissions for django
 
 ## Documentation
 
+https://20c.github.io/django-grainy
 
 ## License
 
