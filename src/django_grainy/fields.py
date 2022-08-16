@@ -1,3 +1,5 @@
+from typing import List, Union
+
 from django import forms
 from django.db import models
 
@@ -5,7 +7,7 @@ from .conf import PERM_CHOICES
 
 
 class PermissionFormField(forms.IntegerField):
-    def prepare_value(self, value):
+    def prepare_value(self, value: Union[List[int], int]) -> List[int]:
         # if the form field is passed a bitmask we
         # need to convert it to a list, where each
         # item represents a choice (flag)
@@ -19,7 +21,7 @@ class PermissionFormField(forms.IntegerField):
             value = value or 0
         return value
 
-    def clean(self, value):
+    def clean(self, value: List[int]) -> int:
         if isinstance(value, list):
             _value = 0
             for flag in value:
@@ -29,7 +31,7 @@ class PermissionFormField(forms.IntegerField):
 
 
 class PermissionField(models.IntegerField):
-    def to_python(self, value):
+    def to_python(self, value: Union[int, str]) -> int:
         # if a string is passed it should be parsed
         # for string flags (for example 'c', 'r', 'u' and 'd')
         # as specified in the PERM_CHOICES setting and

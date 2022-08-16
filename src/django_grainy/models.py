@@ -1,3 +1,5 @@
+from typing import Any, Union
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.db import models
@@ -15,7 +17,7 @@ class PermissionQuerySet(models.QuerySet):
     GroupPermission queries
     """
 
-    def permission_set(self):
+    def permission_set(self) -> PermissionSet:
         """
         Builds and returns a grainy.PermissionSet object from all
         the rows in the query
@@ -35,10 +37,10 @@ class PermissionManager(models.Manager):
     UserPermission and GroupPermission objects
     """
 
-    def get_queryset(self):
+    def get_queryset(self) -> PermissionQuerySet:
         return PermissionQuerySet(self.model, using=self._db)
 
-    def add_permission_set(self, pset):
+    def add_permission_set(self, pset: Union[PermissionSet, dict]) -> None:
         """
         Add all permissions specified in a PermissionSet
 
@@ -60,7 +62,7 @@ class PermissionManager(models.Manager):
                 namespace=_namespace, defaults={"permission": permission.value}
             )
 
-    def add_permission(self, target, permission):
+    def add_permission(self, target: Any, permission: Union[int, str]) -> None:
         """
         Add permission for the specified target
 
@@ -73,7 +75,7 @@ class PermissionManager(models.Manager):
             namespace=namespace(target), defaults={"permission": int_flags(permission)}
         )
 
-    def delete_permission(self, target):
+    def delete_permission(self, target: Any) -> None:
         """
         Remove an explicit permission rule set for the
         specified target.
@@ -87,7 +89,7 @@ class PermissionManager(models.Manager):
 
         self.get_queryset().filter(namespace=namespace(target)).delete()
 
-    def permission_set(self):
+    def permission_set(self) -> PermissionSet:
         """
         Return grainy.PermissionSet instance from all rows returned
         from get_queryset()
@@ -111,7 +113,7 @@ class Permission(models.Model):
     )
     permission = PermissionField(default=PERM_READ)
 
-    def __unicode__(self):
+    def __unicode__(self) -> str:
         return f"{self.namespace}: {self.permission}"
 
 

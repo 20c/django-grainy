@@ -1,9 +1,17 @@
 import inspect
 import json
+from typing import Any, Callable, Optional, Type, Union
 
+from django.core.handlers.wsgi import WSGIRequest
 from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models import Model
 from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http.response import HttpResponse, JsonResponse
+from django.views import View
 from grainy.core import Namespace
+from rest_framework.request import Request
+from rest_framework.response import Response
+from rest_framework.serializers import Serializer
 
 from .exceptions import DecoratorRequiresNamespace
 from .handlers import GrainyHandler, GrainyModelHandler
@@ -27,7 +35,12 @@ class grainy_decorator:
     # if true, this decorator cannot have a None namespace
     require_namespace = False
 
-    def __init__(self, namespace=None, namespace_instance=None, **kwargs):
+    def __init__(
+        self,
+        namespace: Optional[str] = None,
+        namespace_instance: Optional[Namespace] = None,
+        **kwargs,
+    ):
         self.namespace = namespace
         self.namespace_instance = namespace_instance
         self.extra = kwargs
@@ -35,7 +48,7 @@ class grainy_decorator:
         if self.require_namespace and not namespace:
             raise DecoratorRequiresNamespace(self)
 
-    def make_grainy_handler(self, target):
+    def make_grainy_handler(self, target: Any) -> GrainyHandler:
         class Grainy(self.handler_class):
             pass
 
@@ -68,11 +81,13 @@ class grainy_model(grainy_decorator):
 
     handler_class = GrainyModelHandler
 
-    def __init__(self, namespace=None, parent=None, **kwargs):
+    def __init__(
+        self, namespace: Optional[str] = None, parent: Optional[str] = None, **kwargs
+    ) -> grainy_decorator:
         self.parent = parent
         return super().__init__(namespace=namespace, **kwargs)
 
-    def __call__(self, model):
+    def __call__(self, model: Model) -> Model:
         model.Grainy = self.make_grainy_handler(model)
         if self.parent:
             model.Grainy.parent_field = self.parent
@@ -88,7 +103,7 @@ class grainy_model(grainy_decorator):
 
         return model
 
-    def parent_namespacing(self, model):
+    def parent_namespacing(self, model: Model):
         namespace = [model.Grainy.namespace_instance_template]
         if not namespace:
             namespace = [model.Grainy.namespace(), "{instance.pk}"]
@@ -137,7 +152,7 @@ class grainy_view_response(grainy_decorator):
 
     view = None
 
-    def __call__(self, view_function):
+    def __call__(self, view_function: Callable) -> Callable:
 
         get_object = self.get_object
         apply_perms = self.apply_perms
@@ -147,7 +162,9 @@ class grainy_view_response(grainy_decorator):
 
         grainy_handler = self.make_grainy_handler(view_function)
 
-        def response_handler(*args, **kwargs):
+        def response_handler(
+            *args: Any, **kwargs: Any
+        ) -> Union[HttpResponse, JsonResponse, Response]:
             if isinstance(args[0], HttpRequest):
                 self = None
                 request = args[0]
@@ -196,7 +213,7 @@ class grainy_view_response(grainy_decorator):
         response_handler.__name__ = view_function.__name__
         return response_handler
 
-    def get_object(self, view):
+    def get_object(self, view: View) -> Optional[Any]:
         """
         Attempts to call and return `get_object` on the decorated view.
 
@@ -208,13 +225,19 @@ class grainy_view_response(grainy_decorator):
             return view.get_object()
         return None
 
-    def apply_perms(self, request, response, view_function, view):
+    def apply_perms(
+        self,
+        request: WSGIRequest,
+        response: HttpResponse,
+        view_function: Callable,
+        view: View,
+    ) -> HttpResponse:
         """
         Apply permissions to the generated response
         """
         return response
 
-    def augment_request(self, request):
+    def augment_request(self, request: WSGIRequest) -> WSGIRequest:
         """
         Augment the request instance
         """
@@ -235,7 +258,13 @@ class grainy_json_view_response(grainy_view_response):
         - json_dumps_params <dict>: passed to DjangoJSONEncoder
     """
 
-    def _apply_perms(self, request, data, view_function, view):
+    def _apply_perms(
+        self,
+        request: Union[WSGIRequest, Request],
+        data: Any,
+        view_function: Callable,
+        view: View,
+    ) -> Union[dict, list]:
         perms = self.permissions_cls(request.user)
         try:
             self.get_object(view)
@@ -265,7 +294,13 @@ class grainy_json_view_response(grainy_view_response):
         else:
             return {}
 
-    def apply_perms(self, request, response, view_function, view):
+    def apply_perms(
+        self,
+        request: WSGIRequest,
+        response: JsonResponse,
+        view_function: Callable,
+        view: View,
+    ) -> JsonResponse:
         response.content = JsonResponse(
             self._apply_perms(
                 request,
@@ -299,17 +334,19 @@ class grainy_rest_viewset_response(grainy_json_view_response):
 
     require_namespace = True
 
-    def get_object(self, view):
+    def get_object(self, view: View) -> Optional[Any]:
         try:
             return super().get_object(view)
         except AssertionError:
             return None
 
-    def apply_perms(self, request, response, view_function, view):
+    def apply_perms(
+        self, request: Request, response: Response, view_function: Callable, view: View
+    ) -> Response:
         response.data = self._apply_perms(request, response.data, view_function, view)
         return response
 
-    def augment_request(self, request):
+    def augment_request(self, request: Request) -> Request:
         """
         Augments the request by adding the following methods
 
@@ -326,7 +363,7 @@ class grainy_rest_viewset_response(grainy_json_view_response):
         )
         perms = decorator.permissions_cls(request.user)
 
-        def grainy_data(request, defaults):
+        def grainy_data(request: Request, defaults: dict):
 
             """
             Returns a cleaned up dict for request.data
@@ -355,7 +392,9 @@ class grainy_rest_viewset_response(grainy_json_view_response):
 
             return data
 
-        def grainy_update_serializer(serializer_cls, instance, **kwargs):
+        def grainy_update_serializer(
+            serializer_cls: Type[Serializer], instance: Serializer, **kwargs
+        ) -> Request:
             """
             returns a django-rest-framework serializer instance with
             for saves.
@@ -391,12 +430,12 @@ class grainy_view(grainy_decorator):
     decorator = grainy_view_response
     require_namespace = True
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any):
         self.args = args
         self.kwargs = kwargs
         super().__init__(*args, **kwargs)
 
-    def __call__(self, view):
+    def __call__(self, view: View):
 
         view.Grainy = self.make_grainy_handler(view)
 
@@ -416,7 +455,7 @@ class grainy_view(grainy_decorator):
         else:
             return self.decorate(view)
 
-    def decorate(self, view):
+    def decorate(self, view: View):
         return self.decorator(*self.args, **self.kwargs)(view)
 
 

@@ -1,20 +1,30 @@
+from typing import Any, List, Union
+
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AnonymousUser, Group
-from django.db.models import QuerySet
+from django.contrib.auth.models import AnonymousUser, Group, User
+from django.db.models import Model, QuerySet
+from django.db.models.base import ModelBase
 from grainy.core import Applicator, PermissionSet
 
 from .conf import ANONYMOUS_GROUP, ANONYMOUS_PERMS
 from .helpers import int_flags, namespace, str_flags
 
 
-def check_permissions(obj, target, permissions, **kwargs):
+def check_permissions(
+    obj: Union[User, AnonymousUser, Group, Model],
+    target: Any,
+    permissions: Union[int, str],
+    **kwargs: Any
+):
     if not hasattr(obj, "_permissions_util"):
         obj._permissions_util = Permissions(obj)
 
     return obj._permissions_util.check(target, permissions, **kwargs)
 
 
-def get_permissions(obj, target, **kwargs):
+def get_permissions(
+    obj: Union[User, AnonymousUser, Group, Model], target: Any, **kwargs: Any
+):
     if not hasattr(obj, "_permissions_util"):
         obj._permissions_util = Permissions(obj)
     return obj._permissions_util.get(target, **kwargs)
@@ -27,7 +37,7 @@ class Permissions:
     for a user or group on cached permission sets
     """
 
-    def __init__(self, obj):
+    def __init__(self, obj: Union[User, AnonymousUser, Group, Model]) -> None:
         """
         Arguments:
             - obj <User|AnonymousUser|Group|Model>
@@ -47,7 +57,7 @@ class Permissions:
 
         self.grant_all = isinstance(obj, get_user_model()) and obj.is_superuser
 
-    def load(self, refresh=False):
+    def load(self, refresh: bool = False) -> None:
         """
         Loads the permission set for the user or group specified in
         `self.obj`
@@ -93,7 +103,13 @@ class Permissions:
                     )
             self.loaded = True
 
-    def check(self, target, permissions, explicit=False, ignore_grant_all=False):
+    def check(
+        self,
+        target: Any,
+        permissions: Union[int, str],
+        explicit: bool = False,
+        ignore_grant_all: bool = False,
+    ) -> bool:
         """
         Check permissions for the specified target
 
@@ -114,7 +130,12 @@ class Permissions:
             namespace(target), int_flags(permissions), explicit=explicit
         )
 
-    def get(self, target, as_string=False, explicit=False):
+    def get(
+        self,
+        target: Any,
+        as_string: bool = False,
+        explicit: bool = False,
+    ) -> Union[int, str]:
         """
         Returns the permission flags for the specified target
 
@@ -136,7 +157,7 @@ class Permissions:
             )
         return self.pset.get_permissions(namespace(target), explicit=explicit)
 
-    def apply(self, data):
+    def apply(self, data: dict) -> dict:
         """
         Applies permissions to the specified data, removing all content that
         is not permissioned on a READ level
@@ -152,7 +173,13 @@ class Permissions:
         self.applicator.pset = self.pset
         return self.pset.apply(data, applicator=self.applicator)
 
-    def instances(self, model, permissions, explicit=False, ignore_grant_all=False):
+    def instances(
+        self,
+        model: Union[Model, QuerySet],
+        permissions: Union[int, str],
+        explicit: bool = False,
+        ignore_grant_all: bool = False,
+    ) -> list:
         """
         Return a list of all instances of the specified model that
         are permissioned at the specified level
