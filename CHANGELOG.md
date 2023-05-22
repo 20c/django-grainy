@@ -6,6 +6,7 @@
 - python3.11 support
 - python3.10 support
 - django4 support
+- django4.2 support
 - django3.2 support
 ### Removed
 - python3.6 support
