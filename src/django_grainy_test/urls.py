@@ -31,6 +31,6 @@ urlpatterns = [
     re_path(r"^detail_class_manual/$", DetailManual.as_view()),
     re_path(r"^view_class/", View.as_view()),
     re_path(r"^view_class_json/", JsonView.as_view()),
-    re_path(r"^", include(router.re_paths)),
+    re_path(r"^", include(router.urls)),
     re_path(r"^api-auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]
