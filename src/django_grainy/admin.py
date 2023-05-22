@@ -47,7 +47,7 @@ for name, info in _fieldsets:
 @admin.register(get_user_model())
 class GrainyUserAdmin(UserAdmin):
     fieldsets = _fieldsets
-    inlines = UserAdmin.inlines + [UserPermissionInlineAdmin]
+    inlines = UserAdmin.inlines + (UserPermissionInlineAdmin, )
 
 
 _exclude = []
@@ -57,5 +57,5 @@ if ADMIN_REMOVE_DEFAULT_FORMS:
 
 @admin.register(Group)
 class GrainyGroupAdmin(GroupAdmin):
-    inlines = GroupAdmin.inlines + [GroupPermissionInlineAdmin]
+    inlines = GroupAdmin.inlines + (GroupPermissionInlineAdmin, )
     exclude = _exclude

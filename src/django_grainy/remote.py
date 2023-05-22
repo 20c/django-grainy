@@ -143,7 +143,6 @@ class Permissions(django_grainy.util.Permissions):
         self.cache = cache
 
     def fetch(self, url, cache_key, **params):
-
         """
         Retrieve grainy permissions from remote endpoint
 

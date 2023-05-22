@@ -10,7 +10,6 @@ from .util import UserTestCase
 
 
 class TestPermissionManager(UserTestCase):
-
     EXPECTED_PERMISSIONS_A = PermissionSet(
         {"a": PERM_READ, "b": PERM_READ | PERM_UPDATE}
     )

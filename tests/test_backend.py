@@ -8,7 +8,6 @@ from .util import UserTestCase
 
 
 class TestGrainyBackend(UserTestCase):
-
     EXPECTED_PERMISSIONS_A = PermissionSet(
         {"auth": PERM_READ, "auth.user": PERM_READ | PERM_UPDATE}
     )

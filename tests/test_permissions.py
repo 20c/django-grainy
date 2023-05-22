@@ -17,7 +17,6 @@ from .util import UserTestCase
 
 
 class TestPermissions(UserTestCase):
-
     EXPECTED_PERMISSIONS_A = PermissionSet(
         {
             ModelA.Grainy.namespace(): PERM_READ,
@@ -191,7 +190,6 @@ class TestPermissions(UserTestCase):
         # test explicit view
 
         for username in ["user_c", "user_admin_a"]:
-
             response = self.userclient(username).get("/detail_explicit/1/")
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.content.decode("utf-8"), "ID 1")

@@ -5,7 +5,6 @@ from django_grainy.decorators import grainy_view_response
 
 # grainy class view
 class View(BaseView):
-
     # will check for READ perms to "a.b.c", otherwise fails with 403
     @grainy_view_response(namespace="a.b.c")
     def get(self, request):
