@@ -3,11 +3,13 @@
 
 ## Unreleased
 ### Added
+- python3.11 support
 - python3.10 support
 - django4 support
 - django3.2 support
 ### Removed
 - python3.6 support
+- python3.7 support
 - django2.2 support
 - django3.0 support
 - django3.1 support
