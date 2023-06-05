@@ -7,7 +7,6 @@ from .models import TestModelA
 
 # A serializer to test with
 class ModelASerializer(serializers.HyperlinkedModelSerializer):
-
     # to test applying of permissions in nested data
     nested_dict = serializers.SerializerMethodField(required=False)
 

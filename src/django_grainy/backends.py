@@ -14,7 +14,6 @@ class GrainyBackend(ModelBackend):
     """
 
     def has_module_perms(self, user, obj=None):
-
         # superusers have access to everything
         if user.is_superuser:
             return True
@@ -22,7 +21,6 @@ class GrainyBackend(ModelBackend):
         return Permissions(user).check(obj, django_op_to_flag("view"))
 
     def has_perm(self, user, perm, obj=None):
-
         # superusers have access to everything
         if user.is_superuser:
             return True

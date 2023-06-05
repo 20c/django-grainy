@@ -138,7 +138,6 @@ class grainy_view_response(grainy_decorator):
     view = None
 
     def __call__(self, view_function):
-
         get_object = self.get_object
         apply_perms = self.apply_perms
         extra = self.extra
@@ -327,7 +326,6 @@ class grainy_rest_viewset_response(grainy_json_view_response):
         perms = decorator.permissions_cls(request.user)
 
         def grainy_data(request, defaults):
-
             """
             Returns a cleaned up dict for request.data
 
@@ -397,7 +395,6 @@ class grainy_view(grainy_decorator):
         super().__init__(*args, **kwargs)
 
     def __call__(self, view):
-
         view.Grainy = self.make_grainy_handler(view)
 
         if inspect.isclass(view):

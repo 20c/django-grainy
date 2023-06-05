@@ -9,7 +9,6 @@ import django_grainy.models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = []
