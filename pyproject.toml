@@ -2,7 +2,7 @@
 name = "django-grainy"
 repository = "https://github.com/20c/django-grainy"
 readme = "README.md"
-version = "1.9.1.1"
+version = "2.0.0"
 description = "granular permissions for django"
 authors = [ "20C <code@20c.com>",]
 license = "LICENSE.txt"
