@@ -2,6 +2,9 @@
 
 
 ## Unreleased
+
+
+## 2.0.0
 ### Added
 - python3.11 support
 - python3.10 support
