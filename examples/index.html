@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://github.com/20c/grainy-perms/examples/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Examples - django-grainy</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Examples";
+        var mkdocs_page_input_path = "examples.md";
+        var mkdocs_page_url = "/20c/grainy-perms/examples/";
+      </script>
+    
+    <script src="../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> django-grainy
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../install/">Install</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../settings/">Settings</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Examples</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#setting-permissions">Setting permissions</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#setting-permissions-in-bulk">Setting permissions in bulk</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#checking-permissions">Checking permissions</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#custom-permission-holders">Custom permission holders</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#grainy-models">Grainy Models</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#grainy-views">Grainy views</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#manually-decorate-view-response-handlers">Manually decorate view response handlers</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#rest-framework-integration">Rest Framework Integration</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#remote-permission-provider">Remote permission provider</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#provider">provider</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#receiver">receiver</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">django-grainy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
+      <li>Examples</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="managing-user-permissions">Managing user permissions</h1>
+<p>A user gets his permissions directly or from one of the auth Groups he is a member of</p>
+<h2 id="setting-permissions">Setting permissions</h2>
+<pre><code class="language-py">import grainy.const
+
+# literal namespace with integer permission flag
+user.grainy_permissions.add_permission(&quot;a.b.c&quot;, grainy.const.READ)
+
+# literal namespace with string permission flag
+user.grainy_permissions.add_permission(&quot;a.b.c&quot;, &quot;r&quot;)
+
+# same for groups
+group.grainy_permissions.add_permission(&quot;a.b.c&quot;, &quot;r&quot;)
+</code></pre>
+<h2 id="setting-permissions-in-bulk">Setting permissions in bulk</h2>
+<pre><code class="language-py">import grainy.const
+import grainy.core
+
+# set from PermissionSet instance
+user.grainy_permissions.add_permission_set(
+    grainy.core.PermissionSet({&quot;a.b.c&quot;: grainy.const.PERM_READ})
+)
+
+# set from dict (allows string permissions)
+user.grainy_permissions.add_permission_set({&quot;a.b.c&quot;: &quot;r&quot;})
+</code></pre>
+<h2 id="checking-permissions">Checking permissions</h2>
+<pre><code class="language-py">import grainy.const
+
+from django_grainy.util import Permissions
+
+user.grainy_permissions.add_permission_set({&quot;a.b.c&quot;: &quot;r&quot;})
+
+# we use the Permissions() wrapper as that allows
+# us to do repeated permission checks for a user or group
+# without having requery permissions for each check
+
+perms = Permissions(user)
+
+perms.check(&quot;a.b.c&quot;, grainy.const.PERM_READ)  # True
+perms.check(&quot;a.b.c.d&quot;, grainy.const.PERM_READ)  # True
+perms.check(&quot;a.b.c.d&quot;, grainy.const.PERM_READ | grainy.const.PERM_UPDATE)  # False
+perms.check(&quot;z.y.x&quot;, grainy.const.PERM_READ)  # False
+perms.check(&quot;a.b.c&quot;, &quot;r&quot;)  # True
+perms.check(&quot;a.b.c.d&quot;, &quot;r&quot;)  # True
+perms.check(&quot;a.b.c.d&quot;, &quot;ru&quot;)  # False
+perms.check(&quot;x.y.z&quot;, &quot;r&quot;)  # False
+
+# The `explicit` option allows us to require that excplicit
+# permissions need to exist for a check to succeed, meaning
+# having permissions to `a.b.c` will not grant permissions
+# to `a.b.c.d` if `explicit`=True
+perms.check(&quot;a.b.c.d&quot;, &quot;r&quot;, explicit=True)  # False
+</code></pre>
+<h2 id="custom-permission-holders">Custom permission holders</h2>
+<p>Sometimes you want something else than a user or group model to hold 
+permissions - an APIkey implementation for example</p>
+<pre><code class="language-py">from django.db import models
+
+from django_grainy.models import Permission, PermissionManager
+
+
+class APIKey(models.Model):
+    key = models.CharField(max_length=255)
+
+
+class APIKeyPermission(Permission):
+    # The `grainy_permissions` related name is important
+    # so that we can pass instances of this model to
+    # util.Permissions
+    api_key = models.ForeignKey(
+        APIKey, related_name=&quot;grainy_permissions&quot;, on_delete=models.CASCADE
+    )
+
+    # use the augmented object manager for permission handling
+    objects = PermissionManager()
+
+
+from django_grainy.util import Permissions
+
+api_key = APIKey.objects.create(key=&quot;test&quot;)
+api_key.grainy_permissions.add_permission(&quot;a.b.c&quot;, &quot;r&quot;)
+
+perms = Permissions(api_key)
+assert api_key.check(&quot;a.b.c&quot;, &quot;r&quot;)
+</code></pre>
+<h2 id="grainy-models">Grainy Models</h2>
+<p>A django model can be initialized for grainy permissions using the
+grainy_model decorator.</p>
+<pre><code class="language-py">from django.db import models
+from grainy.decorators import grainy_model
+
+
+# initialize grainy permissions for a model
+# with automatic namespacing
+@grainy_model()
+class TestModelA(models.Model):
+    name = models.CharField(max_length=255)
+
+
+# initialize grainy permissions for a model
+# with manual namespacing
+@grainy_model(namespace=&quot;a.b.c&quot;)
+class TestModelB(models.Model):
+    name = models.CharField(max_length=255)
+
+
+# initialize grainy permissions for a model
+# with manual namespacing for both class
+# and instance namespace
+@grainy_model(
+    # we want the same base namespace as model b
+    namespace=TestModelB.Grainy.namespace(),
+    # when checking against instances we want to
+    # nest inside b
+    namespace_instance=&quot;{namespace}.{instance.b.id}.b.{instance.id}&quot;,
+)
+class TestModelC(models.Model):
+    b = models.ForeignKey(TestModelB)
+</code></pre>
+<p>Afterwards the model can be used directly to set or check permissions to it</p>
+<pre><code class="language-py">from django_grainy.util import Permissions
+
+# give user full permissions to model (any instance)
+user.grainy_permissions.add(TestModelA, &quot;crud&quot;)
+
+# give user full permissions to a specific instance
+instance = TestModelA.objects.get(id=1)
+user.grainy_permissions.add(instance, &quot;crud&quot;)
+
+# check user permission on model class
+perms = Permissions(user)
+perms.check(TestModelA, &quot;r&quot;)  # True
+
+# check user permission on instance
+perms.check(instance, &quot;r&quot;)  # True
+
+# check permissions to the name field
+perms.check((instance, &quot;name&quot;), &quot;r&quot;)
+
+# return all instances of the model according to permissions
+instances = perms.instances(TestModelA, &quot;r&quot;)
+
+# this could also take a queryset
+instances_from_qset = perms.instances(TestModelA.objects.filter(id__gt=10), &quot;r&quot;)
+</code></pre>
+<p>In the <code>grainy_model</code> decorator you can also specify if you want grainy to
+treat the model as a child of another grainy model by using the <code>parent</code> parameter.</p>
+<p>This allows you to quickly chain namespaces with the child getting it's namespace
+prefixed with the parent's namespace</p>
+<pre><code class="language-py"># starting with 1.7 you can also use the `parent` argument
+# to quickly setup namespace inheritance for models
+
+
+@grainy_model(namespace=&quot;x&quot;)
+class ModelX(ModelA):
+    pass
+
+
+# We set parent to `x`, to indicate that we want to inherit
+# the namespacing from there. It needs to point to ForeignKey or OneToOne
+# field on the model that points to a model that is also grainy (ModelX
+# in this example)
+#
+# ModelY will end up with the following instance namespace:
+# &quot;x.{x.pk}.custom.{pk}&quot;
+@grainy_model(namespace=&quot;custom&quot;, parent=&quot;x&quot;)
+class ModelY(ModelA):
+    # field name == grainy `parent` value
+    x = models.ForeignKey(ModelX, related_name=&quot;y&quot;, on_delete=models.CASCADE)
+
+
+# ModelZ will end up with the following instance namespace:
+# &quot;x.{y.x.pk}.custom.{y.pk}.z.{pk}&quot;
+@grainy_model(namespace=&quot;z&quot;, parent=&quot;y&quot;)
+class ModelZ(ModelA):
+    # field name == grainy `parent` value
+    y = models.ForeignKey(ModelY, related_name=&quot;z&quot;, on_delete=models.CASCADE)
+</code></pre>
+<h2 id="grainy-views">Grainy views</h2>
+<p>A django view can be initialized for grainy permissions using the grainy_view
+decorator.</p>
+<p>When a view is made grainy it will automatically check for apropriate permissions to the specified namespace depending on the request method.</p>
+<pre><code class="language-py">from django.views import View as BaseView
+
+from django_grainy.decorators import grainy_view
+
+
+# grainy function view
+@grainy_view(namespace=&quot;a.b.c&quot;)
+def view(request):
+    return HttpResponse()
+
+
+# grainy class view
+@grainy_view(namespace=&quot;a.b.c&quot;)
+class View(BaseView):
+    # will check for READ perms to &quot;a.b.c&quot;, otherwise fails with 403
+    def get(self, request):
+        return HttpResonse()
+
+    # will check for CREATE perms to &quot;a.b.c&quot;, otherwise fails with 403
+    def post(self, request):
+        return HttpResponse()
+
+    # will check for UPDATE perms to &quot;a.b.c&quot;, otherwise fails with 403
+    def put(self, request):
+        return HttpResponse()
+
+    # will check for UPDATE perms to &quot;a.b.c&quot;, otherwise fails with 403
+    def patch(self, request):
+        return HttpResponse()
+
+    # will check for DELETE perms to &quot;a.b.c&quot;, otherwise fails with 403
+    def delete(self, request):
+        return HttpResponse()
+
+
+# grainy view with formatted namespace
+@grainy_view(namespace=&quot;detail.{id}&quot;)
+def detail_view(request, id):
+    return HttpResponse()
+
+
+# you can also pass through flags for permissions checks
+@grainy_view(
+    namespace=&quot;detail.{id}&quot;,
+    # require that the user has explicitly set permissions for the namespace
+    explicit=True,
+    # ignore the user's superuser priviledges
+    ignore_grant_all=True,
+)
+def detail_view(request, id):
+    return HttpResponse()
+</code></pre>
+<h3 id="manually-decorate-view-response-handlers">Manually decorate view response handlers</h3>
+<p>The <code>grainy_view</code> decorator simply calls the apropriate response decorator on all the response handlers
+in the view.</p>
+<p>It follows that</p>
+<pre><code class="language-py">from django.views import BaseView
+
+from django_grainy.decorators import grainy_view
+
+
+# grainy class view
+@grainy_view(namespace=&quot;a.b.c&quot;)
+class View(BaseView):
+    # will check for READ perms to &quot;a.b.c&quot;, otherwise fails with 403
+    def get(self, request):
+        return HttpResonse()
+
+    # will check for CREATE perms to &quot;a.b.c&quot;, otherwise fails with 403
+    def post(self, request):
+        return HttpResponse()
+
+    # will check for UPDATE perms to &quot;a.b.c&quot;, otherwise fails with 403
+    def put(self, request):
+        return HttpResponse()
+
+    # will check for UPDATE perms to &quot;a.b.c&quot;, otherwise fails with 403
+    def patch(self, request):
+        return HttpResponse()
+
+    # will check for DELETE perms to &quot;a.b.c&quot;, otherwise fails with 403
+    def delete(self, request):
+        return HttpResponse()
+</code></pre>
+<p>is the same as</p>
+<pre><code class="language-py">from django.views import BaseView
+
+from django_grainy.decorators import grainy_view_response
+
+
+# grainy class view
+class View(BaseView):
+    # will check for READ perms to &quot;a.b.c&quot;, otherwise fails with 403
+    @grainy_view_response(namespace=&quot;a.b.c&quot;)
+    def get(self, request):
+        return HttpResonse()
+
+    # will check for CREATE perms to &quot;a.b.c&quot;, otherwise fails with 403
+    @grainy_view_response(namespace=&quot;a.b.c&quot;)
+    def post(self, request):
+        return HttpResponse()
+
+    # will check for UPDATE perms to &quot;a.b.c&quot;, otherwise fails with 403
+    @grainy_view_response(namespace=&quot;a.b.c&quot;)
+    def put(self, request):
+        return HttpResponse()
+
+    # will check for UPDATE perms to &quot;a.b.c&quot;, otherwise fails with 403
+    @grainy_view_response(namespace=&quot;a.b.c&quot;)
+    def patch(self, request):
+        return HttpResponse()
+
+    # will check for DELETE perms to &quot;a.b.c&quot;, otherwise fails with 403
+    @grainy_view_response(namespace=&quot;a.b.c&quot;)
+    def delete(self, request):
+        return HttpResponse()
+</code></pre>
+<p>You may also use both decorators</p>
+<pre><code class="language-py">from django.views import BaseView
+
+from django_grainy.decorators import grainy_view, grainy_view_response
+
+
+# grainy class view
+@grainy_view(namespace=&quot;a.b.c&quot;)
+class View(BaseView):
+    # will check for READ perms to &quot;a.b.c&quot;, otherwise fails with 403
+    def get(self, request):
+        return HttpResonse()
+
+    # will check for CREATE perms to &quot;x.y.z&quot;, otherwise fails with 403
+    @grainy_view_response(namespace=&quot;x.y.z&quot;)
+    def post(self, request):
+        return HttpResponse()
+
+    # will check for UPDATE perms to &quot;a.b.c&quot;, otherwise fails with 403
+    def put(self, request):
+        return HttpResponse()
+
+    # will check for UPDATE perms to &quot;a.b.c&quot;, otherwise fails with 403
+    def patch(self, request):
+        return HttpResponse()
+
+    # will check for DELETE perms to &quot;a.b.c&quot;, otherwise fails with 403
+    def delete(self, request):
+        return HttpResponse()
+</code></pre>
+<h2 id="rest-framework-integration">Rest Framework Integration</h2>
+<p>Use the grainy_rest_viewset decorator to apply grainy permissions to the output of a django_rest_framework ViewSet. This means any content that the user does not have permission to view will be dropped from the api response.</p>
+<pre><code class="language-py">from rest_framework import serializers
+
+from django_grainy.decorators import grainy_rest_viewset
+
+from .models import TestModelA
+
+
+# A serializer to test with
+class ModelASerializer(serializers.HyperlinkedModelSerializer):
+    # to test applying of permissions in nested data
+    nested_dict = serializers.SerializerMethodField(required=False)
+
+    class Meta:
+        model = TestModelA
+        fields = (&quot;name&quot;, &quot;id&quot;, &quot;nested_dict&quot;)
+
+    def get_nested_dict(self, obj):
+        return {&quot;secret&quot;: {&quot;hidden&quot;: &quot;data&quot;}, &quot;something&quot;: &quot;public&quot;}
+
+
+@grainy_rest_viewset(
+    namespace=&quot;api.a&quot;,
+    handlers={
+        # with application handlers we can tell grainy that this
+        # namespace needs to have explicit permissions in order
+        # to be accessed
+        &quot;nested_dict.secret&quot;: {&quot;explicit&quot;: True}
+    },
+)
+class ModelAViewSet(viewsets.ModelViewSet):
+    queryset = TestModelA.objects.all()
+    serializer_class = ModelASerializer
+</code></pre>
+<p>A user with <code>READ</code> permissions to <code>api.a</code> accessing this rest viewset would get this response</p>
+<pre><code class="language-py">[{&quot;name&quot;:&quot;Test model 1&quot;,&quot;id&quot;:1,&quot;nested_dict&quot;:{&quot;something&quot;:&quot;public&quot;}}]
+</code></pre>
+<p>While a user with <code>READ</code> permissions to <code>api.a</code> and <code>READ</code> permissions to <code>api.a.*.nested_dict.secret</code> would get this response</p>
+<pre><code class="language-py">[{&quot;name&quot;:&quot;Test model 1&quot;,&quot;id&quot;:1,&quot;nested_dict&quot;:{&quot;secret&quot;:{&quot;hidden&quot;:&quot;data&quot;},&quot;something&quot;:&quot;public&quot;}}]
+</code></pre>
+<h2 id="remote-permission-provider">Remote permission provider</h2>
+<p>This functionality is still a work in progress and subject to change.</p>
+<p>Here is a quick and dirty example on how to set up a django project to be a remote grainy permission provider for another django project.</p>
+<h3 id="provider">provider</h3>
+<p>Set up the grainy endpoints on the grainy permission provider instance</p>
+<pre><code class="language-py">from django_grainy.remote import Authenticator, ProvideGet, ProvideLoad
+
+
+class GrainyRequestAuthenticator(Authenticator):
+    def authenticate(self, request):
+        # pseudo-code for handling a token authentication
+        handle_token_authentication(request)
+
+
+urlpatterns += [
+    # grainy
+    path(
+        &quot;grainy/get/&lt;str:namespace&gt;/&quot;,
+        ProvideGet.as_view(authenticator_cls=GrainyRequestAuthenticator),
+        name=&quot;grainy-get&quot;,
+    ),
+    path(
+        &quot;grainy/load/&quot;,
+        ProvideLoad.as_view(authenticator_cls=GrainyRequestAuthenticator),
+        name=&quot;grainy-load&quot;,
+    ),
+]
+</code></pre>
+<p>For the sake of this example it is assumed that the provider instance runs at <code>localhost:8000</code></p>
+<h3 id="receiver">receiver</h3>
+<p>In order to correctly setup authentication from the receiver django instance the provider django instance you will want
+to implement an authentication protocol. In this example we go with a straight forward token authentication. Note that the
+actual authentication logic is omitted as that is not really in the scope of this example.</p>
+<pre><code class="language-py">from django.conf import settings
+
+import django_grainy.remote
+
+
+class RemotePermissions(django_grainy.remote.Permissions):
+    def __init__(self, obj):
+        super().__init__(
+            obj,
+            url_load=&quot;http://localhost:8000/grainy/load&quot;,
+            url_get=&quot;http://localhost:8000/grainy/get&quot;,
+        )
+
+    def prepare_request(self, params, headers):
+        try:
+            key = self.obj.key_set.first().key
+            headers.update(Authorization=f&quot;token {key}&quot;)
+        except AttributeError:
+            pass
+</code></pre>
+<p>Then use it like you would the normal <code>Permissions</code> util</p>
+<pre><code class="language-py">perms = RemotePermissions(user)
+perms.check(&quot;a.b.c&quot;, PREAM_READ)
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../settings/" class="btn btn-neutral float-left" title="Settings"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../settings/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
