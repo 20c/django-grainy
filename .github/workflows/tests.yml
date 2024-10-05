@@ -27,12 +27,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-      - name: Install uv
-        uses: astral-sh/setup-uv@v2
-      - name: Install python
-        run: uv python install ${{ matrix.python-version }}
-      - name: install tox
-        run: uv sync --all-extras --dev
+      - name: Install python, uv, and this project
+        uses: 20c/workflows/uv@v1
       - name: Run tests
         run: uv run tox
       - name: Upload coverage
