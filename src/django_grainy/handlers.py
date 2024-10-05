@@ -1,3 +1,6 @@
+from typing import Any, Union
+
+from django.db.models import Model
 from grainy.core import Namespace
 
 
@@ -11,7 +14,9 @@ class GrainyHandler:
     namespace_instance_template = "{namespace}.{instance}"
 
     @classmethod
-    def namespace_instance(cls, instance, **kwargs):
+    def namespace_instance(
+        cls, instance: Union[object, str, Namespace], **kwargs: Any
+    ) -> str:
         """
         Returns the permissioning namespace for the passed instance
 
@@ -45,7 +50,9 @@ class GrainyHandler:
         ).lower()
 
     @classmethod
-    def namespace(cls, instance=None, **kwargs):
+    def namespace(
+        cls, instance: Union[object, str, Namespace] = None, **kwargs: Any
+    ) -> str:
         """
         Wrapper function to return either the result of namespace_base or
         namespace instance depending on whether or not a value was passed in
@@ -68,13 +75,13 @@ class GrainyHandler:
         return namespace.lower()
 
     @classmethod
-    def set_namespace_base(cls, value):
+    def set_namespace_base(cls, value: Namespace):
         if not isinstance(value, Namespace):
             raise TypeError("`value` needs to be a Namespace instance")
         cls.namespace_base = value
 
     @classmethod
-    def set_parent(cls, parent):
+    def set_parent(cls, parent: Model):
         cls.parent = parent
 
 
@@ -88,7 +95,7 @@ class GrainyModelHandler(GrainyHandler):
     namespace_instance_template = "{namespace}.{instance.pk}"
 
     @classmethod
-    def set_parent(cls, model):
+    def set_parent(cls, model: Model):
         cls.parent = model
         cls.model = model
         cls.set_namespace_base(

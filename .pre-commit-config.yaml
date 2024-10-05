@@ -1,25 +1,25 @@
-
-fail_fast: true
+fail_fast: false
+exclude: |
+    (?x)^(
+        tests/data/.*
+    )$
 repos:
-  - repo: local
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
     hooks:
-      - id: system
-        name: isort
-        entry: poetry run isort .
-        language: system
-        pass_filenames: false
+      - id: check-yaml
+      - id: trailing-whitespace
   - repo: local
     hooks:
     -   id: pyupgrade
         name: pyupgrade
-        entry: poetry run pyupgrade --py37-plus
+        entry: uv run pyupgrade --py36-plus
         language: python
         types: [python]
         pass_filenames: true
-  - repo: local
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.14
     hooks:
-      - id: system
-        name: Black
-        entry: poetry run black .
-        language: system
-        pass_filenames: false
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format

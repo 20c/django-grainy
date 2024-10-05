@@ -2,10 +2,9 @@
 
 
 import django.db.models.deletion
-from django.db import migrations, models
-
 import django_grainy.fields
 import django_grainy.models
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):

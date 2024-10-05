@@ -1,8 +1,6 @@
 from django.http import HttpResponse, JsonResponse
 from django.utils.safestring import mark_safe
 from django.views import View as BaseView
-from rest_framework import viewsets
-
 from django_grainy.decorators import (
     grainy_json_view,
     grainy_rest_viewset,
@@ -10,6 +8,7 @@ from django_grainy.decorators import (
     grainy_view,
     grainy_view_response,
 )
+from rest_framework import viewsets
 
 from .models import ModelA
 from .serializers import ModelASerializer

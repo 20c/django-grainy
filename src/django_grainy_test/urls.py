@@ -16,8 +16,8 @@ from .views import (
 )
 
 router = routers.DefaultRouter()
-router.register(r"a", ModelAViewSet)
-router.register(r"a_x", ExplicitViewSet)
+router.register(r"a", ModelAViewSet, basename="modela")
+router.register(r"a_x", ExplicitViewSet, basename="explicit_modela")
 
 
 urlpatterns = [

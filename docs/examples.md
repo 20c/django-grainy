@@ -21,7 +21,7 @@ A user gets his permissions directly or from one of the auth Groups he is a memb
 
 ## Custom permission holders
 
-Sometimes you want something else than a user or group model to hold 
+Sometimes you want something else than a user or group model to hold
 permissions - an APIkey implementation for example
 
 ```py

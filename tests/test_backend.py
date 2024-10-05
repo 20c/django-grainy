@@ -1,8 +1,6 @@
-from django.db import models
-from grainy.const import PERM_CREATE, PERM_DELETE, PERM_READ, PERM_UPDATE
-from grainy.core import PermissionSet
-
 from django_grainy.backends import GrainyBackend
+from grainy.const import PERM_READ, PERM_UPDATE
+from grainy.core import PermissionSet
 
 from .util import UserTestCase
 

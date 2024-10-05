@@ -5,6 +5,11 @@ Unreleased:
   deprecated: []
   removed: []
   security: []
+2.0.1:
+  fixed:
+  - unpin max django version
+  changed:
+  - convert to uv
 2.0.0:
   added:
   - python3.11 support

@@ -1,6 +1,5 @@
-from rest_framework import serializers
-
 from django_grainy.decorators import grainy_rest_viewset
+from rest_framework import serializers
 
 from .models import TestModelA
 

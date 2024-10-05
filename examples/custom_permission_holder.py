@@ -1,6 +1,6 @@
 from django.db import models
-
 from django_grainy.models import Permission, PermissionManager
+from django_grainy.util import Permissions
 
 
 class APIKey(models.Model):
@@ -18,8 +18,6 @@ class APIKeyPermission(Permission):
     # use the augmented object manager for permission handling
     objects = PermissionManager()
 
-
-from django_grainy.util import Permissions
 
 api_key = APIKey.objects.create(key="test")
 api_key.grainy_permissions.add_permission("a.b.c", "r")

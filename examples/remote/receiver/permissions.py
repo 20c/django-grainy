@@ -1,5 +1,3 @@
-from django.conf import settings
-
 import django_grainy.remote
 
 

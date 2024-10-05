@@ -1,10 +1,7 @@
-from django.test import RequestFactory
+from django_grainy_test.models import ModelA
 from grainy.const import PERM_CREATE, PERM_DELETE, PERM_READ, PERM_UPDATE
 from grainy.core import PermissionSet
 from rest_framework.test import APIClient
-
-from django_grainy_test.models import ModelA
-from django_grainy_test.views import ModelAViewSet
 
 from .util import UserTestCase
 
