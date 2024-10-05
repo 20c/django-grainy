@@ -12,7 +12,6 @@ def view(request):
 # grainy class view
 @grainy_view(namespace="a.b.c")
 class View(BaseView):
-
     # will check for READ perms to "a.b.c", otherwise fails with 403
     def get(self, request):
         return HttpResonse()

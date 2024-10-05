@@ -3,7 +3,7 @@ site_url: https://github.com/20c/grainy-perms
 
 theme: readthedocs
 
-pages:
+nav:
   - Home: index.md
   - Install: install.md
   - Settings: settings.md

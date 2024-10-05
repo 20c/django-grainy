@@ -1,4 +1,4 @@
-from django.conf.urls import include, url
+from django.urls import include, re_path
 from rest_framework import routers
 
 from .views import (
@@ -21,16 +21,16 @@ router.register(r"a_x", ExplicitViewSet)
 
 
 urlpatterns = [
-    url(r"^view/", view),
-    url(r"^detail/(?P<id>[0-9]+)/$", detail),
-    url(r"^detail_explicit/(?P<id>[0-9]+)/$", detail_explicit),
-    url(r"^detail_class/(?P<id>[0-9]+)/$", Detail.as_view()),
-    url(r"^detail_class_explicit/(?P<id>[0-9]+)/$", DetailExplicit.as_view()),
-    url(r"^detail_class_reqfmt/(?P<id>[0-9]+)/$", DetailReqFmt.as_view()),
-    url(r"^detail_class_manual/(?P<id>[0-9]+)/$", DetailManual.as_view()),
-    url(r"^detail_class_manual/$", DetailManual.as_view()),
-    url(r"^view_class/", View.as_view()),
-    url(r"^view_class_json/", JsonView.as_view()),
-    url(r"^", include(router.urls)),
-    url(r"^api-auth/", include("rest_framework.urls", namespace="rest_framework")),
+    re_path(r"^view/", view),
+    re_path(r"^detail/(?P<id>[0-9]+)/$", detail),
+    re_path(r"^detail_explicit/(?P<id>[0-9]+)/$", detail_explicit),
+    re_path(r"^detail_class/(?P<id>[0-9]+)/$", Detail.as_view()),
+    re_path(r"^detail_class_explicit/(?P<id>[0-9]+)/$", DetailExplicit.as_view()),
+    re_path(r"^detail_class_reqfmt/(?P<id>[0-9]+)/$", DetailReqFmt.as_view()),
+    re_path(r"^detail_class_manual/(?P<id>[0-9]+)/$", DetailManual.as_view()),
+    re_path(r"^detail_class_manual/$", DetailManual.as_view()),
+    re_path(r"^view_class/", View.as_view()),
+    re_path(r"^view_class_json/", JsonView.as_view()),
+    re_path(r"^", include(router.urls)),
+    re_path(r"^api-auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]

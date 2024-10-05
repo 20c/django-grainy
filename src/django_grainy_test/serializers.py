@@ -4,7 +4,6 @@ from .models import ModelA
 
 
 class ModelASerializer(serializers.HyperlinkedModelSerializer):
-
     nested_dict = serializers.SerializerMethodField(required=False)
 
     class Meta:

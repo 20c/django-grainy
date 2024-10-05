@@ -30,7 +30,6 @@ class TestGrainyViewSet(UserTestCase):
         ModelA.objects.create(name="Test1")
 
     def test_grainy_viewset_gate(self):
-
         client_a = APIClient()
         client_a.force_authenticate(user=self.users["user_a"])
 
