@@ -4,6 +4,13 @@
 ## Unreleased
 
 
+## 2.0.1
+### Fixed
+- unpin max django version
+### Changed
+- convert to uv
+
+
 ## 2.0.0
 ### Added
 - python3.11 support
