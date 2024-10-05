@@ -1,6 +1,8 @@
 import re
+from typing import Any, Optional
 
 from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth.models import User
 
 from .helpers import django_op_to_flag
 from .models import namespace
@@ -13,14 +15,16 @@ class GrainyBackend(ModelBackend):
     Authenticate actions using grainy permissions
     """
 
-    def has_module_perms(self, user, obj=None):
+    def has_module_perms(self, user: User, obj: str = None) -> bool:
+
         # superusers have access to everything
         if user.is_superuser:
             return True
 
         return Permissions(user).check(obj, django_op_to_flag("view"))
 
-    def has_perm(self, user, perm, obj=None):
+    def has_perm(self, user: User, perm: str, obj: Optional[Any] = None) -> bool:
+
         # superusers have access to everything
         if user.is_superuser:
             return True
