@@ -309,13 +309,16 @@ wheels = [
 name = "django-grainy"
 version = "2.0.0"
 source = { editable = "." }
+dependencies = [
+    { name = "django" },
+    { name = "djangorestframework" },
+    { name = "grainy" },
+]
 
 [package.optional-dependencies]
 dev = [
     { name = "coverage" },
     { name = "ctl" },
-    { name = "django" },
-    { name = "djangorestframework" },
     { name = "jinja2" },
     { name = "markdown-include" },
     { name = "mkdocs" },
@@ -335,8 +338,9 @@ dev = [
 requires-dist = [
     { name = "coverage", marker = "extra == 'dev'", specifier = ">=4.1" },
     { name = "ctl", marker = "extra == 'dev'", specifier = ">=1" },
-    { name = "django", marker = "extra == 'dev'", specifier = ">=3.2,<5" },
-    { name = "djangorestframework", marker = "extra == 'dev'", specifier = ">=3.0,<4.0" },
+    { name = "django", specifier = ">=3.2" },
+    { name = "djangorestframework", specifier = ">=3" },
+    { name = "grainy", specifier = ">=1.7" },
     { name = "jinja2", marker = "extra == 'dev'", specifier = ">=3" },
     { name = "markdown-include", marker = "extra == 'dev'", specifier = ">=0.5" },
     { name = "mkdocs", marker = "extra == 'dev'", specifier = ">=1.2.3" },

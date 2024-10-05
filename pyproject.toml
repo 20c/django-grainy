@@ -16,19 +16,14 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 
-[[project.packages]]
-include = "django_grainy"
-from = "src"
-
 dependencies = [
-    "grainy >=1.7.0,<2",
-    "six >=1.11.0,<=2.0.0",
+    "grainy >=1.7",
+    "django >=3.2",
+    "djangorestframework >=3",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "django >=3.2,<5",
-    "djangorestframework >=3.0,<4.0",
     # lint
     "pre-commit >=2.13.0",
     "pyupgrade >=2.34.0",
@@ -60,8 +55,3 @@ allow-direct-references = true
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-
-# temporary solution for  https://github.com/python-poetry/poetry/issues/9293
-[[project.source]]
-name = "pypi-public"
-url = "https://pypi.org/simple/"
