@@ -6,7 +6,6 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Model
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.http.response import HttpResponse, JsonResponse
 from django.views import View
 from grainy.core import Namespace
 from rest_framework.request import Request
@@ -153,7 +152,6 @@ class grainy_view_response(grainy_decorator):
     view = None
 
     def __call__(self, view_function: Callable) -> Callable:
-
         get_object = self.get_object
         apply_perms = self.apply_perms
         extra = self.extra
@@ -364,7 +362,6 @@ class grainy_rest_viewset_response(grainy_json_view_response):
         perms = decorator.permissions_cls(request.user)
 
         def grainy_data(request: Request, defaults: dict):
-
             """
             Returns a cleaned up dict for request.data
 
@@ -436,7 +433,6 @@ class grainy_view(grainy_decorator):
         super().__init__(*args, **kwargs)
 
     def __call__(self, view: View):
-
         view.Grainy = self.make_grainy_handler(view)
 
         if inspect.isclass(view):

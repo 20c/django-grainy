@@ -1,5 +1,4 @@
 from django.db import models
-
 from django_grainy.models import Permission, PermissionManager
 from django_grainy.util import Permissions
 

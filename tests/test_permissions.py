@@ -2,12 +2,11 @@ import json
 
 from django.contrib.auth.models import AnonymousUser
 from django.test import RequestFactory
-from grainy.const import PERM_CREATE, PERM_DELETE, PERM_READ, PERM_UPDATE
-
 from django_grainy.models import PermissionSet
 from django_grainy.util import Permissions
 from django_grainy_test.models import APIKey, ModelA, ModelB
 from django_grainy_test.views import JsonView, View, view
+from grainy.const import PERM_CREATE, PERM_DELETE, PERM_READ, PERM_UPDATE
 
 from .util import UserTestCase
 

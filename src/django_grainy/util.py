@@ -1,9 +1,8 @@
-from typing import Any, List, Union
+from typing import Any, Union
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser, Group, User
 from django.db.models import Model, QuerySet
-from django.db.models.base import ModelBase
 from grainy.core import Applicator, PermissionSet
 
 from .conf import ANONYMOUS_GROUP, ANONYMOUS_PERMS
@@ -14,7 +13,7 @@ def check_permissions(
     obj: Union[User, AnonymousUser, Group, Model],
     target: Any,
     permissions: Union[int, str],
-    **kwargs: Any
+    **kwargs: Any,
 ):
     if not hasattr(obj, "_permissions_util"):
         obj._permissions_util = Permissions(obj)

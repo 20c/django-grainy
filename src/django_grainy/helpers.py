@@ -1,7 +1,6 @@
 import inspect
 from typing import Any, Union
 
-from django.core.handlers.wsgi import WSGIRequest
 from grainy.core import Namespace
 from rest_framework.request import Request
 
@@ -9,7 +8,6 @@ from .conf import DJANGO_OP_TO_FLAG, PERM_CHOICES, REQUEST_METHOD_TO_FLAG
 
 
 def namespace(target: Any, **kwargs: Any) -> str:
-
     """
     Convert `target` to permissioning namespace
 

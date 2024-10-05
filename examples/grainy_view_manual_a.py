@@ -1,5 +1,4 @@
 from django.views import BaseView
-
 from django_grainy.decorators import grainy_view
 
 

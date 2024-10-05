@@ -1,5 +1,4 @@
 import grainy.const
-
 from django_grainy.util import Permissions
 
 user.grainy_permissions.add_permission_set({"a.b.c": "r"})
